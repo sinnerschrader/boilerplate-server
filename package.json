@@ -2,6 +2,10 @@
   "name": "boilerplate-server",
   "version": "0.0.1",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
+  "respository": {
+    "type": "git",
+    "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
+  },
   "main": "lib/",
   "bin": "bin/boilerplate-server",
   "keywords": [
