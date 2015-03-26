@@ -1,0 +1,30 @@
+{
+    "port": 1337,
+    "host": "0.0.0.0",
+    "paths": {
+        "middlewares": "middlewares",
+        "routes": "routes",
+        "transforms": "transforms"
+    },
+    "routes": {
+        "index": {
+            "enabled": true,
+            "root": "src/markup/",
+            "ext": "jade"
+        },
+        "style": {
+            "enabled": true,
+            "root": "src/style/",
+            "ext": "less"
+        },
+        "script": {
+            "enabled": true,
+            "root": "src/script/",
+            "ext": "js"
+        },
+        "static": {
+            "enabled": true,
+            "root": "src/static/"
+        }
+    }
+}

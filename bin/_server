@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+import minimist from 'minimist';
+import winston from 'winston';
+
+import server from '../';
+
+async function start(config) {
+	return await server(config);
+}
+
+let opts = Object.assign({}, minimist(process.argv.slice(2)));
+
+start(opts)
+	.then(function(app){
+		winston.info(`Started ${app.config.pkg.name} on ${app.config.host}:${app.config.port}...`);
+	})
+	.catch(function(err){
+		winston.error(err);
+		process.exit(1);
+	});

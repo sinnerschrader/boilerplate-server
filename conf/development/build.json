@@ -1,0 +1,20 @@
+{
+    "less": {
+        "compress": false,
+        "sourceMap": {
+            "outputSourceFiles": true,
+            "sourceMapFileInline": true
+        },
+        "globalVars": {
+            "env": "development"
+        }
+    },
+    "browserify": {
+        "debug": true
+    },
+    "jade": {
+        "pretty": true,
+        "cache": false,
+        "compileDebug": true
+    }
+}

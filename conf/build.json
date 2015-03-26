@@ -1,0 +1,54 @@
+{
+    "source": "./src",
+    "build": "./dist",
+    "script": "script",
+    "style": "style",
+    "static": "static",
+    "data": "data",
+    "tasks": [
+    {
+        "tasks": ["default", "script"],
+        "type": "script",
+        "transform": "browserify",
+        "files": ["index.js"],
+        "ext": "js"
+    },{
+        "tasks": ["default", "style"],
+        "type": "style",
+        "transform": "less",
+        "files": ["index.less"],
+        "ext": "css"
+    },{
+        "tasks": ["default", "markup"],
+        "path": ".",
+        "type": "markup",
+        "transform": "jade",
+        "files": ["index.jade"],
+        "ext": "html"
+    }],
+    "less": {
+        "ieCompat": false,
+        "paths": ["./node_modules"],
+        "plugins": ["autoprefix"],
+        "clean-css": {
+            "advanced": true,
+            "rebase": true,
+            "aggressiveMerging": true,
+            "keepSpecialComments": 0
+        },
+        "autoprefix": {
+            "browsers": ["IE 9", "IE 10", "last 1 versions"]
+        }
+    },
+    "browserify": {
+        "debug": true,
+        "transforms": ["babelify"],
+        "uglifyify": {
+            "global": true
+        }
+    },
+    "jade": {
+        "self": true,
+        "dataPath": "./src/data/"
+    }
+}
