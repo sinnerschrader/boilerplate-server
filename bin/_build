@@ -6,8 +6,7 @@ import build from '../lib/build';
 import pkg from '../package';
 
 async function start(config) {
-	winston.info(`Executing build for ${pkg.name}...`);
-	var built = await build(config);
+	return await build(config);
 }
 
 start(Object.assign({}, minimist(process.argv.slice(2)), { pkg, winston }))
@@ -16,6 +15,7 @@ start(Object.assign({}, minimist(process.argv.slice(2)), { pkg, winston }))
 		winston.info(`Build for ${pkg.name} executed successfully...`);
 		process.exit(0);
 	})
-	.catch(function(){
+	.catch(function(err){
+		winston.error(err);
 		process.exit(1);
 	});

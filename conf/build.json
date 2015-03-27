@@ -1,10 +1,12 @@
 {
-    "source": "./src",
-    "build": "./dist",
-    "script": "script",
-    "style": "style",
-    "static": "static",
-    "data": "data",
+    "paths": {
+        "source": "./src",
+        "build": "./dist",
+        "script": "script",
+        "style": "style",
+        "static": "static",
+        "data": "data"
+    },
     "tasks": [
     {
         "tasks": ["default", "script"],
