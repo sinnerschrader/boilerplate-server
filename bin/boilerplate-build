@@ -5,4 +5,4 @@ var shell = require('shelljs');
 var executable = path.resolve(__dirname, '..', 'node_modules', '.bin', 'babel-node');
 var target = path.resolve(__dirname, '_build');
 
-shell.exec(executable + ' --experimental ' + target + ' ' + process.argv.slice(2).join(' '));
+shell.exec(executable + ' --experimental --ignore /boilerplate-server\/node_modules/ ' + target + ' ' + process.argv.slice(2).join(' '));
