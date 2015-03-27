@@ -7,6 +7,10 @@
     "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
   },
   "main": "lib/",
+  "bin": {
+    "boilerplate-server": "bin/boilerplate-server",
+    "boilerplate-build": "bin/boilerplate-build"
+  },
   "keywords": [
     "integration",
     "template"
