@@ -1,6 +1,6 @@
 {
   "name": "boilerplate-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
   "repository": {
     "type": "git",

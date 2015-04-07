@@ -24,7 +24,7 @@
         },
         "static": {
             "enabled": true,
-            "root": "src/static/"
+            "root": ["src/static/"]
         }
     }
 }
