@@ -4,9 +4,12 @@
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
   "main": "application/",
   "scripts": {
-    "start": "node binary/start"
+    "start": "node binary/boilerplate-server"
   },
-  "bin": "bin/",
+  "bin": {
+    "_boilerplate-server": "binary/_boilerplate-server",
+    "boilerplate-server": "binary/boilerplate-server"
+  },
   "repository": {
     "type": "git",
     "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
