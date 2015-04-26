@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var path = require( 'path' );
+var shell = require( 'shelljs' );
+
+var executable = path.resolve( __dirname, '..', 'node_modules', '.bin', 'babel-node' );
+var target = path.resolve( __dirname, '_boilerplate-server' );
+
+shell.exec( executable + ' --stage 0 --ignore /boilerplate-server\/node_modules/ ' + target + ' ' + process.argv.slice( 2 ).join( ' ' ) );

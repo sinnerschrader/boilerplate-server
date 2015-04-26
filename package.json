@@ -4,11 +4,9 @@
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
   "main": "application/",
   "scripts": {
-    "start": "babel-node --stage 0 binary/start"
+    "start": "node binary/start"
   },
-  "bin": {
-    "boilerplate-server": "binary/start"
-  },
+  "bin": "bin/",
   "repository": {
     "type": "git",
     "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
@@ -45,6 +43,7 @@
     "minimist": "^1.1.1",
     "require-all": "^1.0.0",
     "resolve-path": "^1.2.2",
+    "shelljs": "^0.4.0",
     "thunkify": "^2.1.2",
     "trek-router": "^0.1.9",
     "winston": "^1.0.0"
