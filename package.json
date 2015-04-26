@@ -6,10 +6,8 @@
   "scripts": {
     "start": "babel-node --stage 0 binary/start"
   },
-  "engines": {
-    "iojs": ">= 1.4.3",
-    "node": ">= 0.12.0",
-    "npm": ">= 2.5.1"
+  "bin": {
+    "boilerplate-server": "binary/start"
   },
   "repository": {
     "type": "git",
@@ -32,8 +30,9 @@
   ],
   "license": "MIT",
   "engines": {
+    "iojs": ">= 1.4.3",
     "node": ">= 0.12.0",
-    "iojs": ">= 1.0.0"
+    "npm": ">= 2.5.1"
   },
   "dependencies": {
     "babel": "^5.1.9",
