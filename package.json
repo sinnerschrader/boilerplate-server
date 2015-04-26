@@ -1,64 +1,41 @@
 {
-  "name": "boilerplate-server",
-  "version": "0.1.1",
-  "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
+  "name": "duo-server",
+  "version": "0.0.1",
+  "description": "Programatically serve duo components",
+  "main": "application/",
+  "scripts": {
+    "start": "babel-node --stage 0 binary/start"
+  },
+  "engines": {
+    "iojs": ">= 1.4.3",
+    "node": ">= 0.12.0",
+    "npm": ">= 2.5.1"
+  },
   "repository": {
     "type": "git",
-    "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
-  },
-  "main": "lib/",
-  "bin": {
-    "boilerplate-server": "bin/boilerplate-server",
-    "boilerplate-build": "bin/boilerplate-build"
-  },
-  "scripts": {
-    "start": "./bin/boilerplate-server",
-    "build": "./bin/boilerplate-build"
+    "url": "git@git.sinnerschrader.com:team-ux/duo-server.git"
   },
   "keywords": [
-    "integration",
-    "template"
+    "duo",
+    "koa",
+    "react",
+    "components"
   ],
-  "author": {
-    "name": "Team UX",
-    "email": "team-ux@sinnerschrader.com"
-  },
-  "contributors": [
-    {
-      "name": "Mario Nebl",
-      "email": "mario.nebl@sinnerschrader.com"
-    }
-  ],
+  "author": "Team UX <team-ux@sinnerschrader.com>",
   "license": "MIT",
-  "engines": {
-    "node": ">= 0.12.0",
-    "iojs": ">= 1.0.0"
-  },
-  "engineStrict": true,
   "dependencies": {
-    "babel": "^4.7.16",
-    "babelify": "^5.0.3",
-    "bluebird": "^2.9.12",
-    "browserify": "^9.0.3",
-    "git-rev": "^0.2.1",
-    "html5shiv": "^3.7.2",
-    "jade": "^1.9.2",
-    "koa": "^0.18.0",
-    "koa-route": "^2.4.0",
-    "koa-router": "^4.2.0",
-    "koa-static": "^1.4.9",
-    "less": "^2.4.0",
-    "less-plugin-autoprefix": "^1.3.0",
-    "less-plugin-clean-css": "^1.5.0",
-    "lodash": "^3.3.1",
-    "minimist": "^1.1.0",
-    "mkdirp": "^0.5.0",
-    "node-static": "^0.7.6",
-    "nodemon": "^1.3.7",
+    "babel": "^5.1.9",
+    "babel-eslint": "^3.0.1",
+    "bluebird": "^2.9.24",
+    "commander": "^2.8.0",
+    "eslint": "^0.19.0",
+    "koa": "^0.19.1",
+    "lodash": "^3.7.0",
+    "minimist": "^1.1.1",
     "require-all": "^1.0.0",
-    "shelljs": "^0.4.0",
-    "uglifyify": "^3.0.1",
-    "underscore.string": "^3.0.3",
-    "winston": "^0.9.0"
+    "resolve-path": "^1.2.2",
+    "thunkify": "^2.1.2",
+    "trek-router": "^0.1.9",
+    "winston": "^1.0.0"
   }
 }
