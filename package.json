@@ -1,7 +1,7 @@
 {
-  "name": "duo-server",
-  "version": "0.0.1",
-  "description": "Programatically serve duo components",
+  "name": "boilerplate-server",
+  "version": "0.2.0",
+  "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
   "main": "application/",
   "scripts": {
     "start": "babel-node --stage 0 binary/start"
@@ -13,16 +13,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.sinnerschrader.com:team-ux/duo-server.git"
+    "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
   },
   "keywords": [
-    "duo",
     "koa",
-    "react",
-    "components"
+    "babel",
+    "server"
   ],
-  "author": "Team UX <team-ux@sinnerschrader.com>",
+  "author": {
+    "name": "Team UX",
+    "email": "team-ux@sinnerschrader.com"
+  },
+  "contributors": [
+    {
+      "name": "Mario Nebl",
+      "email": "mario.nebl@sinnerschrader.com"
+    }
+  ],
   "license": "MIT",
+  "engines": {
+    "node": ">= 0.12.0",
+    "iojs": ">= 1.0.0"
+  },
   "dependencies": {
     "babel": "^5.1.9",
     "babel-eslint": "^3.0.1",
