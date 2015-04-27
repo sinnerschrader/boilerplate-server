@@ -33,8 +33,12 @@ export default {
 				return false;
 			}
 
+			return hook;
 		} ).filter( ( item ) => item );
 
+		application.hooks = application.hooks.concat( hooks );
+
+		hooks.forEach( ( hook ) => hook.register( application ) );
 		return this;
 	}
 };
