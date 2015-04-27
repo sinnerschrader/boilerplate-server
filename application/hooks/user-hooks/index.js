@@ -8,7 +8,7 @@ export default {
 
 	'after': [ 'hooks:configure:start:after' ],
 
-	'hookDidConfigure': function ( application ) {
+	'hookDidConfigure': function userHooksDidConfigure ( application ) {
 		this.configuration.path = resolve( application.runtime.cwd, this.configuration.path );
 	},
 
@@ -26,7 +26,7 @@ export default {
 		hooks = hooks.map( ( hook ) => {
 			let conflictingCoreHook = application.hooks.find( ( coreHook ) => coreHook.name === hook.name );
 
-			if ( conflictingCoreHook ) {
+			if ( typeof conflictingCoreHook !== 'undefined' && conflictingCoreHook > -1 ) {
 				if ( isProjectMode === false ) {
 					this.log.warn( `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHook.name}'` );
 				}
