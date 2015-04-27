@@ -8,6 +8,8 @@ function loadConfiguration ( path, filter = /(.*).(js|json)$/, env = 'developmen
 		'filter': filter
 	} );
 
+	rawConfiguration.environments = rawConfiguration.environments || {};
+
 	let envConfiguration = rawConfiguration.environments[ env ] || {};
 
 	return merge( {},
