@@ -3,6 +3,8 @@ import { resolve } from 'path';
 import koa from 'koa';
 import requireAll from 'require-all';
 
+import { exists } from '../../utilities/fs';
+
 export default {
 	'after': [ 'hooks:engine:start:after' ],
 
@@ -11,7 +13,12 @@ export default {
 		let coreMiddlewares = requireAll( resolve( application.runtime.base, application.configuration.paths.middlewares ) );
 
 		// Load physical user middlewares
-		let userMiddlewares = requireAll( resolve( application.runtime.cwd, this.configuration.path ) );
+		let userMiddlewaresPath = resolve( application.runtime.cwd, this.configuration.path );
+		let userMiddlewares = {};
+
+		if ( await exists( userMiddlewaresPath ) ) {
+			userMiddlewares = requireAll( userMiddlewaresPath );
+		}
 
 		// Load module middlewares
 		let moduleMiddlewares = Object.keys( this.configuration.enabled )
@@ -21,10 +28,10 @@ export default {
 
 				try {
 					result[ middlewareName ] = require( middlewareModuleName );
-					application.log.debug( '[application:hooks:middlewares]', `Required module middleware '${middlewareName}' from module '${middlewareModuleName}'` );
+					this.log.debug( `Required module middleware '${middlewareName}' from module '${middlewareModuleName}'` );
 				} catch ( err ) {
-					application.log.warn( '[application:hooks:middlewares]', `Could not require module middleware '${middlewareName}' from module '${middlewareModuleName}'` );
-					application.log.debug( err );
+					this.log.warn( `Could not require module middleware '${middlewareName}' from module '${middlewareModuleName}'` );
+					this.log.debug( err );
 				}
 
 				return result;
@@ -38,25 +45,25 @@ export default {
 			let middlewareConfig = this.configuration.enabled[ middlewareName ];
 
 			if ( typeof middlewareFactoryFunction !== 'function' ) {
-				application.log.warn( '[application:hooks:middlewares]', `'${middlewareName}' is no valid middleware factory` );
+				this.log.warn( `'${middlewareName}' is no valid middleware factory` );
 				return;
 			}
 
 			if ( middlewareConfig === false ) {
-				application.log.debug( '[application:hooks:middlewares]', `'${middlewareName}' is explicitly disabled.` );
+				this.log.debug( `'${middlewareName}' is explicitly disabled.` );
 				return;
 			}
 
 			if ( typeof middlewareConfig === 'undefined' ) {
-				application.log.debug( '[application:hooks:middlewares]', `'${middlewareName}' is not configured, will not mount.` );
+				this.log.debug( `'${middlewareName}' is not configured, will not mount.` );
 				return;
 			}
 
 			try {
 				application.engine.use( middlewareFactoryFunction( application, middlewareConfig ) );
 			} catch ( err ) {
-				application.log.error( '[application:hooks:middlewares]', `Binding '${middlewareName}' to engine failed` );
-				application.log.debug( err );
+				this.log.error( `Binding '${middlewareName}' to engine failed` );
+				this.log.debug( err );
 			}
 		} );
 

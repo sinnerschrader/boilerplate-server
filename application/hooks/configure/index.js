@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { merge } from 'lodash';
 
 import load from '../../utilities/configuration';
+import { exists } from '../../utilities/fs';
 
 export default {
 	'after': [ 'application:before' ],
@@ -36,7 +37,7 @@ export default {
 		try {
 			pkg = require( pkgPath );
 		} catch ( err ) {
-			application.log.warn('[hook:configure:start]' `Could not read ${pkgPath}.` );
+			this.log.warn( `Could not read ${pkgPath}.` );
 		}
 
 		pkg = merge( {}, corePkg, pkg );
@@ -48,13 +49,17 @@ export default {
 		let userPath = resolve( application.runtime.cwd, core.paths.configuration );
 		let user = {};
 
-		try {
-			user = load( userPath, this.configuration.filter, application.runtime.env );
-		} catch ( err ) {
-			application.log.error( '[hook:configure:start]', `Error while reading user configuration from ${userPath}.` );
-			application.log.error( err );
+		if ( await exists( userPath ) ) {
+			try {
+				user = load( userPath, this.configuration.filter, application.runtime.env );
+			} catch ( err ) {
+				this.log.error( `Error while reading user configuration from ${userPath}.` );
+				this.log.error( err );
 
-			throw new Error( '[hook:configure:start] Failed loading user configuration' );
+				throw new Error( 'Failed loading user configuration' );
+			}
+		} else {
+			this.log.warn( `No user configuration present at '${userPath}'` );
 		}
 
 		merge( application.configuration, core, user );

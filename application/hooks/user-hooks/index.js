@@ -1,5 +1,7 @@
 import { resolve } from 'path';
+
 import load from '../load';
+import { exists } from '../../utilities/fs';
 
 export default {
 	'configurationKey': 'hooks',
@@ -11,21 +13,25 @@ export default {
 	},
 
 	'start': async function startUserHook ( application ) {
-		let coreHookPath = resolve ( application.runtime.base, application.configuration.paths.hooks );
+		let coreHookPath = resolve( application.runtime.base, application.configuration.paths.hooks );
 		let isProjectMode = this.configuration.path === coreHookPath;
+
+		if ( await exists( this.configuration.path ) === false ) {
+			this.log.warn( `No user hooks found at ${coreHookPath}` );
+			return this;
+		}
 
 		let hooks = load( application, this.configuration.path, true );
 
-		hooks = hooks.map( function( hook ) {
+		hooks = hooks.map( ( hook ) => {
 			let conflictingCoreHook = application.hooks.find( ( coreHook ) => coreHook.name === hook.name );
 
 			if ( conflictingCoreHook ) {
 				if ( isProjectMode === false ) {
-					application.log.warn( '[application:hooks:user-hooks]', `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHook.name}'` );
+					this.log.warn( `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHook.name}'` );
 				}
 				return false;
 			}
-
 
 		} ).filter( ( item ) => item );
 

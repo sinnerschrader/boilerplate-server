@@ -15,12 +15,18 @@ function bootLogger ( options ) {
 		'transports': [
 			new ConsoleTransport( {
 				'name': 'bootConsole',
-				'level': level
+				'level': level,
+				'colorize': false,
+				'showLevel': false,
+				'timestamp': false
 			} ),
 			new FileTransport( {
 				'name': 'bootFile',
 				'filename': 'server_debug.log',
-				'level': 'error'
+				'level': 'error',
+				'colorize': false,
+				'showLevel': true,
+				'timestamp': true
 			} )
 		]
 	} );

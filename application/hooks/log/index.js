@@ -24,20 +24,17 @@ export default {
 				let Transport = transportMethods[ transportName ];
 
 				if ( typeof Transport !== 'function' ) {
-					application.log.warn( '[hooks:log:start]', `Trying to add log transport '${transportName}' but it is unavailable.` );
+					this.log.warn( `Trying to add log transport '${transportName}' but it is unavailable.` );
 					return false;
 				}
 
-				let tranportConfig = {
-					'name': transportName,
-					'level': this.configuration.level
-				};
+				let transportConfig = Object.assign( {}, this.configuration.options[ transportName ], { 'name': transportName, 'level': this.configuration.level } );
 
 				if ( transportName === 'file' ) {
-					tranportConfig.filename = resolve( this.configuration.path, [ transportName, 'log' ].join( '.' ) )
+					transportConfig.filename = resolve( this.configuration.path, [ transportName, 'log' ].join( '.' ) )
 				}
 
-				return new Transport( tranportConfig );
+				return new Transport( transportConfig );
 			} )
 			.filter( ( item ) => item );
 

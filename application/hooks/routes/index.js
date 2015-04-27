@@ -3,6 +3,8 @@ import { resolve } from 'path';
 import Router from 'trek-router';
 import requireAll from 'require-all';
 
+import { exists } from '../../utilities/fs';
+
 export default {
 	'after': [ 'hooks:engine:start:after' ],
 
@@ -13,7 +15,12 @@ export default {
 		let coreRoutes = requireAll( resolve( application.runtime.base, application.configuration.paths.routes ) );
 
 		// load physical user routes
-		let userRoutes = requireAll( resolve( application.runtime.cwd, this.configuration.path ) );
+		let userRoutes = {};
+		let userRoutesPath = resolve( application.runtime.cwd, this.configuration.path );
+
+		if ( await exists( userRoutesPath ) ) {
+			userRoutes = requireAll( userRoutesPath );
+		}
 
 		// load modules routes
 		let moduleRoutes = Object.keys( this.configuration.enabled )
@@ -23,10 +30,10 @@ export default {
 
 				try {
 					result[ routeName ] = require( routeModuleName );
-					application.log.debug( '[application:hooks:routes]', `Required module route '${routeName}' from module '${routeModuleName}'` );
+					this.log.debug( `Required module route '${routeName}' from module '${routeModuleName}'` );
 				} catch ( err ) {
-					application.log.warn( '[application:hooks:routes]', `Could not require module route '${routeName}' from module '${routeModuleName}'` );
-					application.log.debug( err );
+					this.log.warn( `Could not require module route '${routeName}' from module '${routeModuleName}'` );
+					this.log.debug( err );
 				}
 
 				return result;
@@ -40,17 +47,17 @@ export default {
 			let routeConfig = this.configuration.enabled[ routeName ];
 
 			if ( typeof routeFactoryFunction !== 'function' ) {
-				application.log.warn( '[application:hooks:routes]', `'${routeName}' is no valid route factory` );
+				this.log.warn( `'${routeName}' is no valid route factory` );
 				return;
 			}
 
 			if ( routeConfig === false || routeConfig && routeConfig.enabled === false ) {
-				application.log.debug( '[application:hooks:routes]', `'${routeName}' is explicitly disabled.` );
+				this.log.debug( `'${routeName}' is explicitly disabled.` );
 				return;
 			}
 
 			if ( typeof routeConfig === 'undefined' ) {
-				application.log.debug( '[application:hooks:routes]', `'${routeName}' is not configured, will not mount.` );
+				this.log.debug( `'${routeName}' is not configured, will not mount.` );
 				return;
 			}
 

@@ -33,7 +33,7 @@ export default function loadHooks ( application, path, modules = false ) {
 			return false;
 		}
 
-		return hookFactory( hookName, data.index );
+		return hookFactory( application, hookName, data.index );
 	} )
 	.filter( ( item ) => item );
 

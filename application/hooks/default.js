@@ -11,13 +11,15 @@ class Hook {
 	defaults = {};
 	configuration = {};
 
+	stageName = 'init';
+
 	stages = {
 		'register': false,
 		'configure': false,
 		'start': false
 	};
 
-	constructor ( name, extender ) {
+	constructor ( application, name, extender ) {
 		this.name = name;
 		this.configurationKey = extender.configurationKey || name;
 
@@ -37,24 +39,33 @@ class Hook {
 
 		this.hookWillRegister = extender.hookWillRegister || this.hookWillRegister;
 		this.hookDidRegister = extender.hookDidRegister || this.hookDidRegister;
+
+		this.log = {
+			'error': ( ...args ) => { application.log.error( `[hook:${this.name}:${this.stageName}]`, ...args ); },
+			'warn': ( ...args ) => { application.log.warn( `[hook:${this.name}:${this.stageName}]`, ...args ); },
+			'info': ( ...args ) => { application.log.info( `[hook:${this.name}:${this.stageName}]`, ...args ); },
+			'debug': ( ...args ) => { application.log.debug( `[hook:${this.name}:${this.stageName}]`, ...args ); },
+			'silly': ( ...args ) => { application.log.silly( `[hook:${this.name}:${this.stageName}]`, ...args ); }
+		};
 	}
 
 	register ( application ) {
 		if ( this.stages.register ) {
-			application.log.warn( '[application:hooks]', `Hook '${this.name}' already registered.` );
+			this.log.warn( `Hook '${this.name}' already registered.` );
 			return this;
 		}
 
 		this.hookWillRegister( application );
 		this.stages.register = true;
+		this.stageName = 'register';
 
-		application.log.silly( '[application:hooks]', `Registering hook '${this.name}'` );
+		this.log.silly( `Registering hook '${this.name}'` );
 
 		this.after.forEach( ( eventName ) => {
 			application.on( eventName, async function() {
 
 				if ( application.configuration && application.configuration.hooks.enabled[ this.name ] === false ) {
-					application.log.debug( '[application:hooks]', `Hook '${this.name}' is disabled` );
+					this.log.debug( `Hook '${this.name}' is disabled` );
 					this.disabled = true;
 
 					application.emit( `hooks:${this.name}:configure:before` );
@@ -86,7 +97,8 @@ class Hook {
 			return this;
 		}
 
-		application.log.silly( '[application:hooks]', `Running stage '${stageName}' on hook '${this.name}'` );
+		this.stageName = stageName;
+		this.log.silly( `Running stage '${stageName}' on hook '${this.name}'` );
 		application.emit( `hooks:${this.name}:${stageName}:before` );
 		application.emit( `hooks:${stageName}:before`, this.name );
 
@@ -95,13 +107,13 @@ class Hook {
 			await this[ stageName ]( application );
 			this.stages[ stageName ] = true;
 		} catch ( e ) {
-			application.log.error( '[application:hooks]', `An error ocurred on stage ${stageName} of hook '${this.name}'` );
-			application.log.error( e );
+			this.log.error( `An error ocurred on stage ${stageName} of hook '${this.name}'` );
+			this.log.error( e );
 
 			throw new Error( e );
 		}
 
-		application.log.debug( '[application:hooks]', `Ran stage '${stageName}' on hook '${this.name}'` );
+		this.log.debug( `Ran stage '${stageName}' on hook '${this.name}'` );
 		await this[ lifecycle[ stageName ][1] ] ( application );
 
 		application.emit( `hooks:${this.name}:${stageName}:after` );
