@@ -24,11 +24,11 @@ export default {
 		let hooks = load( application, this.configuration.path, true );
 
 		hooks = hooks.map( ( hook ) => {
-			let conflictingCoreHook = application.hooks.find( ( coreHook ) => coreHook.name === hook.name );
+			let conflictingCoreHooks = application.hooks.filter( ( coreHook ) => coreHook.name === hook.name );
 
-			if ( typeof conflictingCoreHook !== 'undefined' ) {
+			if ( conflictingCoreHooks.length > 0 ) {
 				if ( isProjectMode === false ) {
-					this.log.warn( `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHook.name}'` );
+					this.log.warn( `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHooks[ 0 ].name}'` );
 				}
 				return false;
 			}
