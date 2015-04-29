@@ -26,7 +26,7 @@ export default {
 		hooks = hooks.map( ( hook ) => {
 			let conflictingCoreHook = application.hooks.find( ( coreHook ) => coreHook.name === hook.name );
 
-			if ( typeof conflictingCoreHook !== 'undefined' && conflictingCoreHook > -1 ) {
+			if ( typeof conflictingCoreHook !== 'undefined' ) {
 				if ( isProjectMode === false ) {
 					this.log.warn( `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHook.name}'` );
 				}
@@ -37,7 +37,6 @@ export default {
 		} ).filter( ( item ) => item );
 
 		application.hooks = application.hooks.concat( hooks );
-
 		hooks.forEach( ( hook ) => hook.register( application ) );
 		return this;
 	}

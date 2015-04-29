@@ -1,8 +1,22 @@
 #!/usr/bin/env node
+/*eslint-disable no-sync */
+var fs = require( 'fs' );
 var path = require( 'path' );
-var shell = require( 'shelljs' );
 
-var executable = path.resolve( __dirname, '..', 'node_modules', '.bin', 'babel-node' );
-var target = path.resolve( __dirname, '_boilerplate-server' );
+var rc = require( 'rc' );
+var babel = require( 'babel-core' );
+var _ = require( 'lodash' );
 
-shell.exec( executable + ' --stage 0 --ignore /boilerplate-server\/node_modules/ ' + target + ' ' + process.argv.slice( 2 ).join( ' ' ) );
+var defaults = JSON.parse( fs.readFileSync( path.resolve( __dirname, '../.babelrc' ) ) );
+var config = _.merge( {}, defaults, rc( 'babel' ) );
+
+babel.register( {
+	'extensions': config.extensions,
+	'blacklist': config.blacklist,
+	'whitelist': config.whitelist,
+	'optional': config.optional,
+	'ignore': config.ignore,
+	'stage': config.stage
+} );
+
+require( './_boilerplate-server' );

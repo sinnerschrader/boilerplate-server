@@ -36,7 +36,7 @@
     "npm": ">= 2.5.1"
   },
   "dependencies": {
-    "babel": "^5.1.9",
+    "babel-core": "^5.1.13",
     "babel-eslint": "^3.0.1",
     "bluebird": "^2.9.24",
     "commander": "^2.8.0",
@@ -44,10 +44,10 @@
     "koa": "^0.19.1",
     "lodash": "^3.7.0",
     "minimist": "^1.1.1",
+    "rc": "^1.0.1",
     "require-all": "^1.0.0",
+    "require-json": "0.0.1",
     "resolve-path": "^1.2.2",
-    "shelljs": "^0.4.0",
-    "thunkify": "^2.1.2",
     "trek-router": "^0.1.9",
     "winston": "^1.0.0"
   }
