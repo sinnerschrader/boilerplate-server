@@ -7,6 +7,8 @@ var rc = require( 'rc' );
 var babel = require( 'babel-core' );
 var _ = require( 'lodash' );
 
+var minimist = require( 'minimist' );
+
 var defaults = JSON.parse( fs.readFileSync( path.resolve( __dirname, '../.babelrc' ) ) );
 var config = _.merge( {}, defaults, rc( 'babel' ) );
 
@@ -19,4 +21,15 @@ babel.register( {
 	'stage': config.stage
 } );
 
-require( './_boilerplate-server' );
+var start = require( './_boilerplate-server' );
+var args = minimist( process.argv.slice( 1 ) );
+
+start( args )
+	.then( function startCompleted ( application ) {
+		application.log.info( '[application]', 'Started server ...' );
+	} )
+	.catch( function startFailed ( err, application ) {
+		var log = application ? application.log || console : console;
+
+		log.trace( err );
+	} );

@@ -2,12 +2,9 @@
 /*eslint-disable no-process-env */
 import { resolve } from 'path';
 
-import minimist from 'minimist';
 import server from '../application';
 
-const args = minimist( process.argv.slice( 1 ) );
-
-export default async function start ( options = {} ) {
+async function start ( options = {} ) {
 	let augmented = Object.assign( {}, {
 			'cwd': process.cwd(),
 			'base': resolve( __dirname, '../' ),
@@ -17,12 +14,4 @@ export default async function start ( options = {} ) {
 	return await server( augmented );
 }
 
-start( args )
-	.then( function startCompleted ( application ) {
-		application.log.info( '[application]', 'Started server ...' );
-	} )
-	.catch( function startFailed ( err, application ) {
-		let log = application ? application.log || console : console;
-
-		log.trace( err );
-	} );
+export default start;
