@@ -62,7 +62,7 @@ export default {
 			this.log.warn( `No user configuration present at '${userPath}'` );
 		}
 
-		merge( application.configuration, core, user );
+		merge( application.configuration, core, user, application.runtime.api );
 		return this;
 	}
 };
