@@ -3,7 +3,7 @@
 import { resolve } from 'path';
 
 import minimist from 'minimist';
-import server from '../';
+import server from '../application';
 
 const args = minimist( process.argv.slice( 1 ) );
 

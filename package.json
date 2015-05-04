@@ -2,7 +2,7 @@
   "name": "boilerplate-server",
   "version": "0.2.7",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
-  "main": "application/",
+  "main": "binary/_boilerplate-server",
   "scripts": {
     "start": "node binary/boilerplate-server"
   },
