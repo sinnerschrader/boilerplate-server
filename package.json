@@ -39,6 +39,7 @@
     "npm": ">= 2.5.1"
   },
   "dependencies": {
+    "babel": "^5.2.15",
     "bluebird": "^2.9.24",
     "commander": "^2.8.0",
     "koa": "^0.19.1",
@@ -52,7 +53,6 @@
     "winston": "^1.0.0"
   },
   "devDependencies": {
-    "babel": "^5.2.15",
     "babel-eslint": "^3.0.1",
     "eslint": "^0.19.0"
   }
