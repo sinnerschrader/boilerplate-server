@@ -1,4 +1,9 @@
-const routes = {
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var routes = {
 	'enabled': {
 		'static': {
 			'options': {
@@ -8,4 +13,5 @@ const routes = {
 	}
 };
 
-export default routes;
+exports['default'] = routes;
+module.exports = exports['default'];

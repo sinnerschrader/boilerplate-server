@@ -1,43 +1,82 @@
-import { resolve } from 'path';
+'use strict';
 
-import load from '../load';
-import { exists } from '../../utilities/fs';
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-export default {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _path = require('path');
+
+var _load = require('../load');
+
+var _load2 = _interopRequireDefault(_load);
+
+var _utilitiesFs = require('../../utilities/fs');
+
+exports['default'] = {
 	'configurationKey': 'hooks',
 
-	'after': [ 'hooks:configure:start:after' ],
+	'after': ['hooks:configure:start:after'],
 
-	'hookDidConfigure': function userHooksDidConfigure ( application ) {
-		this.configuration.path = resolve( application.runtime.cwd, this.configuration.path );
+	'hookDidConfigure': function userHooksDidConfigure(application) {
+		this.configuration.path = _path.resolve(application.runtime.cwd, this.configuration.path);
 	},
 
-	'start': async function startUserHook ( application ) {
-		let coreHookPath = resolve( application.runtime.base, application.configuration.paths.hooks );
-		let isProjectMode = this.configuration.path === coreHookPath;
+	'start': function startUserHook(application) {
+		var coreHookPath, isProjectMode, hooks;
+		return regeneratorRuntime.async(function startUserHook$(context$1$0) {
+			var _this = this;
 
-		if ( await exists( this.configuration.path ) === false ) {
-			this.log.warn( `No user hooks found at ${coreHookPath}` );
-			return this;
-		}
+			while (1) switch (context$1$0.prev = context$1$0.next) {
+				case 0:
+					coreHookPath = _path.resolve(application.runtime.base, application.configuration.paths.hooks);
+					isProjectMode = this.configuration.path === coreHookPath;
+					context$1$0.next = 4;
+					return _utilitiesFs.exists(this.configuration.path);
 
-		let hooks = load( application, this.configuration.path, true );
+				case 4:
+					context$1$0.t2 = context$1$0.sent;
 
-		hooks = hooks.map( ( hook ) => {
-			let conflictingCoreHooks = application.hooks.filter( ( coreHook ) => coreHook.name === hook.name );
+					if (!(context$1$0.t2 === false)) {
+						context$1$0.next = 8;
+						break;
+					}
 
-			if ( conflictingCoreHooks.length > 0 ) {
-				if ( isProjectMode === false ) {
-					this.log.warn( `User hook '${hook.name}' conflicts with core hook '${conflictingCoreHooks[ 0 ].name}'` );
-				}
-				return false;
+					this.log.warn('No user hooks found at ' + coreHookPath);
+					return context$1$0.abrupt('return', this);
+
+				case 8:
+					hooks = _load2['default'](application, this.configuration.path, true);
+
+					hooks = hooks.map(function (hook) {
+						var conflictingCoreHooks = application.hooks.filter(function (coreHook) {
+							return coreHook.name === hook.name;
+						});
+
+						if (conflictingCoreHooks.length > 0) {
+							if (isProjectMode === false) {
+								_this.log.warn('User hook \'' + hook.name + '\' conflicts with core hook \'' + conflictingCoreHooks[0].name + '\'');
+							}
+							return false;
+						}
+
+						return hook;
+					}).filter(function (item) {
+						return item;
+					});
+
+					application.hooks = application.hooks.concat(hooks);
+					hooks.forEach(function (hook) {
+						return hook.register(application);
+					});
+					return context$1$0.abrupt('return', this);
+
+				case 13:
+				case 'end':
+					return context$1$0.stop();
 			}
-
-			return hook;
-		} ).filter( ( item ) => item );
-
-		application.hooks = application.hooks.concat( hooks );
-		hooks.forEach( ( hook ) => hook.register( application ) );
-		return this;
+		}, null, this);
 	}
 };
+module.exports = exports['default'];

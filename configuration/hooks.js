@@ -1,4 +1,9 @@
-export default {
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = {
 	'path': './application/hooks',
 	'enabled': {
 		'configuration': true,
@@ -9,3 +14,4 @@ export default {
 		'routes': true
 	}
 };
+module.exports = exports['default'];

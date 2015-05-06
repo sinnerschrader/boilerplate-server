@@ -1,66 +1,134 @@
-import { resolve, basename, extname } from 'path';
-import { createReadStream } from 'fs';
+'use strict';
 
-import resolvePath from 'resolve-path';
-import { stat } from '../utilities/fs';
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = staticRouteFactory;
 
-const notfound = [ 'ENOENT', 'ENAMETOOLONG', 'ENOTDIR' ];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-async function serve( application, root, configuration = {} ) {
-	if ( [ 'HEAD', 'GET' ].indexOf( this.method ) === -1 ) {
-		return;
-	}
+var _path = require('path');
 
-	let path = this.params[ 0 ].value;
+var _fs = require('fs');
 
-	path = path[ 0 ] === '/' ? path.slice( 1 ) : path;
+var _resolvePath = require('resolve-path');
 
-	try {
-		path = decodeURIComponent( path )
-	} catch ( err ) {
-		application.log.error( 'Could not decode path' );
-		application.log.debug( err );
-		this.throw( 'failed to decode', 400 );
-	}
+var _resolvePath2 = _interopRequireDefault(_resolvePath);
 
-	path = resolvePath( root, path );
+var _utilitiesFs = require('../utilities/fs');
 
-	if ( basename( path )[ 0 ] === '.' ) {
-		return;
-	}
+var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
 
-	let stats;
+function serve(application, root) {
+	var configuration = arguments[2] === undefined ? {} : arguments[2];
+	var path, stats;
+	return regeneratorRuntime.async(function serve$(context$1$0) {
+		while (1) switch (context$1$0.prev = context$1$0.next) {
+			case 0:
+				if (!(['HEAD', 'GET'].indexOf(this.method) === -1)) {
+					context$1$0.next = 2;
+					break;
+				}
 
-	try {
-		stats = await stat( path );
-		if ( stats.isDirectory() ) {
-			return;
+				return context$1$0.abrupt('return');
+
+			case 2:
+				path = this.params[0].value;
+
+				path = path[0] === '/' ? path.slice(1) : path;
+
+				try {
+					path = decodeURIComponent(path);
+				} catch (err) {
+					application.log.error('Could not decode path');
+					application.log.debug(err);
+					this['throw']('failed to decode', 400);
+				}
+
+				path = _resolvePath2['default'](root, path);
+
+				if (!(_path.basename(path)[0] === '.')) {
+					context$1$0.next = 8;
+					break;
+				}
+
+				return context$1$0.abrupt('return');
+
+			case 8:
+				stats = undefined;
+				context$1$0.prev = 9;
+				context$1$0.next = 12;
+				return _utilitiesFs.stat(path);
+
+			case 12:
+				stats = context$1$0.sent;
+
+				if (!stats.isDirectory()) {
+					context$1$0.next = 15;
+					break;
+				}
+
+				return context$1$0.abrupt('return');
+
+			case 15:
+				context$1$0.next = 23;
+				break;
+
+			case 17:
+				context$1$0.prev = 17;
+				context$1$0.t3 = context$1$0['catch'](9);
+
+				if (!(notfound.indexOf(context$1$0.t3.code) > -1)) {
+					context$1$0.next = 21;
+					break;
+				}
+
+				return context$1$0.abrupt('return');
+
+			case 21:
+				context$1$0.t3.status = 500;
+				throw context$1$0.t3;
+
+			case 23:
+
+				this.set('Last-Modified', stats.mtime.toUTCString());
+				this.set('Content-Length', stats.size);
+				this.set('Cache-Control', 'max-age=' + (configuration.options.maxage | 0));
+
+				this.type = _path.extname(path);
+				this.body = _fs.createReadStream(path);
+				return context$1$0.abrupt('return');
+
+			case 29:
+			case 'end':
+				return context$1$0.stop();
 		}
-	} catch ( err ) {
-		if ( notfound.indexOf( err.code ) > -1 ) {
-			return;
-		}
-		err.status = 500;
-		throw err;
-	}
-
-	this.set( 'Last-Modified', stats.mtime.toUTCString() );
-	this.set( 'Content-Length', stats.size );
-	this.set( 'Cache-Control', `max-age=${configuration.options.maxage | 0}` );
-
-	this.type = extname( path );
-	this.body = createReadStream( path );
-	return;
+	}, null, this, [[9, 17]]);
 }
 
-export default function staticRouteFactory ( application, configuration ) {
-	let root = resolve( application.runtime.base, application.configuration.paths.static );
-	let userStaticPath = resolve( application.runtime.cwd, configuration.options.root );
+function staticRouteFactory(application, configuration) {
+	var root = _path.resolve(application.runtime.base, application.configuration.paths['static']);
+	var userStaticPath = _path.resolve(application.runtime.cwd, configuration.options.root);
 
-	return async function staticRoute ( ) {
-		let statist = serve.bind( this );
+	return function staticRoute() {
+		var statist;
+		return regeneratorRuntime.async(function staticRoute$(context$2$0) {
+			while (1) switch (context$2$0.prev = context$2$0.next) {
+				case 0:
+					statist = serve.bind(this);
+					context$2$0.next = 3;
+					return statist(application, root, configuration);
 
-		await statist( application, root, configuration );
-		await statist( application, userStaticPath, configuration );
+				case 3:
+					context$2$0.next = 5;
+					return statist(application, userStaticPath, configuration);
+
+				case 5:
+				case 'end':
+					return context$2$0.stop();
+			}
+		}, null, this);
 	};
 }
+
+module.exports = exports['default'];

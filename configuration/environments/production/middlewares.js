@@ -1,4 +1,9 @@
-const middlewares = {
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var middlewares = {
 	'enabled': {
 		'environment': false,
 		'response-time': false,
@@ -6,4 +11,5 @@ const middlewares = {
 	}
 };
 
-export default middlewares;
+exports['default'] = middlewares;
+module.exports = exports['default'];

@@ -1,6 +1,11 @@
-export default {
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = {
 	'level': 'info',
-	'transports': [ 'console', 'file' ],
+	'transports': ['console', 'file'],
 	'options': {
 		'console': {
 			'colorize': false,
@@ -14,3 +19,4 @@ export default {
 		}
 	}
 };
+module.exports = exports['default'];

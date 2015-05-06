@@ -1,72 +1,106 @@
-import { resolve } from 'path';
+'use strict';
 
-import koa from 'koa';
-import requireAll from 'require-all';
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-import { exists } from '../../utilities/fs';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-export default {
-	'after': [ 'hooks:engine:start:after' ],
+var _path = require('path');
 
-	start: async function startMiddlewareHook ( application ) {
-		// Load physical core middlewares
-		let coreMiddlewares = requireAll( resolve( application.runtime.base, application.configuration.paths.middlewares ) );
+var _koa = require('koa');
 
-		// Load physical user middlewares
-		let userMiddlewaresPath = resolve( application.runtime.cwd, this.configuration.path );
-		let userMiddlewares = {};
+var _koa2 = _interopRequireDefault(_koa);
 
-		if ( await exists( userMiddlewaresPath ) ) {
-			userMiddlewares = requireAll( userMiddlewaresPath );
-		}
+var _requireAll = require('require-all');
 
-		// Load module middlewares
-		let moduleMiddlewares = Object.keys( this.configuration.enabled )
-			.filter( ( middlewareName ) => typeof this.configuration.enabled[ middlewareName ] === 'string' )
-			.reduce( ( result, middlewareName ) => {
-				let middlewareModuleName = this.configuration.enabled[ middlewareName ];
+var _requireAll2 = _interopRequireDefault(_requireAll);
 
-				try {
-					result[ middlewareName ] = require( middlewareModuleName );
-					this.log.debug( `Required module middleware '${middlewareName}' from module '${middlewareModuleName}'` );
-				} catch ( err ) {
-					this.log.warn( `Could not require module middleware '${middlewareName}' from module '${middlewareModuleName}'` );
-					this.log.debug( err );
-				}
+var _utilitiesFs = require('../../utilities/fs');
 
-				return result;
-			}, {} );
+exports['default'] = {
+	'after': ['hooks:engine:start:after'],
 
-		let middlewares = Object.assign( {}, coreMiddlewares, userMiddlewares, moduleMiddlewares );
+	start: function startMiddlewareHook(application) {
+		var coreMiddlewares, userMiddlewaresPath, userMiddlewares, moduleMiddlewares, middlewares;
+		return regeneratorRuntime.async(function startMiddlewareHook$(context$1$0) {
+			var _this = this;
 
-		// Check if required modules are functions, bind to engine
-		Object.keys( middlewares ).forEach( ( middlewareName ) => {
-			let middlewareFactoryFunction = middlewares[ middlewareName ];
-			let middlewareConfig = this.configuration.enabled[ middlewareName ];
+			while (1) switch (context$1$0.prev = context$1$0.next) {
+				case 0:
+					coreMiddlewares = _requireAll2['default'](_path.resolve(application.runtime.base, application.configuration.paths.middlewares));
+					userMiddlewaresPath = _path.resolve(application.runtime.cwd, this.configuration.path);
+					userMiddlewares = {};
+					context$1$0.next = 5;
+					return _utilitiesFs.exists(userMiddlewaresPath);
 
-			if ( typeof middlewareFactoryFunction !== 'function' ) {
-				this.log.warn( `'${middlewareName}' is no valid middleware factory` );
-				return;
+				case 5:
+					if (!context$1$0.sent) {
+						context$1$0.next = 7;
+						break;
+					}
+
+					userMiddlewares = _requireAll2['default'](userMiddlewaresPath);
+
+				case 7:
+					moduleMiddlewares = Object.keys(this.configuration.enabled).filter(function (middlewareName) {
+						return typeof _this.configuration.enabled[middlewareName] === 'string';
+					}).reduce(function (result, middlewareName) {
+						var middlewareModuleName = _this.configuration.enabled[middlewareName];
+
+						try {
+							result[middlewareName] = require(middlewareModuleName);
+							_this.log.debug('Required module middleware \'' + middlewareName + '\' from module \'' + middlewareModuleName + '\'');
+						} catch (err) {
+							_this.log.warn('Could not require module middleware \'' + middlewareName + '\' from module \'' + middlewareModuleName + '\'');
+							_this.log.debug(err);
+						}
+
+						return result;
+					}, {});
+					middlewares = Object.assign({}, coreMiddlewares, userMiddlewares, moduleMiddlewares);
+
+					// Check if required modules are functions, bind to engine
+					Object.keys(middlewares).forEach(function (middlewareName) {
+						var middlewareFactoryFunction = middlewares[middlewareName];
+						var middlewareConfig = _this.configuration.enabled[middlewareName];
+
+						if (typeof middlewareFactoryFunction !== 'function') {
+							_this.log.warn('\'' + middlewareName + '\' is no valid middleware factory');
+							return;
+						}
+
+						if (middlewareConfig === false) {
+							_this.log.debug('\'' + middlewareName + '\' is explicitly disabled.');
+							return;
+						}
+
+						if (typeof middlewareConfig === 'undefined') {
+							_this.log.debug('\'' + middlewareName + '\' is not configured, will not mount.');
+							return;
+						}
+
+						try {
+							application.engine.use(middlewareFactoryFunction(application, middlewareConfig));
+						} catch (err) {
+							_this.log.error('Binding \'' + middlewareName + '\' to engine failed');
+							_this.log.debug(err);
+						}
+					});
+
+					return context$1$0.abrupt('return', application);
+
+				case 11:
+				case 'end':
+					return context$1$0.stop();
 			}
-
-			if ( middlewareConfig === false ) {
-				this.log.debug( `'${middlewareName}' is explicitly disabled.` );
-				return;
-			}
-
-			if ( typeof middlewareConfig === 'undefined' ) {
-				this.log.debug( `'${middlewareName}' is not configured, will not mount.` );
-				return;
-			}
-
-			try {
-				application.engine.use( middlewareFactoryFunction( application, middlewareConfig ) );
-			} catch ( err ) {
-				this.log.error( `Binding '${middlewareName}' to engine failed` );
-				this.log.debug( err );
-			}
-		} );
-
-		return application;
+		}, null, this);
 	}
 };
+module.exports = exports['default'];
+
+// Load physical core middlewares
+
+// Load physical user middlewares
+
+// Load module middlewares

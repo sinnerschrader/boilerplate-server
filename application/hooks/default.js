@@ -1,25 +1,37 @@
-const lifecycle = {
-	'configure': [ 'hookWillConfigure', 'hookDidConfigure' ],
-	'start': [ 'hookWillStart', 'hookDidStart' ]
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var _bind = Function.prototype.bind;
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var lifecycle = {
+	'configure': ['hookWillConfigure', 'hookDidConfigure'],
+	'start': ['hookWillStart', 'hookDidStart']
 };
 
-class Hook {
-	wait = true;
-	disabled = false;
+var Hook = (function () {
+	function Hook(application, name, extender) {
+		var _this = this;
 
-	after = [ 'application:after' ];
-	defaults = {};
-	configuration = {};
+		_classCallCheck(this, Hook);
 
-	stageName = 'init';
+		this.wait = true;
+		this.disabled = false;
+		this.after = ['application:after'];
+		this.defaults = {};
+		this.configuration = {};
+		this.stageName = 'init';
+		this.stages = {
+			'register': false,
+			'configure': false,
+			'start': false
+		};
 
-	stages = {
-		'register': false,
-		'configure': false,
-		'start': false
-	};
-
-	constructor ( application, name, extender ) {
 		this.name = name;
 		this.configurationKey = extender.configurationKey || name;
 
@@ -41,116 +53,276 @@ class Hook {
 		this.hookDidRegister = extender.hookDidRegister || this.hookDidRegister;
 
 		this.log = {
-			'error': ( ...args ) => { application.log.error( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'warn': ( ...args ) => { application.log.warn( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'info': ( ...args ) => { application.log.info( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'debug': ( ...args ) => { application.log.debug( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'silly': ( ...args ) => { application.log.silly( `[hook:${this.name}:${this.stageName}]`, ...args ); }
+			'error': function error() {
+				var _application$log;
+
+				for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+					args[_key] = arguments[_key];
+				}
+
+				(_application$log = application.log).error.apply(_application$log, ['[hook:' + _this.name + ':' + _this.stageName + ']'].concat(args));
+			},
+			'warn': function warn() {
+				var _application$log2;
+
+				for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+					args[_key2] = arguments[_key2];
+				}
+
+				(_application$log2 = application.log).warn.apply(_application$log2, ['[hook:' + _this.name + ':' + _this.stageName + ']'].concat(args));
+			},
+			'info': function info() {
+				var _application$log3;
+
+				for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+					args[_key3] = arguments[_key3];
+				}
+
+				(_application$log3 = application.log).info.apply(_application$log3, ['[hook:' + _this.name + ':' + _this.stageName + ']'].concat(args));
+			},
+			'debug': function debug() {
+				var _application$log4;
+
+				for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+					args[_key4] = arguments[_key4];
+				}
+
+				(_application$log4 = application.log).debug.apply(_application$log4, ['[hook:' + _this.name + ':' + _this.stageName + ']'].concat(args));
+			},
+			'silly': function silly() {
+				var _application$log5;
+
+				for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+					args[_key5] = arguments[_key5];
+				}
+
+				(_application$log5 = application.log).silly.apply(_application$log5, ['[hook:' + _this.name + ':' + _this.stageName + ']'].concat(args));
+			}
 		};
 	}
 
-	register ( application ) {
-		if ( this.stages.register ) {
-			this.log.warn( `Hook '${this.name}' already registered.` );
+	_createClass(Hook, [{
+		key: 'register',
+		value: function register(application) {
+			var _this2 = this;
+
+			if (this.stages.register) {
+				this.log.warn('Hook \'' + this.name + '\' already registered.');
+				return this;
+			}
+
+			this.hookWillRegister(application);
+			this.stages.register = true;
+			this.stageName = 'register';
+
+			this.log.silly('Registering hook \'' + this.name + '\'');
+
+			this.after.forEach(function (eventName) {
+				application.on(eventName, (function callee$3$0() {
+					return regeneratorRuntime.async(function callee$3$0$(context$4$0) {
+						while (1) switch (context$4$0.prev = context$4$0.next) {
+							case 0:
+								if (!(application.configuration && application.configuration.hooks.enabled[this.name] === false)) {
+									context$4$0.next = 8;
+									break;
+								}
+
+								this.log.debug('Hook \'' + this.name + '\' is disabled');
+								this.disabled = true;
+
+								application.emit('hooks:' + this.name + ':configure:before');
+								application.emit('hooks:configure:before', this.name);
+								application.emit('hooks:' + this.name + ':start:after');
+								application.emit('hooks:start:after', this.name);
+								return context$4$0.abrupt('return', this);
+
+							case 8:
+								context$4$0.next = 10;
+								return this.stage('configure', application);
+
+							case 10:
+								context$4$0.next = 12;
+								return this.stage('start', application);
+
+							case 12:
+							case 'end':
+								return context$4$0.stop();
+						}
+					}, null, this);
+				}).bind(_this2));
+			});
+
+			this.hookDidRegister(application);
 			return this;
 		}
+	}, {
+		key: 'hookWillRegister',
+		value: function hookWillRegister(application) {
+			return this;
+		}
+	}, {
+		key: 'hookDidRegister',
+		value: function hookDidRegister(application) {
+			return this;
+		}
+	}, {
+		key: 'stage',
+		value: function stage(stageName, application) {
+			return regeneratorRuntime.async(function stage$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						if (!this.stages[stageName]) {
+							context$2$0.next = 2;
+							break;
+						}
 
-		this.hookWillRegister( application );
-		this.stages.register = true;
-		this.stageName = 'register';
+						return context$2$0.abrupt('return', this);
 
-		this.log.silly( `Registering hook '${this.name}'` );
+					case 2:
 
-		this.after.forEach( ( eventName ) => {
-			application.on( eventName, async function() {
+						this.stageName = stageName;
+						this.log.silly('Running stage \'' + stageName + '\' on hook \'' + this.name + '\'');
+						application.emit('hooks:' + this.name + ':' + stageName + ':before');
+						application.emit('hooks:' + stageName + ':before', this.name);
 
-				if ( application.configuration && application.configuration.hooks.enabled[ this.name ] === false ) {
-					this.log.debug( `Hook '${this.name}' is disabled` );
-					this.disabled = true;
+						context$2$0.prev = 6;
+						context$2$0.next = 9;
+						return this[lifecycle[stageName][0]](application);
 
-					application.emit( `hooks:${this.name}:configure:before` );
-					application.emit( `hooks:configure:before`, this.name );
-					application.emit( `hooks:${this.name}:start:after` );
-					application.emit( `hooks:start:after`, this.name );
-					return this;
+					case 9:
+						context$2$0.next = 11;
+						return this[stageName](application);
+
+					case 11:
+						this.stages[stageName] = true;
+						context$2$0.next = 19;
+						break;
+
+					case 14:
+						context$2$0.prev = 14;
+						context$2$0.t1 = context$2$0['catch'](6);
+
+						this.log.error('An error ocurred on stage ' + stageName + ' of hook \'' + this.name + '\'');
+						this.log.error(context$2$0.t1);
+
+						throw new Error(context$2$0.t1);
+
+					case 19:
+
+						this.log.debug('Ran stage \'' + stageName + '\' on hook \'' + this.name + '\'');
+						context$2$0.next = 22;
+						return this[lifecycle[stageName][1]](application);
+
+					case 22:
+
+						application.emit('hooks:' + this.name + ':' + stageName + ':after');
+						application.emit('hooks:' + stageName + ':after', this.name);
+
+						return context$2$0.abrupt('return', this);
+
+					case 25:
+					case 'end':
+						return context$2$0.stop();
 				}
-
-				await this.stage( 'configure', application );
-				await this.stage( 'start', application );
-			}.bind( this ) );
-		} );
-
-		this.hookDidRegister( application );
-		return this;
-	}
-
-	hookWillRegister ( application ) {
-		return this;
-	}
-
-	hookDidRegister ( application ) {
-		return this;
-	}
-
-	async stage ( stageName, application ) {
-		if ( this.stages[ stageName ] ) {
-			return this;
+			}, null, this, [[6, 14]]);
 		}
+	}, {
+		key: 'configure',
+		value: function configure(application) {
+			return regeneratorRuntime.async(function configure$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						this.configuration = Object.assign(this.configuration, this.defaults, application.configuration[this.configurationKey]);
+						return context$2$0.abrupt('return', this);
 
-		this.stageName = stageName;
-		this.log.silly( `Running stage '${stageName}' on hook '${this.name}'` );
-		application.emit( `hooks:${this.name}:${stageName}:before` );
-		application.emit( `hooks:${stageName}:before`, this.name );
-
-		try {
-			await this[ lifecycle[ stageName ][0] ] ( application );
-			await this[ stageName ]( application );
-			this.stages[ stageName ] = true;
-		} catch ( e ) {
-			this.log.error( `An error ocurred on stage ${stageName} of hook '${this.name}'` );
-			this.log.error( e );
-
-			throw new Error( e );
+					case 2:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
 		}
+	}, {
+		key: 'hookWillConfigure',
+		value: function hookWillConfigure(application) {
+			return regeneratorRuntime.async(function hookWillConfigure$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						return context$2$0.abrupt('return', this);
 
-		this.log.debug( `Ran stage '${stageName}' on hook '${this.name}'` );
-		await this[ lifecycle[ stageName ][1] ] ( application );
+					case 1:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
+		}
+	}, {
+		key: 'hookDidConfigure',
+		value: function hookDidConfigure(application) {
+			return regeneratorRuntime.async(function hookDidConfigure$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						return context$2$0.abrupt('return', this);
 
-		application.emit( `hooks:${this.name}:${stageName}:after` );
-		application.emit( `hooks:${stageName}:after`, this.name );
+					case 1:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
+		}
+	}, {
+		key: 'start',
+		value: function start(application) {
+			return regeneratorRuntime.async(function start$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						return context$2$0.abrupt('return', this);
 
-		return this;
+					case 1:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
+		}
+	}, {
+		key: 'hookWillStart',
+		value: function hookWillStart(application) {
+			return regeneratorRuntime.async(function hookWillStart$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						return context$2$0.abrupt('return', this);
+
+					case 1:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
+		}
+	}, {
+		key: 'hookDidStart',
+		value: function hookDidStart(application) {
+			return regeneratorRuntime.async(function hookDidStart$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						return context$2$0.abrupt('return', this);
+
+					case 1:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
+		}
+	}]);
+
+	return Hook;
+})();
+
+function hookFactory() {
+	for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+		args[_key6] = arguments[_key6];
 	}
 
-	async configure ( application ) {
-		this.configuration = Object.assign( this.configuration, this.defaults, application.configuration[ this.configurationKey ] );
-		return this;
-	}
-
-	async hookWillConfigure ( application ) {
-		return this;
-	}
-
-	async hookDidConfigure ( application ) {
-		return this;
-	}
-
-	async start ( application ) {
-		return this;
-	}
-
-	async hookWillStart ( application ) {
-		return this;
-	}
-
-	async hookDidStart ( application ) {
-		return this;
-	}
+	return new (_bind.apply(Hook, [null].concat(args)))();
 }
 
-function hookFactory ( ...args ) {
-	return new Hook( ...args );
-}
-
-export default hookFactory;
-export { Hook as Hook };
+exports['default'] = hookFactory;
+exports.Hook = Hook;

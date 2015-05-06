@@ -1,7 +1,4 @@
 {
 	"stage": 0,
-	"ignore": [
-		"+(node_modules|!boilerplate-server)",
-		"boilerplate-server/node_modules"
-	]
+	"optional": ["regenerator"]
 }

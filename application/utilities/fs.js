@@ -1,13 +1,21 @@
-import { exists, readFile, writeFile, stat } from 'fs';
-import { promisify } from 'bluebird';
+'use strict';
 
-export default {
-	'exists': function asyncExists ( path ) {
-		return new Promise( function resolveExists ( resolve ) {
-			exists( path, resolve );
-		} );
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _fs = require('fs');
+
+var _bluebird = require('bluebird');
+
+exports['default'] = {
+	'exists': function asyncExists(path) {
+		return new Promise(function resolveExists(resolve) {
+			_fs.exists(path, resolve);
+		});
 	},
-	'readFile': promisify( readFile ),
-	'writeFile': promisify( writeFile ),
-	'stat': promisify( stat )
+	'readFile': _bluebird.promisify(_fs.readFile),
+	'writeFile': _bluebird.promisify(_fs.writeFile),
+	'stat': _bluebird.promisify(_fs.stat)
 };
+module.exports = exports['default'];

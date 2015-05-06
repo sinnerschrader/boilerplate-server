@@ -1,32 +1,46 @@
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 /*
  * Load, schedule and run the default hooks
  */
 
-import { resolve } from 'path';
-import load from './load';
+var _path = require('path');
 
-function createHooks ( application ) {
-	application.hooks = load( application, resolve( application.runtime.base, 'application', 'hooks' ) );
+var _load = require('./load');
 
-	application.hooks.forEach( function registerCoreHook ( hook ) {
-		hook.register( application );
-	} );
+var _load2 = _interopRequireDefault(_load);
 
-	application.emit( 'application:before' );
+function createHooks(application) {
+	application.hooks = _load2['default'](application, _path.resolve(application.runtime.base, 'application', 'hooks'));
 
-	return new Promise( function resolveHooks ( fulfill ) {
-		application.on( 'hooks:start:after', function onAfterHookStart () {
-			var remaining = application.hooks.filter( ( hook ) => hook.wait && hook.stages.start === false && hook.disabled === false );
+	application.hooks.forEach(function registerCoreHook(hook) {
+		hook.register(application);
+	});
 
-			if ( remaining.length === 0 ) {
-				application.emit( 'application:after' );
-				application.log.debug( '[application:hooks]', 'All core hooks executed' );
+	application.emit('application:before');
 
-				application.removeListener( 'hooks:start:after', onAfterHookStart );
-				fulfill( application );
+	return new Promise(function resolveHooks(fulfill) {
+		application.on('hooks:start:after', function onAfterHookStart() {
+			var remaining = application.hooks.filter(function (hook) {
+				return hook.wait && hook.stages.start === false && hook.disabled === false;
+			});
+
+			if (remaining.length === 0) {
+				application.emit('application:after');
+				application.log.debug('[application:hooks]', 'All core hooks executed');
+
+				application.removeListener('hooks:start:after', onAfterHookStart);
+				fulfill(application);
 			}
-		} );
-	} );
+		});
+	});
 }
 
-export default createHooks;
+exports['default'] = createHooks;
+module.exports = exports['default'];
