@@ -1,1 +1,1 @@
-# duo-server
+# boilerplate-server
