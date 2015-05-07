@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.sinnerschrader.com:team-ux/boilerplate-server.git"
+    "url": "git@git.sinnerschrader.com:patternplate/boilerplate-server.git"
   },
   "keywords": [
     "koa",
