@@ -31,13 +31,13 @@ function engineBlueprint() {
 			fuel.experimental = true;
 
 			this.env = fuel.env;
-			nameSpace.set(this, { application: application, fuel: fuel, http: http });
+			nameSpace.set(this, { application: application, fuel: fuel, http: http, 'mounts': {} });
 		}
 
 		_createClass(Engine, [{
 			key: 'start',
 			value: function start(host, port) {
-				var _nameSpace$get, fuel, application, server, http;
+				var _nameSpace$get, fuel, application, http, server;
 
 				return regeneratorRuntime.async(function start$(context$3$0) {
 					while (1) switch (context$3$0.prev = context$3$0.next) {
@@ -45,45 +45,44 @@ function engineBlueprint() {
 							_nameSpace$get = nameSpace.get(this);
 							fuel = _nameSpace$get.fuel;
 							application = _nameSpace$get.application;
+							http = _nameSpace$get.http;
 							server = application.configuration.server;
-							context$3$0.next = 6;
+							context$3$0.next = 7;
 							return _libraryUtilitiesPorts2['default'].test(port, host);
 
-						case 6:
-							context$3$0.t184 = context$3$0.sent;
+						case 7:
+							context$3$0.t117 = context$3$0.sent;
 
-							if (!(context$3$0.t184 !== true)) {
-								context$3$0.next = 14;
+							if (!(context$3$0.t117 !== true)) {
+								context$3$0.next = 15;
 								break;
 							}
 
 							if (!(server.autoPort !== true)) {
-								context$3$0.next = 10;
+								context$3$0.next = 11;
 								break;
 							}
 
 							throw new Error('Port ' + port + ' is taken and server.autPort is disabled, could not start server.');
 
-						case 10:
+						case 11:
 
 							application.log.warn('[application] Port ' + port + ' is taken, trying to obtain next open port... ');
-							context$3$0.next = 13;
+							context$3$0.next = 14;
 							return _libraryUtilitiesPorts2['default'].find(server.port + 1, server.port + 51, server.host);
 
-						case 13:
+						case 14:
 							server.port = context$3$0.sent;
 
-						case 14:
+						case 15:
 
 							application.log.info('[application]', 'Starting server at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
 
-							context$3$0.next = 17;
+							context$3$0.next = 18;
 							return fuel.listen(server.port, server.host);
 
-						case 17:
+						case 18:
 							http = context$3$0.sent;
-
-							namespace.set(this, { http: http });
 							return context$3$0.abrupt('return', application);
 
 						case 20:
@@ -124,13 +123,56 @@ function engineBlueprint() {
 			}
 		}, {
 			key: 'mount',
-			value: function mount() {
-				application.log.warn('Mounting not supported yet.');
-			}
-		}, {
-			key: 'unmount',
-			value: function unmount() {
-				application.log.warn('Unmounting not supported yet.');
+			value: function mount(mountable) {
+				var path = arguments[1] === undefined ? '/' : arguments[1];
+
+				var _nameSpace$get3 = nameSpace.get(this);
+
+				var fuel = _nameSpace$get3.fuel;
+				var application = _nameSpace$get3.application;
+
+				var depth = path.split('/').length;
+
+				if (mountable instanceof application.constructor !== true) {
+					throw new TypeError('mountable is no BoilerPlateServer');
+				}
+
+				application.router.add('GET', path + '/*', function callee$3$0(next) {
+					var fragments, path, lookup, fn, args;
+					return regeneratorRuntime.async(function callee$3$0$(context$4$0) {
+						while (1) switch (context$4$0.prev = context$4$0.next) {
+							case 0:
+								fragments = this.path.split('/').filter(function (item, index) {
+									return index >= depth;
+								});
+								path = fragments.length > 0 ? fragments.join('/') : '/';
+								lookup = mountable.router.find('GET', path);
+								fn = lookup[0];
+								args = lookup[1];
+
+								if (!(typeof fn === 'function')) {
+									context$4$0.next = 12;
+									break;
+								}
+
+								fn = fn.bind(this);
+								this.path = path;
+								this.params = args;
+								context$4$0.next = 11;
+								return fn(next);
+
+							case 11:
+								return context$4$0.abrupt('return', context$4$0.sent);
+
+							case 12:
+							case 'end':
+								return context$4$0.stop();
+						}
+					}, null, this);
+				});
+
+				application.log.info('[application:subapplication] Mounting ' + mountable.name + ' on ' + path);
+				return application;
 			}
 		}, {
 			key: 'use',
@@ -139,11 +181,13 @@ function engineBlueprint() {
 					args[_key] = arguments[_key];
 				}
 
-				var _nameSpace$get3 = nameSpace.get(this);
+				var _nameSpace$get4 = nameSpace.get(this);
 
-				var fuel = _nameSpace$get3.fuel;
+				var fuel = _nameSpace$get4.fuel;
+				var application = _nameSpace$get4.application;
 
-				return fuel.use.apply(fuel, args);
+				fuel.use.apply(fuel, args);
+				return application;
 			}
 		}]);
 

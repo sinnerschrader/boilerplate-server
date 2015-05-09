@@ -36,9 +36,9 @@ exports['default'] = {
 					return _libraryUtilitiesFs.exists(this.configuration.path);
 
 				case 4:
-					context$1$0.t2 = context$1$0.sent;
+					context$1$0.t3 = context$1$0.sent;
 
-					if (!(context$1$0.t2 === false)) {
+					if (!(context$1$0.t3 === false)) {
 						context$1$0.next = 8;
 						break;
 					}

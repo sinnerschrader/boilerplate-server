@@ -76,9 +76,9 @@ function serve(application, root) {
 
 			case 17:
 				context$1$0.prev = 17;
-				context$1$0.t3 = context$1$0['catch'](9);
+				context$1$0.t4 = context$1$0['catch'](9);
 
-				if (!(notfound.indexOf(context$1$0.t3.code) > -1)) {
+				if (!(notfound.indexOf(context$1$0.t4.code) > -1)) {
 					context$1$0.next = 21;
 					break;
 				}
@@ -86,8 +86,8 @@ function serve(application, root) {
 				return context$1$0.abrupt('return');
 
 			case 21:
-				context$1$0.t3.status = 500;
-				throw context$1$0.t3;
+				context$1$0.t4.status = 500;
+				throw context$1$0.t4;
 
 			case 23:
 

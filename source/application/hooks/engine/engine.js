@@ -1,4 +1,5 @@
 import koa from 'koa';
+
 import ports from '../../../library/utilities/ports';
 
 function engineBlueprint () {
@@ -11,11 +12,11 @@ function engineBlueprint () {
 			fuel.experimental = true;
 
 			this.env = fuel.env;
-			nameSpace.set( this, { application, fuel, http } );
+			nameSpace.set( this, { application, fuel, http, 'mounts': {} } );
 		}
 
 		async start ( host, port ) {
-			let { fuel, application } = nameSpace.get( this );
+			let { fuel, application, http } = nameSpace.get( this );
 			let server = application.configuration.server;
 
 			if ( await ports.test( port, host ) !== true ) {
@@ -29,8 +30,7 @@ function engineBlueprint () {
 
 			application.log.info( '[application]', `Starting server at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
 
-			let http = await fuel.listen( server.port, server.host );
-			namespace.set( this, { http } );
+			http = await fuel.listen( server.port, server.host );
 			return application;
 		}
 
@@ -47,18 +47,38 @@ function engineBlueprint () {
 			});
 		}
 
-		mount () {
-			application.log.warn('Mounting not supported yet.');
-		}
+		mount ( mountable, path = '/' ) {
+			let { fuel, application } = nameSpace.get(this);
+			let depth = path.split('/').length;
 
-		unmount () {
-			application.log.warn('Unmounting not supported yet.');
+			if ( (mountable instanceof application.constructor) !== true ) {
+				throw new TypeError('mountable is no BoilerPlateServer');
+			}
+
+			application.router.add('GET', path + '/*', async function( next ) {
+				let fragments = this.path.split('/').filter((item, index) => index >= depth );
+				let path = fragments.length > 0 ? fragments.join('/') : '/';
+				let lookup = mountable.router.find('GET', path);
+
+				let fn = lookup[ 0 ];
+				let args = lookup[ 1 ];
+
+				if ( typeof fn === 'function' ) {
+					fn = fn.bind( this );
+					this.path = path;
+					this.params = args;
+					return await fn( next );
+				}
+			});
+
+			application.log.info( `[application:subapplication] Mounting ${mountable.name} on ${path}` );
+			return application;
 		}
 
 		use (...args) {
-			let { fuel } = nameSpace.get(this);
-
-			return fuel.use(...args);
+			let { fuel, application } = nameSpace.get(this);
+			fuel.use(...args);
+			return application;
 		}
 	};
 }

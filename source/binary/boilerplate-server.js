@@ -11,13 +11,15 @@ async function start ( options = {} ) {
 	let augmented = Object.assign( {}, {
 			'cwd': process.cwd(),
 			'base': resolve( __dirname, '../' ),
-			'env': process.env.NODE_ENV || 'development'
+			'env': process.env.NODE_ENV || 'development',
 		}, options, { 'api': options } );
 
 	let application;
 
 	try {
 		application = await boilerplate( augmented );
+		let test = await boilerplate( Object.assign( {}, augmented, { 'name': 'test' } ) );
+		application.mount( test, '/test' );
 	} catch ( error ) {
 		let log = application ? application.log || console : console;
 		log.trace( error );

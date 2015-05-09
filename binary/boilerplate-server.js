@@ -19,7 +19,7 @@ var _2 = _interopRequireDefault(_);
 
 function start() {
 	var options = arguments[0] === undefined ? {} : arguments[0];
-	var augmented, application, log, stop;
+	var augmented, application, test, log, stop;
 	return regeneratorRuntime.async(function start$(context$1$0) {
 		while (1) switch (context$1$0.prev = context$1$0.next) {
 			case 0:
@@ -38,9 +38,9 @@ function start() {
 
 							case 6:
 								context$2$0.prev = 6;
-								context$2$0.t144 = context$2$0['catch'](0);
+								context$2$0.t112 = context$2$0['catch'](0);
 
-								application.log.error(context$2$0.t144);
+								application.log.error(context$2$0.t112);
 								process.exit(1);
 
 							case 10:
@@ -53,8 +53,7 @@ function start() {
 				augmented = Object.assign({}, {
 					'cwd': process.cwd(),
 					'base': _path.resolve(__dirname, '../'),
-					'env': process.env.NODE_ENV || 'development'
-				}, options, { 'api': options });
+					'env': process.env.NODE_ENV || 'development' }, options, { 'api': options });
 				application = undefined;
 				context$1$0.prev = 3;
 				context$1$0.next = 6;
@@ -62,32 +61,39 @@ function start() {
 
 			case 6:
 				application = context$1$0.sent;
-				context$1$0.next = 14;
-				break;
+				context$1$0.next = 9;
+				return _2['default'](Object.assign({}, augmented, { 'name': 'test' }));
 
 			case 9:
-				context$1$0.prev = 9;
-				context$1$0.t145 = context$1$0['catch'](3);
+				test = context$1$0.sent;
+
+				application.mount(test, '/test');
+				context$1$0.next = 18;
+				break;
+
+			case 13:
+				context$1$0.prev = 13;
+				context$1$0.t113 = context$1$0['catch'](3);
 				log = application ? application.log || console : console;
 
-				log.trace(context$1$0.t145);
-				throw new Error(context$1$0.t145);
-
-			case 14:
-				context$1$0.prev = 14;
-
-				application.start();
-				context$1$0.next = 22;
-				break;
+				log.trace(context$1$0.t113);
+				throw new Error(context$1$0.t113);
 
 			case 18:
 				context$1$0.prev = 18;
-				context$1$0.t146 = context$1$0['catch'](14);
 
-				application.log.error(context$1$0.t146);
-				throw new Error(context$1$0.t146);
+				application.start();
+				context$1$0.next = 26;
+				break;
 
 			case 22:
+				context$1$0.prev = 22;
+				context$1$0.t114 = context$1$0['catch'](18);
+
+				application.log.error(context$1$0.t114);
+				throw new Error(context$1$0.t114);
+
+			case 26:
 
 				process.on('SIGINT', function () {
 					return stop('SIGINT');
@@ -105,11 +111,11 @@ function start() {
 					return stop('SIGTERM');
 				});
 
-			case 27:
+			case 31:
 			case 'end':
 				return context$1$0.stop();
 		}
-	}, null, this, [[3, 9], [14, 18]]);
+	}, null, this, [[3, 13], [18, 22]]);
 }
 
 start(_minimist2['default'](process.argv.slice(1)));

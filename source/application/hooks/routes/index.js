@@ -69,6 +69,7 @@ export default {
 
 		// Register router middleware
 		application.engine.use( async function routerMiddleware ( next ) {
+
 			let lookup = application.router.find( this.request.method, this.request.url );
 
 			let fn = lookup[ 0 ];
