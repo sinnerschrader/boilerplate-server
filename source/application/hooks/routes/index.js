@@ -3,12 +3,12 @@ import { resolve } from 'path';
 import Router from 'trek-router';
 import requireAll from 'require-all';
 
-import { exists } from '../../utilities/fs';
+import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'hooks:engine:start:after' ],
 
-	start: async function startRoutesHook ( application ) {
+	'start': async function startRoutesHook ( application ) {
 		application.router = new Router();
 
 		// load physical core routes
@@ -68,7 +68,7 @@ export default {
 		} );
 
 		// Register router middleware
-		application.engine.use( async function( next ) {
+		application.engine.use( async function routerMiddleware ( next ) {
 			let lookup = application.router.find( this.request.method, this.request.url );
 
 			let fn = lookup[ 0 ];

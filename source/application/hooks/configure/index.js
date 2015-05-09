@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 import { merge } from 'lodash';
 
-import load from '../../utilities/configuration';
-import { exists } from '../../utilities/fs';
+import load from '../../../library/utilities/configuration';
+import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'application:before' ],

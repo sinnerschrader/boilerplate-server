@@ -15,7 +15,7 @@ var _resolvePath = require('resolve-path');
 
 var _resolvePath2 = _interopRequireDefault(_resolvePath);
 
-var _utilitiesFs = require('../utilities/fs');
+var _libraryUtilitiesFs = require('../../library/utilities/fs');
 
 var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
 
@@ -58,7 +58,7 @@ function serve(application, root) {
 				stats = undefined;
 				context$1$0.prev = 9;
 				context$1$0.next = 12;
-				return _utilitiesFs.stat(path);
+				return _libraryUtilitiesFs.stat(path);
 
 			case 12:
 				stats = context$1$0.sent;

@@ -2,7 +2,7 @@ import { resolve, basename, extname } from 'path';
 import { createReadStream } from 'fs';
 
 import resolvePath from 'resolve-path';
-import { stat } from '../utilities/fs';
+import { stat } from '../../library/utilities/fs';
 
 const notfound = [ 'ENOENT', 'ENAMETOOLONG', 'ENOTDIR' ];
 

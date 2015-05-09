@@ -2,7 +2,7 @@
   "name": "boilerplate-server",
   "version": "0.3.0",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
-  "main": "binary/_boilerplate-server.js",
+  "main": "library/",
   "scripts": {
     "start": "node --harmony binary/boilerplate-server.js",
     "build": "npm run babel",

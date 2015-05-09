@@ -1,14 +1,13 @@
 import { resolve } from 'path';
 
-import koa from 'koa';
 import requireAll from 'require-all';
 
-import { exists } from '../../utilities/fs';
+import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'hooks:engine:start:after' ],
 
-	start: async function startMiddlewareHook ( application ) {
+	'start': async function startMiddlewareHook ( application ) {
 		// Load physical core middlewares
 		let coreMiddlewares = requireAll( resolve( application.runtime.base, application.configuration.paths.middlewares ) );
 

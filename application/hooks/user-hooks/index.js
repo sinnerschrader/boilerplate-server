@@ -12,7 +12,7 @@ var _load = require('../load');
 
 var _load2 = _interopRequireDefault(_load);
 
-var _utilitiesFs = require('../../utilities/fs');
+var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'configurationKey': 'hooks',
@@ -33,7 +33,7 @@ exports['default'] = {
 					coreHookPath = _path.resolve(application.runtime.base, application.configuration.paths.hooks);
 					isProjectMode = this.configuration.path === coreHookPath;
 					context$1$0.next = 4;
-					return _utilitiesFs.exists(this.configuration.path);
+					return _libraryUtilitiesFs.exists(this.configuration.path);
 
 				case 4:
 					context$1$0.t2 = context$1$0.sent;

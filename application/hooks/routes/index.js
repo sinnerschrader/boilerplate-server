@@ -16,12 +16,12 @@ var _requireAll = require('require-all');
 
 var _requireAll2 = _interopRequireDefault(_requireAll);
 
-var _utilitiesFs = require('../../utilities/fs');
+var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'after': ['hooks:engine:start:after'],
 
-	start: function startRoutesHook(application) {
+	'start': function startRoutesHook(application) {
 		var coreRoutes, userRoutes, userRoutesPath, moduleRoutes, routes;
 		return regeneratorRuntime.async(function startRoutesHook$(context$1$0) {
 			var _this = this;
@@ -34,7 +34,7 @@ exports['default'] = {
 					userRoutes = {};
 					userRoutesPath = _path.resolve(application.runtime.cwd, this.configuration.path);
 					context$1$0.next = 6;
-					return _utilitiesFs.exists(userRoutesPath);
+					return _libraryUtilitiesFs.exists(userRoutesPath);
 
 				case 6:
 					if (!context$1$0.sent) {
@@ -89,9 +89,9 @@ exports['default'] = {
 					});
 
 					// Register router middleware
-					application.engine.use(function callee$1$0(next) {
+					application.engine.use(function routerMiddleware(next) {
 						var lookup, fn, args;
-						return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
+						return regeneratorRuntime.async(function routerMiddleware$(context$2$0) {
 							while (1) switch (context$2$0.prev = context$2$0.next) {
 								case 0:
 									lookup = application.router.find(this.request.method, this.request.url);

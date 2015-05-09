@@ -8,20 +8,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var _path = require('path');
 
-var _koa = require('koa');
-
-var _koa2 = _interopRequireDefault(_koa);
-
 var _requireAll = require('require-all');
 
 var _requireAll2 = _interopRequireDefault(_requireAll);
 
-var _utilitiesFs = require('../../utilities/fs');
+var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'after': ['hooks:engine:start:after'],
 
-	start: function startMiddlewareHook(application) {
+	'start': function startMiddlewareHook(application) {
 		var coreMiddlewares, userMiddlewaresPath, userMiddlewares, moduleMiddlewares, middlewares;
 		return regeneratorRuntime.async(function startMiddlewareHook$(context$1$0) {
 			var _this = this;
@@ -32,7 +28,7 @@ exports['default'] = {
 					userMiddlewaresPath = _path.resolve(application.runtime.cwd, this.configuration.path);
 					userMiddlewares = {};
 					context$1$0.next = 5;
-					return _utilitiesFs.exists(userMiddlewaresPath);
+					return _libraryUtilitiesFs.exists(userMiddlewaresPath);
 
 				case 5:
 					if (!context$1$0.sent) {
