@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 exports['default'] = {
-	'port': 1337,
-	'autoPort': true,
-	'host': '0.0.0.0'
+	'autoPort': false
 };
 module.exports = exports['default'];
