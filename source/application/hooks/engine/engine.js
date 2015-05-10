@@ -34,11 +34,16 @@ function engineBlueprint () {
 				server.port = await ports.find( server.port + 1, server.port + 51, server.host );
 
 				application.subs.forEach(function(sub){
+					application.log.info( `[application:subapplication] Changing configuration of subapplications ${sub.name}` );
+
 					sub.mountable.configuration.server = server;
 					sub.mountable.configuration.client = Object.assign(sub.mountable.configuration.client || {}, {
 						host: server.host,
 						port: server.port
 					});
+
+					application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.server: ${JSON.stringify(sub.mountable.configuration.server)}` );
+					application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.client: ${JSON.stringify(sub.mountable.configuration.client)}` );
 				});
 			}
 
@@ -67,7 +72,7 @@ function engineBlueprint () {
 			let hostFragments = application.runtime.prefix.split('/');
 			let depth = fragments.length;
 
-			application.log.info( `[applications:subapplication] Mounting ${mountable.name} on ${path}` );
+			application.log.info( `[application:subapplication] Mounting ${mountable.name} on ${path}` );
 
 			if (path !== '/') {
 				mountable.router.prefix(path);
@@ -96,6 +101,13 @@ function engineBlueprint () {
 				.join('/');
 
 			application.subs.push({ path, mountable });
+
+			mountable.configuration.server = Object.assign({}, mountable.configuration.server, application.configuration.server);
+			mountable.configuration.client = Object.assign({}, mountable.configuration.client, application.configuration.server);
+
+			application.log.info( `[application:subapplication] Changing configuration of subapplications ${mountable.name}` );
+			application.log.info( `[application:subapplication] ${mountable.name}.configuration.server: ${JSON.stringify(mountable.configuration.server)}` );
+			application.log.info( `[application:subapplication] ${mountable.name}.configuration.client: ${JSON.stringify(mountable.configuration.client)}` );
 
 			return application;
 		}

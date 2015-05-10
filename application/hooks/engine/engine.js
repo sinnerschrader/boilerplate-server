@@ -61,9 +61,9 @@ function engineBlueprint() {
 							return _libraryUtilitiesPorts2['default'].test(port, host);
 
 						case 8:
-							context$3$0.t127 = context$3$0.sent;
+							context$3$0.t1 = context$3$0.sent;
 
-							if (!(context$3$0.t127 !== true)) {
+							if (!(context$3$0.t1 !== true)) {
 								context$3$0.next = 17;
 								break;
 							}
@@ -85,11 +85,16 @@ function engineBlueprint() {
 							server.port = context$3$0.sent;
 
 							application.subs.forEach(function (sub) {
+								application.log.info('[application:subapplication] Changing configuration of subapplications ' + sub.name);
+
 								sub.mountable.configuration.server = server;
 								sub.mountable.configuration.client = Object.assign(sub.mountable.configuration.client || {}, {
 									host: server.host,
 									port: server.port
 								});
+
+								application.log.info('[application:subapplication] ' + sub.mountable.name + '.configuration.server: ' + JSON.stringify(sub.mountable.configuration.server));
+								application.log.info('[application:subapplication] ' + sub.mountable.name + '.configuration.client: ' + JSON.stringify(sub.mountable.configuration.client));
 							});
 
 						case 17:
@@ -153,7 +158,7 @@ function engineBlueprint() {
 				var hostFragments = application.runtime.prefix.split('/');
 				var depth = fragments.length;
 
-				application.log.info('[applications:subapplication] Mounting ' + mountable.name + ' on ' + path);
+				application.log.info('[application:subapplication] Mounting ' + mountable.name + ' on ' + path);
 
 				if (path !== '/') {
 					mountable.router.prefix(path);
@@ -181,6 +186,13 @@ function engineBlueprint() {
 				}).join('/');
 
 				application.subs.push({ path: path, mountable: mountable });
+
+				mountable.configuration.server = Object.assign({}, mountable.configuration.server, application.configuration.server);
+				mountable.configuration.client = Object.assign({}, mountable.configuration.client, application.configuration.server);
+
+				application.log.info('[application:subapplication] Changing configuration of subapplications ' + mountable.name);
+				application.log.info('[application:subapplication] ' + mountable.name + '.configuration.server: ' + JSON.stringify(mountable.configuration.server));
+				application.log.info('[application:subapplication] ' + mountable.name + '.configuration.client: ' + JSON.stringify(mountable.configuration.client));
 
 				return application;
 			}
