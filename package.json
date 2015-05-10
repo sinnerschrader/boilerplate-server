@@ -10,7 +10,6 @@
     "babel": "babel source --out-dir ./"
   },
   "bin": {
-    "_boilerplate-server": "binary/_boilerplate-server.js",
     "boilerplate-server": "binary/boilerplate-server.js"
   },
   "repository": {
