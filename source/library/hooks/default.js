@@ -62,8 +62,7 @@ class Hook {
 		this.log.silly( `Registering hook '${this.name}'` );
 
 		this.after.forEach( ( eventName ) => {
-			application.on( eventName, async function() {
-
+			async function onSubscription () {
 				if ( application.configuration && application.configuration.hooks.enabled[ this.name ] === false ) {
 					this.log.debug( `Hook '${this.name}' is disabled` );
 					this.disabled = true;
@@ -77,7 +76,9 @@ class Hook {
 
 				await this.stage( 'configure', application );
 				await this.stage( 'start', application );
-			}.bind( this ) );
+			}
+
+			application.on( eventName, onSubscription.bind( this ) );
 		} );
 
 		this.hookDidRegister( application );

@@ -19,7 +19,7 @@ var _2 = _interopRequireDefault(_);
 
 function start() {
 	var options = arguments[0] === undefined ? {} : arguments[0];
-	var augmented, application, test, log, stop;
+	var application, test, log, stop;
 	return regeneratorRuntime.async(function start$(context$1$0) {
 		while (1) switch (context$1$0.prev = context$1$0.next) {
 			case 0:
@@ -38,9 +38,9 @@ function start() {
 
 							case 6:
 								context$2$0.prev = 6;
-								context$2$0.t112 = context$2$0['catch'](0);
+								context$2$0.t4 = context$2$0['catch'](0);
 
-								application.log.error(context$2$0.t112);
+								application.log.error(context$2$0.t4);
 								process.exit(1);
 
 							case 10:
@@ -50,50 +50,46 @@ function start() {
 					}, null, this, [[0, 6]]);
 				};
 
-				augmented = Object.assign({}, {
-					'cwd': process.cwd(),
-					'base': _path.resolve(__dirname, '../'),
-					'env': process.env.NODE_ENV || 'development' }, options, { 'api': options });
 				application = undefined;
-				context$1$0.prev = 3;
-				context$1$0.next = 6;
-				return _2['default'](augmented);
+				context$1$0.prev = 2;
+				context$1$0.next = 5;
+				return _2['default'](options);
 
-			case 6:
+			case 5:
 				application = context$1$0.sent;
-				context$1$0.next = 9;
+				context$1$0.next = 8;
 				return _2['default'](Object.assign({}, augmented, { 'name': 'test' }));
 
-			case 9:
+			case 8:
 				test = context$1$0.sent;
 
 				application.mount(test, '/test');
-				context$1$0.next = 18;
+				context$1$0.next = 17;
 				break;
 
-			case 13:
-				context$1$0.prev = 13;
-				context$1$0.t113 = context$1$0['catch'](3);
+			case 12:
+				context$1$0.prev = 12;
+				context$1$0.t5 = context$1$0['catch'](2);
 				log = application ? application.log || console : console;
 
-				log.trace(context$1$0.t113);
-				throw new Error(context$1$0.t113);
+				log.trace(context$1$0.t5);
+				throw new Error(context$1$0.t5);
 
-			case 18:
-				context$1$0.prev = 18;
+			case 17:
+				context$1$0.prev = 17;
 
 				application.start();
-				context$1$0.next = 26;
+				context$1$0.next = 25;
 				break;
 
-			case 22:
-				context$1$0.prev = 22;
-				context$1$0.t114 = context$1$0['catch'](18);
+			case 21:
+				context$1$0.prev = 21;
+				context$1$0.t6 = context$1$0['catch'](17);
 
-				application.log.error(context$1$0.t114);
-				throw new Error(context$1$0.t114);
+				application.log.error(context$1$0.t6);
+				throw new Error(context$1$0.t6);
 
-			case 26:
+			case 25:
 
 				process.on('SIGINT', function () {
 					return stop('SIGINT');
@@ -111,11 +107,11 @@ function start() {
 					return stop('SIGTERM');
 				});
 
-			case 31:
+			case 30:
 			case 'end':
 				return context$1$0.stop();
 		}
-	}, null, this, [[3, 13], [18, 22]]);
+	}, null, this, [[2, 12], [17, 21]]);
 }
 
 start(_minimist2['default'](process.argv.slice(1)));

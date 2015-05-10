@@ -8,16 +8,10 @@ import minimist from 'minimist';
 import boilerplate from '../';
 
 async function start ( options = {} ) {
-	let augmented = Object.assign( {}, {
-			'cwd': process.cwd(),
-			'base': resolve( __dirname, '../' ),
-			'env': process.env.NODE_ENV || 'development',
-		}, options, { 'api': options } );
-
 	let application;
 
 	try {
-		application = await boilerplate( augmented );
+		application = await boilerplate( options );
 		let test = await boilerplate( Object.assign( {}, augmented, { 'name': 'test' } ) );
 		application.mount( test, '/test' );
 	} catch ( error ) {

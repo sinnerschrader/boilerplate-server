@@ -22,9 +22,9 @@ var _logger = require('./logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _applicationHooks = require('../../application/hooks');
+var _hooks = require('../hooks');
 
-var _applicationHooks2 = _interopRequireDefault(_applicationHooks);
+var _hooks2 = _interopRequireDefault(_hooks);
 
 var BoilerPlateServer = (function (_EventEmitter) {
 	function BoilerPlateServer(options) {
@@ -78,7 +78,7 @@ function boot(options) {
 			case 0:
 				application = new BoilerPlateServer(options);
 				context$1$0.next = 3;
-				return _applicationHooks2['default'](application);
+				return _hooks2['default'](application);
 
 			case 3:
 				return context$1$0.abrupt('return', context$1$0.sent);

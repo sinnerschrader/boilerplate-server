@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 
-import load from '../load';
+import load from '../../../library/hooks/load';
 import { exists } from '../../../library/utilities/fs';
 
 export default {

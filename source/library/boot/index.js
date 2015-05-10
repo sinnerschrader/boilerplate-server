@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 import bootLogger from './logger';
-import hooks from '../../application/hooks';
+import hooks from '../hooks';
 
 class BoilerPlateServer extends EventEmitter {
 	constructor ( options ) {

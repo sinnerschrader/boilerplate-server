@@ -84,10 +84,10 @@ exports['default'] = {
 
 				case 17:
 					context$1$0.prev = 17;
-					context$1$0.t8 = context$1$0['catch'](13);
+					context$1$0.t0 = context$1$0['catch'](13);
 
 					this.log.error('Error while reading user configuration from ' + userPath + '.');
-					this.log.error(context$1$0.t8);
+					this.log.error(context$1$0.t0);
 
 					throw new Error('Failed loading user configuration');
 

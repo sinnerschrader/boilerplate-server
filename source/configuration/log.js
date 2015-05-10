@@ -1,5 +1,5 @@
 export default {
-	'level': 'info',
+	'level': 'silly',
 	'transports': [ 'console', 'file' ],
 	'options': {
 		'console': {
