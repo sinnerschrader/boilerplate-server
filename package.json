@@ -7,7 +7,8 @@
     "start": "node --harmony binary/boilerplate-server.js",
     "build": "npm run babel",
     "watch": "npm run babel -- --watch",
-    "babel": "babel source --out-dir ./"
+    "babel": "npm run clean && babel source --out-dir ./",
+    "clean": "rm -r ./application ./binary ./configuration"
   },
   "bin": {
     "boilerplate-server": "binary/boilerplate-server.js"

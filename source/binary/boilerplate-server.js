@@ -12,8 +12,6 @@ async function start ( options = {} ) {
 
 	try {
 		application = await boilerplate( options );
-		let test = await boilerplate( Object.assign( {}, augmented, { 'name': 'test' } ) );
-		application.mount( test, '/test' );
 	} catch ( error ) {
 		let log = application ? application.log || console : console;
 		log.trace( error );
