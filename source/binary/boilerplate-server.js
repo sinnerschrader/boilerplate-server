@@ -11,7 +11,9 @@ async function start ( options = {} ) {
 	let application;
 
 	try {
-		application = await boilerplate( options );
+		application = await boilerplate( Object.assign(options, { routes: { index: { enabled: false } } }) );
+		var test = await boilerplate( Object.assign( options, { 'name': 'test' }, { routes: { index: { enabled: true } } } ) );
+		application.mount(test, '/test');
 	} catch ( error ) {
 		let log = application ? application.log || console : console;
 		log.trace( error );

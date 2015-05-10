@@ -11,8 +11,7 @@ async function serve( application, root, configuration = {} ) {
 		return;
 	}
 
-	let path = this.params[ 0 ].value;
-
+	let path = this.captures[0];
 	path = path[ 0 ] === '/' ? path.slice( 1 ) : path;
 
 	try {

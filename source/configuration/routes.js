@@ -9,7 +9,7 @@ const routes = {
 		'static': {
 			'enabled': true,
 			'method': 'GET',
-			'path': '/static/*',
+			'path': /\/static\/(.*)/,
 			'options': {
 				'root': './static',
 				'maxage': 3600000,

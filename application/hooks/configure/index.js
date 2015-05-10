@@ -24,8 +24,8 @@ exports['default'] = {
 		'filter': /(.*).(js|json)$/
 	},
 
-	'configure': function configure(application) {
-		return regeneratorRuntime.async(function configure$(context$1$0) {
+	'configure': function configureEngineHook(application) {
+		return regeneratorRuntime.async(function configureEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
 					application.configuration = {};
@@ -43,9 +43,9 @@ exports['default'] = {
 		}, null, this);
 	},
 
-	'start': function start(application) {
+	'start': function startEngineHook(application) {
 		var core, corePkgPath, pkgPath, corePkg, pkg, userPath, user;
-		return regeneratorRuntime.async(function start$(context$1$0) {
+		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
 					core = _libraryUtilitiesConfiguration2['default'](this.configuration.path, this.configuration.filter, application.runtime.env);
@@ -101,9 +101,10 @@ exports['default'] = {
 				case 25:
 
 					_lodash.merge(application.configuration, core, user, application.runtime.api);
+					application.runtime.prefix = application.runtime.prefix || '/';
 					return context$1$0.abrupt('return', this);
 
-				case 27:
+				case 28:
 				case 'end':
 					return context$1$0.stop();
 			}

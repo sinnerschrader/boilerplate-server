@@ -8,8 +8,10 @@ class BoilerPlateServer extends EventEmitter {
 		super();
 
 		this.name = options.name;
+		this.subs = options.subs || [];
+
 		this.runtime = options;
-		this.log = bootLogger( options );
+		this.log = bootLogger( options, this );
 	}
 
 	start ( host = this.configuration.server.host, port = this.configuration.server.port ) {

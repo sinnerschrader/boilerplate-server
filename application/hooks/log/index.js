@@ -35,7 +35,7 @@ exports['default'] = {
 	},
 
 	'start': function startLogHook(application) {
-		var transporters;
+		var transporters, log;
 		return regeneratorRuntime.async(function startLogHook$(context$1$0) {
 			var _this = this;
 
@@ -59,14 +59,53 @@ exports['default'] = {
 					}).filter(function (item) {
 						return item;
 					});
-
-					application.log = new _winston.Logger({
+					log = new _winston.Logger({
 						'transports': transporters
 					});
 
+					application.log.error = function () {
+						for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+							args[_key] = arguments[_key];
+						}
+
+						return log.error.apply(log, ['[' + application.name + ']'].concat(args));
+					};
+
+					application.log.warn = function () {
+						for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+							args[_key2] = arguments[_key2];
+						}
+
+						return log.warn.apply(log, ['[' + application.name + ']'].concat(args));
+					};
+
+					application.log.info = function () {
+						for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+							args[_key3] = arguments[_key3];
+						}
+
+						return log.info.apply(log, ['[' + application.name + ']'].concat(args));
+					};
+
+					application.log.debug = function () {
+						for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+							args[_key4] = arguments[_key4];
+						}
+
+						return log.debug.apply(log, ['[' + application.name + ']'].concat(args));
+					};
+
+					application.log.silly = function () {
+						for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+							args[_key5] = arguments[_key5];
+						}
+
+						return log.silly.apply(log, ['[' + application.name + ']'].concat(args));
+					};
+
 					return context$1$0.abrupt('return', this);
 
-				case 3:
+				case 8:
 				case 'end':
 					return context$1$0.stop();
 			}

@@ -19,7 +19,7 @@ var _2 = _interopRequireDefault(_);
 
 function start() {
 	var options = arguments[0] === undefined ? {} : arguments[0];
-	var application, log, stop;
+	var application, test, log, stop;
 	return regeneratorRuntime.async(function start$(context$1$0) {
 		while (1) switch (context$1$0.prev = context$1$0.next) {
 			case 0:
@@ -53,36 +53,43 @@ function start() {
 				application = undefined;
 				context$1$0.prev = 2;
 				context$1$0.next = 5;
-				return _2['default'](options);
+				return _2['default'](Object.assign(options, { routes: { index: { enabled: false } } }));
 
 			case 5:
 				application = context$1$0.sent;
-				context$1$0.next = 13;
-				break;
+				context$1$0.next = 8;
+				return _2['default'](Object.assign(options, { 'name': 'test' }, { routes: { index: { enabled: true } } }));
 
 			case 8:
-				context$1$0.prev = 8;
+				test = context$1$0.sent;
+
+				application.mount(test, '/test');
+				context$1$0.next = 17;
+				break;
+
+			case 12:
+				context$1$0.prev = 12;
 				context$1$0.t5 = context$1$0['catch'](2);
 				log = application ? application.log || console : console;
 
 				log.trace(context$1$0.t5);
 				throw new Error(context$1$0.t5);
 
-			case 13:
-				context$1$0.prev = 13;
-
-				application.start();
-				context$1$0.next = 21;
-				break;
-
 			case 17:
 				context$1$0.prev = 17;
-				context$1$0.t6 = context$1$0['catch'](13);
+
+				application.start();
+				context$1$0.next = 25;
+				break;
+
+			case 21:
+				context$1$0.prev = 21;
+				context$1$0.t6 = context$1$0['catch'](17);
 
 				application.log.error(context$1$0.t6);
 				throw new Error(context$1$0.t6);
 
-			case 21:
+			case 25:
 
 				process.on('SIGINT', function () {
 					return stop('SIGINT');
@@ -100,11 +107,11 @@ function start() {
 					return stop('SIGTERM');
 				});
 
-			case 26:
+			case 30:
 			case 'end':
 				return context$1$0.stop();
 		}
-	}, null, this, [[2, 8], [13, 17]]);
+	}, null, this, [[2, 12], [17, 21]]);
 }
 
 start(_minimist2['default'](process.argv.slice(1)));

@@ -38,9 +38,29 @@ export default {
 			} )
 			.filter( ( item ) => item );
 
-		application.log = new Logger( {
+		let log = new Logger( {
 			'transports': transporters
 		} );
+
+		application.log.error = function (...args) {
+			return log.error( ...[ `[${application.name}]`, ...args ] );
+		}
+
+		application.log.warn = function (...args) {
+			return log.warn( ...[ `[${application.name}]`, ...args ] );
+		}
+
+		application.log.info = function (...args) {
+			return log.info( ...[ `[${application.name}]`, ...args ] );
+		}
+
+		application.log.debug = function (...args) {
+			return log.debug( ...[ `[${application.name}]`, ...args ] );
+		}
+
+		application.log.silly = function (...args) {
+			return log.silly( ...[ `[${application.name}]`, ...args ] );
+		}
 
 		return this;
 	}

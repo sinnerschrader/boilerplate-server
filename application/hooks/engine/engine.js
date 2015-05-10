@@ -15,6 +15,10 @@ var _koa = require('koa');
 
 var _koa2 = _interopRequireDefault(_koa);
 
+var _koaRouter = require('koa-router');
+
+var _koaRouter2 = _interopRequireDefault(_koaRouter);
+
 var _libraryUtilitiesPorts = require('../../../library/utilities/ports');
 
 var _libraryUtilitiesPorts2 = _interopRequireDefault(_libraryUtilitiesPorts);
@@ -47,45 +51,59 @@ function engineBlueprint() {
 							application = _nameSpace$get.application;
 							http = _nameSpace$get.http;
 							server = application.configuration.server;
-							context$3$0.next = 7;
+
+							if (application.router) {
+								fuel.use(application.router.routes());
+								fuel.use(application.router.allowedMethods());
+							}
+
+							context$3$0.next = 8;
 							return _libraryUtilitiesPorts2['default'].test(port, host);
 
-						case 7:
-							context$3$0.t1 = context$3$0.sent;
+						case 8:
+							context$3$0.t127 = context$3$0.sent;
 
-							if (!(context$3$0.t1 !== true)) {
-								context$3$0.next = 15;
+							if (!(context$3$0.t127 !== true)) {
+								context$3$0.next = 17;
 								break;
 							}
 
 							if (!(server.autoPort !== true)) {
-								context$3$0.next = 11;
+								context$3$0.next = 12;
 								break;
 							}
 
 							throw new Error('Port ' + port + ' is taken and server.autPort is disabled, could not start server.');
 
-						case 11:
+						case 12:
 
 							application.log.warn('[application] Port ' + port + ' is taken, trying to obtain next open port... ');
-							context$3$0.next = 14;
+							context$3$0.next = 15;
 							return _libraryUtilitiesPorts2['default'].find(server.port + 1, server.port + 51, server.host);
 
-						case 14:
+						case 15:
 							server.port = context$3$0.sent;
 
-						case 15:
+							application.subs.forEach(function (sub) {
+								sub.mountable.configuration.server = server;
+								sub.mountable.configuration.client = Object.assign(sub.mountable.configuration.client || {}, {
+									host: server.host,
+									port: server.port
+								});
+							});
+
+						case 17:
 
 							application.log.info('[application]', 'Starting server at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
 
-							context$3$0.next = 18;
+							context$3$0.next = 20;
 							return fuel.listen(server.port, server.host);
 
-						case 18:
+						case 20:
 							http = context$3$0.sent;
 							return context$3$0.abrupt('return', application);
 
-						case 20:
+						case 22:
 						case 'end':
 							return context$3$0.stop();
 					}
@@ -131,47 +149,39 @@ function engineBlueprint() {
 				var fuel = _nameSpace$get3.fuel;
 				var application = _nameSpace$get3.application;
 
-				var depth = path.split('/').length;
+				var fragments = path.split('/');
+				var hostFragments = application.runtime.prefix.split('/');
+				var depth = fragments.length;
 
-				if (mountable instanceof application.constructor !== true) {
-					throw new TypeError('mountable is no BoilerPlateServer');
+				application.log.info('[applications:subapplication] Mounting ' + mountable.name + ' on ' + path);
+
+				if (path !== '/') {
+					mountable.router.prefix(path);
+				} else {
+					mountable.router.stack.routes.forEach(function (route) {
+						var match = application.router.route(route.name);
+						if (match) {
+							var index = application.router.stack.routes.indexOf(match);
+							application.router.stack.routes.splice(index, 1);
+							application.log.info('[applications:subapplication] Route "' + route.name + '" of "' + mountable.name + '" overwrites ' + application.name + '\'s route with same name.');
+						}
+					});
+
+					application.router.stack.routes = application.router.stack.routes.concat(mountable.router.stack.routes);
 				}
 
-				application.router.add('GET', path + '/*', function callee$3$0(next) {
-					var fragments, path, lookup, fn, args;
-					return regeneratorRuntime.async(function callee$3$0$(context$4$0) {
-						while (1) switch (context$4$0.prev = context$4$0.next) {
-							case 0:
-								fragments = this.path.split('/').filter(function (item, index) {
-									return index >= depth;
-								});
-								path = fragments.length > 0 ? fragments.join('/') : '/';
-								lookup = mountable.router.find('GET', path);
-								fn = lookup[0];
-								args = lookup[1];
+				fuel.use(mountable.router.routes());
+				fuel.use(mountable.router.allowedMethods());
 
-								if (!(typeof fn === 'function')) {
-									context$4$0.next = 12;
-									break;
-								}
+				application.router.subs = application.router.subs || [];
+				application.router.subs.push(mountable.router);
 
-								fn = fn.bind(this);
-								this.path = path;
-								this.params = args;
-								context$4$0.next = 11;
-								return fn(next);
+				mountable.runtime.prefix = '/' + fragments.concat(hostFragments).filter(function (item) {
+					return item;
+				}).join('/');
 
-							case 11:
-								return context$4$0.abrupt('return', context$4$0.sent);
+				application.subs.push({ path: path, mountable: mountable });
 
-							case 12:
-							case 'end':
-								return context$4$0.stop();
-						}
-					}, null, this);
-				});
-
-				application.log.info('[application:subapplication] Mounting ' + mountable.name + ' on ' + path);
 				return application;
 			}
 		}, {

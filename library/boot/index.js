@@ -33,8 +33,10 @@ var BoilerPlateServer = (function (_EventEmitter) {
 		_get(Object.getPrototypeOf(BoilerPlateServer.prototype), 'constructor', this).call(this);
 
 		this.name = options.name;
+		this.subs = options.subs || [];
+
 		this.runtime = options;
-		this.log = _logger2['default'](options);
+		this.log = _logger2['default'](options, this);
 	}
 
 	_inherits(BoilerPlateServer, _EventEmitter);

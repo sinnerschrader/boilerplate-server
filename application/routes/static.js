@@ -33,7 +33,7 @@ function serve(application, root) {
 				return context$1$0.abrupt('return');
 
 			case 2:
-				path = this.params[0].value;
+				path = this.captures[0];
 
 				path = path[0] === '/' ? path.slice(1) : path;
 
