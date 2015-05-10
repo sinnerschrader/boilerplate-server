@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 import { merge } from 'lodash';
 
-import load from '../../utilities/configuration';
-import { exists } from '../../utilities/fs';
+import load from '../../../library/utilities/configuration';
+import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'application:before' ],
@@ -12,7 +12,7 @@ export default {
 		'filter': /(.*).(js|json)$/
 	},
 
-	'configure': async function ( application ) {
+	'configure': async function configureEngineHook ( application ) {
 		application.configuration = {};
 
 		this.configuration = Object.assign( this.configuration, this.defaults, {
@@ -22,7 +22,7 @@ export default {
 		return this;
 	},
 
-	'start': async function ( application ) {
+	'start': async function startEngineHook ( application ) {
 		// Load core configuration
 		let core = load( this.configuration.path, this.configuration.filter, application.runtime.env );
 
@@ -63,6 +63,7 @@ export default {
 		}
 
 		merge( application.configuration, core, user, application.runtime.api );
+		application.runtime.prefix = application.runtime.prefix || '/';
 		return this;
 	}
 };

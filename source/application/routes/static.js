@@ -2,7 +2,7 @@ import { resolve, basename, extname } from 'path';
 import { createReadStream } from 'fs';
 
 import resolvePath from 'resolve-path';
-import { stat } from '../utilities/fs';
+import { stat } from '../../library/utilities/fs';
 
 const notfound = [ 'ENOENT', 'ENAMETOOLONG', 'ENOTDIR' ];
 
@@ -11,8 +11,7 @@ async function serve( application, root, configuration = {} ) {
 		return;
 	}
 
-	let path = this.params[ 0 ].value;
-
+	let path = this.captures[0];
 	path = path[ 0 ] === '/' ? path.slice( 1 ) : path;
 
 	try {

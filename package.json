@@ -1,16 +1,16 @@
 {
   "name": "boilerplate-server",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
-  "main": "binary/_boilerplate-server.js",
+  "main": "library/",
   "scripts": {
     "start": "node --harmony binary/boilerplate-server.js",
     "build": "npm run babel",
     "watch": "npm run babel -- --watch",
-    "babel": "babel source --out-dir ./"
+    "babel": "npm run clean && babel source --out-dir ./",
+    "clean": "rm -rf application binary configuration library"
   },
   "bin": {
-    "_boilerplate-server": "binary/_boilerplate-server.js",
     "boilerplate-server": "binary/boilerplate-server.js"
   },
   "repository": {
@@ -43,6 +43,7 @@
     "bluebird": "^2.9.24",
     "commander": "^2.8.0",
     "koa": "^0.19.1",
+    "koa-router": "^4.3.2",
     "lodash": "^3.7.0",
     "minimist": "^1.1.1",
     "portscanner": "^1.0.0",
@@ -50,7 +51,6 @@
     "require-all": "^1.0.0",
     "require-json": "0.0.1",
     "resolve-path": "^1.2.2",
-    "trek-router": "^0.1.9",
     "winston": "^1.0.0"
   },
   "devDependencies": {

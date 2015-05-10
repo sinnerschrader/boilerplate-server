@@ -8,11 +8,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var _path = require('path');
 
-var _load = require('../load');
+var _libraryHooksLoad = require('../../../library/hooks/load');
 
-var _load2 = _interopRequireDefault(_load);
+var _libraryHooksLoad2 = _interopRequireDefault(_libraryHooksLoad);
 
-var _utilitiesFs = require('../../utilities/fs');
+var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'configurationKey': 'hooks',
@@ -33,7 +33,7 @@ exports['default'] = {
 					coreHookPath = _path.resolve(application.runtime.base, application.configuration.paths.hooks);
 					isProjectMode = this.configuration.path === coreHookPath;
 					context$1$0.next = 4;
-					return _utilitiesFs.exists(this.configuration.path);
+					return _libraryUtilitiesFs.exists(this.configuration.path);
 
 				case 4:
 					context$1$0.t2 = context$1$0.sent;
@@ -47,7 +47,7 @@ exports['default'] = {
 					return context$1$0.abrupt('return', this);
 
 				case 8:
-					hooks = _load2['default'](application, this.configuration.path, true);
+					hooks = _libraryHooksLoad2['default'](application, this.configuration.path, true);
 
 					hooks = hooks.map(function (hook) {
 						var conflictingCoreHooks = application.hooks.filter(function (coreHook) {

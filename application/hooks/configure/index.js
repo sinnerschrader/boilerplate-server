@@ -10,11 +10,11 @@ var _path = require('path');
 
 var _lodash = require('lodash');
 
-var _utilitiesConfiguration = require('../../utilities/configuration');
+var _libraryUtilitiesConfiguration = require('../../../library/utilities/configuration');
 
-var _utilitiesConfiguration2 = _interopRequireDefault(_utilitiesConfiguration);
+var _libraryUtilitiesConfiguration2 = _interopRequireDefault(_libraryUtilitiesConfiguration);
 
-var _utilitiesFs = require('../../utilities/fs');
+var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'after': ['application:before'],
@@ -24,8 +24,8 @@ exports['default'] = {
 		'filter': /(.*).(js|json)$/
 	},
 
-	'configure': function configure(application) {
-		return regeneratorRuntime.async(function configure$(context$1$0) {
+	'configure': function configureEngineHook(application) {
+		return regeneratorRuntime.async(function configureEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
 					application.configuration = {};
@@ -43,12 +43,12 @@ exports['default'] = {
 		}, null, this);
 	},
 
-	'start': function start(application) {
+	'start': function startEngineHook(application) {
 		var core, corePkgPath, pkgPath, corePkg, pkg, userPath, user;
-		return regeneratorRuntime.async(function start$(context$1$0) {
+		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					core = _utilitiesConfiguration2['default'](this.configuration.path, this.configuration.filter, application.runtime.env);
+					core = _libraryUtilitiesConfiguration2['default'](this.configuration.path, this.configuration.filter, application.runtime.env);
 					corePkgPath = _path.resolve(application.runtime.base, 'package.json');
 					pkgPath = _path.resolve(application.runtime.cwd, 'package.json');
 					corePkg = require(corePkgPath);
@@ -68,7 +68,7 @@ exports['default'] = {
 					userPath = _path.resolve(application.runtime.cwd, core.paths.configuration);
 					user = {};
 					context$1$0.next = 12;
-					return _utilitiesFs.exists(userPath);
+					return _libraryUtilitiesFs.exists(userPath);
 
 				case 12:
 					if (!context$1$0.sent) {
@@ -78,7 +78,7 @@ exports['default'] = {
 
 					context$1$0.prev = 13;
 
-					user = _utilitiesConfiguration2['default'](userPath, this.configuration.filter, application.runtime.env);
+					user = _libraryUtilitiesConfiguration2['default'](userPath, this.configuration.filter, application.runtime.env);
 					context$1$0.next = 22;
 					break;
 
@@ -101,9 +101,10 @@ exports['default'] = {
 				case 25:
 
 					_lodash.merge(application.configuration, core, user, application.runtime.api);
+					application.runtime.prefix = application.runtime.prefix || '/';
 					return context$1$0.abrupt('return', this);
 
-				case 27:
+				case 28:
 				case 'end':
 					return context$1$0.stop();
 			}

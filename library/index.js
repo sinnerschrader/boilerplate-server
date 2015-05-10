@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7,27 +6,26 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-/*eslint-disable no-process-env */
-
 var _path = require('path');
 
-var _application = require('../application');
+var _boot = require('./boot');
 
-var _application2 = _interopRequireDefault(_application);
+var _boot2 = _interopRequireDefault(_boot);
 
-function start() {
+function boilerplate() {
 	var options = arguments[0] === undefined ? {} : arguments[0];
 	var augmented;
-	return regeneratorRuntime.async(function start$(context$1$0) {
+	return regeneratorRuntime.async(function boilerplate$(context$1$0) {
 		while (1) switch (context$1$0.prev = context$1$0.next) {
 			case 0:
 				augmented = Object.assign({}, {
 					'cwd': process.cwd(),
-					'base': _path.resolve(__dirname, '../'),
-					'env': process.env.NODE_ENV || 'development'
+					'base': options.base || _path.resolve(__dirname, '../'),
+					'env': process.env.NODE_ENV || 'development',
+					'name': options.name || 'boilerplate-server'
 				}, options, { 'api': options });
 				context$1$0.next = 3;
-				return _application2['default'](augmented);
+				return _boot2['default'](augmented);
 
 			case 3:
 				return context$1$0.abrupt('return', context$1$0.sent);
@@ -39,5 +37,7 @@ function start() {
 	}, null, this);
 }
 
-exports['default'] = start;
+exports['default'] = boilerplate;
 module.exports = exports['default'];
+
+/*eslint-disable no-process-env */

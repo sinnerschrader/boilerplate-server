@@ -5,13 +5,13 @@
 
 import { Logger, transports } from 'winston';
 
-function bootLogger ( options ) {
+function bootLogger ( options, application ) {
 	let ConsoleTransport = transports.Console;
 	let FileTransport = transports.File;
 
 	let level = options.loglevel || 'debug';
 
-	return new Logger( {
+	let log = new Logger( {
 		'transports': [
 			new ConsoleTransport( {
 				'name': 'bootConsole',
@@ -30,6 +30,30 @@ function bootLogger ( options ) {
 			} )
 		]
 	} );
+
+	let logger = {};
+
+	logger.error = function (...args) {
+		return log.error( ...[ `[${application.name}]`, ...args ] );
+	};
+
+	logger.warn = function (...args) {
+		return log.warn( ...[ `[${application.name}]`, ...args ] );
+	};
+
+	logger.info = function (...args) {
+		return log.info( ...[ `[${application.name}]`, ...args ] );
+	};
+
+	logger.debug = function (...args) {
+		return log.debug( ...[ `[${application.name}]`, ...args ] );
+	};
+
+	logger.silly = function (...args) {
+		return log.silly( ...[ `[${application.name}]`, ...args ] );
+	};
+
+	return logger;
 }
 
 export default bootLogger;

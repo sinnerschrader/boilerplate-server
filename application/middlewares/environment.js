@@ -10,10 +10,11 @@ function startEnvironmentMiddleware(application) {
 		return regeneratorRuntime.async(function environmentMiddleware$(context$2$0) {
 			while (1) switch (context$2$0.prev = context$2$0.next) {
 				case 0:
+					this.set('X-Name', application.name);
 					this.set('X-Environment', application.configuration.environment);
 					return context$2$0.abrupt('return', next);
 
-				case 2:
+				case 3:
 				case 'end':
 					return context$2$0.stop();
 			}

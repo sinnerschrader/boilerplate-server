@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 exports['default'] = {
-	'level': 'info',
+	'level': 'silly',
 	'transports': ['console', 'file'],
 	'options': {
 		'console': {

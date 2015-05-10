@@ -118,8 +118,8 @@ var Hook = (function () {
 			this.log.silly('Registering hook \'' + this.name + '\'');
 
 			this.after.forEach(function (eventName) {
-				application.on(eventName, (function callee$3$0() {
-					return regeneratorRuntime.async(function callee$3$0$(context$4$0) {
+				function onSubscription() {
+					return regeneratorRuntime.async(function onSubscription$(context$4$0) {
 						while (1) switch (context$4$0.prev = context$4$0.next) {
 							case 0:
 								if (!(application.configuration && application.configuration.hooks.enabled[this.name] === false)) {
@@ -149,7 +149,9 @@ var Hook = (function () {
 								return context$4$0.stop();
 						}
 					}, null, this);
-				}).bind(_this2));
+				}
+
+				application.on(eventName, onSubscription.bind(_this2));
 			});
 
 			this.hookDidRegister(application);
@@ -200,12 +202,12 @@ var Hook = (function () {
 
 					case 14:
 						context$2$0.prev = 14;
-						context$2$0.t1 = context$2$0['catch'](6);
+						context$2$0.t7 = context$2$0['catch'](6);
 
 						this.log.error('An error ocurred on stage ' + stageName + ' of hook \'' + this.name + '\'');
-						this.log.error(context$2$0.t1);
+						this.log.error(context$2$0.t7);
 
-						throw new Error(context$2$0.t1);
+						throw new Error(context$2$0.t7);
 
 					case 19:
 

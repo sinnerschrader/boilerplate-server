@@ -1,15 +1,15 @@
 import { resolve } from 'path';
 
-import Router from 'trek-router';
+import router from 'koa-router';
 import requireAll from 'require-all';
 
-import { exists } from '../../utilities/fs';
+import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'hooks:engine:start:after' ],
 
-	start: async function startRoutesHook ( application ) {
-		application.router = new Router();
+	'start': async function startRoutesHook ( application ) {
+		application.router = router();
 
 		// load physical core routes
 		let coreRoutes = requireAll( resolve( application.runtime.base, application.configuration.paths.routes ) );
@@ -61,24 +61,13 @@ export default {
 				return;
 			}
 
-			let method = routeConfig.method || 'GET';
+			let methods = routeConfig.methods || [ 'GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS' ];
+			let fn = routeFactoryFunction( application, routeConfig );
 
-			// Register routes with router
-			application.router.add( method, routeConfig.path, routeFactoryFunction( application, routeConfig ) );
-		} );
+			application.router.register( routeName, routeConfig.path, methods, function * ( next ) {
+				yield fn.bind( this )( next );
+			} );
 
-		// Register router middleware
-		application.engine.use( async function( next ) {
-			let lookup = application.router.find( this.request.method, this.request.url );
-
-			let fn = lookup[ 0 ];
-			let args = lookup[ 1 ];
-
-			if ( typeof fn === 'function' ) {
-				fn = fn.bind( this );
-				this.params = args;
-				return await fn( next );
-			}
 		} );
 
 		return application;

@@ -8,33 +8,33 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var _path = require('path');
 
-var _trekRouter = require('trek-router');
+var _koaRouter = require('koa-router');
 
-var _trekRouter2 = _interopRequireDefault(_trekRouter);
+var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
 var _requireAll = require('require-all');
 
 var _requireAll2 = _interopRequireDefault(_requireAll);
 
-var _utilitiesFs = require('../../utilities/fs');
+var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'after': ['hooks:engine:start:after'],
 
-	start: function startRoutesHook(application) {
+	'start': function startRoutesHook(application) {
 		var coreRoutes, userRoutes, userRoutesPath, moduleRoutes, routes;
 		return regeneratorRuntime.async(function startRoutesHook$(context$1$0) {
 			var _this = this;
 
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					application.router = new _trekRouter2['default']();
+					application.router = _koaRouter2['default']();
 
 					coreRoutes = _requireAll2['default'](_path.resolve(application.runtime.base, application.configuration.paths.routes));
 					userRoutes = {};
 					userRoutesPath = _path.resolve(application.runtime.cwd, this.configuration.path);
 					context$1$0.next = 6;
-					return _utilitiesFs.exists(userRoutesPath);
+					return _libraryUtilitiesFs.exists(userRoutesPath);
 
 				case 6:
 					if (!context$1$0.sent) {
@@ -82,45 +82,27 @@ exports['default'] = {
 							return;
 						}
 
-						var method = routeConfig.method || 'GET';
+						var methods = routeConfig.methods || ['GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
+						var fn = routeFactoryFunction(application, routeConfig);
 
-						// Register routes with router
-						application.router.add(method, routeConfig.path, routeFactoryFunction(application, routeConfig));
-					});
+						application.router.register(routeName, routeConfig.path, methods, regeneratorRuntime.mark(function callee$2$0(next) {
+							return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
+								while (1) switch (context$3$0.prev = context$3$0.next) {
+									case 0:
+										context$3$0.next = 2;
+										return fn.bind(this)(next);
 
-					// Register router middleware
-					application.engine.use(function callee$1$0(next) {
-						var lookup, fn, args;
-						return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
-							while (1) switch (context$2$0.prev = context$2$0.next) {
-								case 0:
-									lookup = application.router.find(this.request.method, this.request.url);
-									fn = lookup[0];
-									args = lookup[1];
-
-									if (!(typeof fn === 'function')) {
-										context$2$0.next = 9;
-										break;
-									}
-
-									fn = fn.bind(this);
-									this.params = args;
-									context$2$0.next = 8;
-									return fn(next);
-
-								case 8:
-									return context$2$0.abrupt('return', context$2$0.sent);
-
-								case 9:
-								case 'end':
-									return context$2$0.stop();
-							}
-						}, null, this);
+									case 2:
+									case 'end':
+										return context$3$0.stop();
+								}
+							}, callee$2$0, this);
+						}));
 					});
 
 					return context$1$0.abrupt('return', application);
 
-				case 13:
+				case 12:
 				case 'end':
 					return context$1$0.stop();
 			}
