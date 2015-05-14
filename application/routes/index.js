@@ -5,8 +5,8 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports['default'] = indexRouteFactory;
 
-function indexRouteFactory(application) {
-	return function indexRoute(path) {
+function indexRouteFactory() {
+	return function indexRoute() {
 		return regeneratorRuntime.async(function indexRoute$(context$2$0) {
 			while (1) switch (context$2$0.prev = context$2$0.next) {
 				case 0:

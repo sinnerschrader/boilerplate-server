@@ -64,8 +64,8 @@ export default {
 			let methods = routeConfig.methods || [ 'GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS' ];
 			let fn = routeFactoryFunction( application, routeConfig );
 
-			application.router.register( routeName, routeConfig.path, methods, function * ( next ) {
-				yield fn.bind( this )( next );
+			application.router.register( routeName, routeConfig.path, methods, function * runRoute ( ...args ) {
+				fn.bind( this )( ...args );
 			} );
 
 		} );

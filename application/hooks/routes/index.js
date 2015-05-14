@@ -85,18 +85,21 @@ exports['default'] = {
 						var methods = routeConfig.methods || ['GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 						var fn = routeFactoryFunction(application, routeConfig);
 
-						application.router.register(routeName, routeConfig.path, methods, regeneratorRuntime.mark(function callee$2$0(next) {
-							return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
+						application.router.register(routeName, routeConfig.path, methods, regeneratorRuntime.mark(function runRoute() {
+							for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+								args[_key] = arguments[_key];
+							}
+
+							return regeneratorRuntime.wrap(function runRoute$(context$3$0) {
 								while (1) switch (context$3$0.prev = context$3$0.next) {
 									case 0:
-										context$3$0.next = 2;
-										return fn.bind(this)(next);
+										fn.bind(this).apply(undefined, args);
 
-									case 2:
+									case 1:
 									case 'end':
 										return context$3$0.stop();
 								}
-							}, callee$2$0, this);
+							}, runRoute, this);
 						}));
 					});
 
