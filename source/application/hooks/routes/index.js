@@ -61,11 +61,25 @@ export default {
 				return;
 			}
 
+
 			let methods = routeConfig.methods || [ 'GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS' ];
 			let fn = routeFactoryFunction( application, routeConfig );
 
-			application.router.register( routeName, routeConfig.path, methods, function * runRoute ( ...args ) {
-				yield fn.bind( this )( ...args );
+			if ( typeof fn !== 'function' ) {
+				this.log.info( `${routeName} factory returned no valid route for ${routeConfig.path}` );
+				return;
+			}
+
+			this.log.info( `Mounting ${routeName} on ${routeConfig.path}` );
+
+			application.router.register( routeName, routeConfig.path, methods, function * ( next ) {
+				try {
+					yield fn.bind( this )( next );
+				} catch ( error ) {
+					application.log.error( `Error while executing route ${routeName}` );
+					application.log.error( error.stack );
+					throw error;
+				}
 			} );
 
 		} );
