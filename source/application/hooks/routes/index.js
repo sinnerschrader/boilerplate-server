@@ -65,7 +65,7 @@ export default {
 			let fn = routeFactoryFunction( application, routeConfig );
 
 			application.router.register( routeName, routeConfig.path, methods, function * runRoute ( ...args ) {
-				fn.bind( this )( ...args );
+				yield fn.bind( this )( ...args );
 			} );
 
 		} );

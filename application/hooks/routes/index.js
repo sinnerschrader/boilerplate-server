@@ -93,9 +93,10 @@ exports['default'] = {
 							return regeneratorRuntime.wrap(function runRoute$(context$3$0) {
 								while (1) switch (context$3$0.prev = context$3$0.next) {
 									case 0:
-										fn.bind(this).apply(undefined, args);
+										context$3$0.next = 2;
+										return fn.bind(this).apply(undefined, args);
 
-									case 1:
+									case 2:
 									case 'end':
 										return context$3$0.stop();
 								}
