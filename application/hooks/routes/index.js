@@ -92,31 +92,18 @@ exports['default'] = {
 
 						_this.log.info('Mounting ' + routeName + ' on ' + routeConfig.path);
 
-						application.router.register(routeName, routeConfig.path, methods, regeneratorRuntime.mark(function callee$2$0(next) {
-							return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
+						application.router.register(routeName, routeConfig.path, methods, regeneratorRuntime.mark(function runRoute(next) {
+							return regeneratorRuntime.wrap(function runRoute$(context$3$0) {
 								while (1) switch (context$3$0.prev = context$3$0.next) {
 									case 0:
-										context$3$0.prev = 0;
-										context$3$0.next = 3;
+										context$3$0.next = 2;
 										return fn.bind(this)(next);
 
-									case 3:
-										context$3$0.next = 10;
-										break;
-
-									case 5:
-										context$3$0.prev = 5;
-										context$3$0.t2 = context$3$0['catch'](0);
-
-										application.log.error('Error while executing route ' + routeName);
-										application.log.error(context$3$0.t2.stack);
-										throw context$3$0.t2;
-
-									case 10:
+									case 2:
 									case 'end':
 										return context$3$0.stop();
 								}
-							}, callee$2$0, this, [[0, 5]]);
+							}, runRoute, this);
 						}));
 					});
 

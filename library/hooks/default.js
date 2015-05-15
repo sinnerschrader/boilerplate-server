@@ -202,12 +202,12 @@ var Hook = (function () {
 
 					case 14:
 						context$2$0.prev = 14;
-						context$2$0.t8 = context$2$0['catch'](6);
+						context$2$0.t7 = context$2$0['catch'](6);
 
 						this.log.error('An error ocurred on stage ' + stageName + ' of hook \'' + this.name + '\'');
-						this.log.error(context$2$0.t8);
+						this.log.error(context$2$0.t7);
 
-						throw new Error(context$2$0.t8);
+						throw new Error(context$2$0.t7);
 
 					case 19:
 

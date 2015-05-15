@@ -72,14 +72,8 @@ export default {
 
 			this.log.info( `Mounting ${routeName} on ${routeConfig.path}` );
 
-			application.router.register( routeName, routeConfig.path, methods, function * ( next ) {
-				try {
-					yield fn.bind( this )( next );
-				} catch ( error ) {
-					application.log.error( `Error while executing route ${routeName}` );
-					application.log.error( error.stack );
-					throw error;
-				}
+			application.router.register( routeName, routeConfig.path, methods, function * runRoute ( next ) {
+				yield fn.bind( this )( next );
 			} );
 
 		} );
