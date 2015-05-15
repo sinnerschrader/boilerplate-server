@@ -6,7 +6,6 @@ Object.defineProperty(exports, '__esModule', {
 exports['default'] = startLogMiddleware;
 
 function startLogMiddleware(application) {
-
 	return regeneratorRuntime.mark(function logMiddleware(next) {
 		var start;
 		return regeneratorRuntime.wrap(function logMiddleware$(context$2$0) {

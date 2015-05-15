@@ -6,19 +6,19 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = startRevisionMiddleware;
 
 function startRevisionMiddleware(application) {
-
-	return function revisionMiddleWare(next) {
-		return regeneratorRuntime.async(function revisionMiddleWare$(context$2$0) {
+	return regeneratorRuntime.mark(function revisionMiddleWare(next) {
+		return regeneratorRuntime.wrap(function revisionMiddleWare$(context$2$0) {
 			while (1) switch (context$2$0.prev = context$2$0.next) {
 				case 0:
-					return context$2$0.abrupt("return", next);
+					context$2$0.next = 2;
+					return next;
 
-				case 1:
+				case 2:
 				case "end":
 					return context$2$0.stop();
 			}
-		}, null, this);
-	};
+		}, revisionMiddleWare, this);
+	});
 }
 
 module.exports = exports["default"];

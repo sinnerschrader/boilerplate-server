@@ -6,20 +6,21 @@ Object.defineProperty(exports, '__esModule', {
 exports['default'] = startEnvironmentMiddleware;
 
 function startEnvironmentMiddleware(application) {
-	return function environmentMiddleware(next) {
-		return regeneratorRuntime.async(function environmentMiddleware$(context$2$0) {
+	return regeneratorRuntime.mark(function environmentMiddleware(next) {
+		return regeneratorRuntime.wrap(function environmentMiddleware$(context$2$0) {
 			while (1) switch (context$2$0.prev = context$2$0.next) {
 				case 0:
 					this.set('X-Name', application.name);
 					this.set('X-Environment', application.configuration.environment);
-					return context$2$0.abrupt('return', next);
+					context$2$0.next = 4;
+					return next;
 
-				case 3:
+				case 4:
 				case 'end':
 					return context$2$0.stop();
 			}
-		}, null, this);
-	};
+		}, environmentMiddleware, this);
+	});
 }
 
 module.exports = exports['default'];

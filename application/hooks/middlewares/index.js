@@ -15,7 +15,7 @@ var _requireAll2 = _interopRequireDefault(_requireAll);
 var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
-	'after': ['hooks:engine:start:after'],
+	'after': ['hooks:routes:start:after'],
 
 	'start': function startMiddlewareHook(application) {
 		var coreMiddlewares, userMiddlewaresPath, userMiddlewares, moduleMiddlewares, middlewares;
@@ -67,17 +67,25 @@ exports['default'] = {
 						}
 
 						if (middlewareConfig === false) {
-							_this.log.debug('\'' + middlewareName + '\' is explicitly disabled.');
+							_this.log.debug('Middleware \'' + middlewareName + '\' is explicitly disabled.');
 							return;
 						}
 
 						if (typeof middlewareConfig === 'undefined') {
-							_this.log.debug('\'' + middlewareName + '\' is not configured, will not mount.');
+							_this.log.warn('Middleware \'' + middlewareName + '\' is not configured, will not mount.');
+							return;
+						}
+
+						var fn = middlewareFactoryFunction(application, middlewareConfig);
+
+						if (typeof fn !== 'function') {
+							_this.log.warn('\'' + middlewareName + '\' middleware factory does not produce valid middlewares, will not mount.');
 							return;
 						}
 
 						try {
-							application.engine.use(middlewareFactoryFunction(application, middlewareConfig));
+							application.router.use(fn);
+							_this.log.debug('Middleware \'' + middlewareName + '\' mounted.');
 						} catch (err) {
 							_this.log.error('Binding \'' + middlewareName + '\' to engine failed');
 							_this.log.debug(err);

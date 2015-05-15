@@ -5,7 +5,7 @@ import requireAll from 'require-all';
 import { exists } from '../../../library/utilities/fs';
 
 export default {
-	'after': [ 'hooks:engine:start:after' ],
+	'after': [ 'hooks:routes:start:after' ],
 
 	'start': async function startMiddlewareHook ( application ) {
 		// Load physical core middlewares
@@ -49,17 +49,25 @@ export default {
 			}
 
 			if ( middlewareConfig === false ) {
-				this.log.debug( `'${middlewareName}' is explicitly disabled.` );
+				this.log.debug( `Middleware '${middlewareName}' is explicitly disabled.` );
 				return;
 			}
 
 			if ( typeof middlewareConfig === 'undefined' ) {
-				this.log.debug( `'${middlewareName}' is not configured, will not mount.` );
+				this.log.warn( `Middleware '${middlewareName}' is not configured, will not mount.` );
+				return;
+			}
+
+			let fn = middlewareFactoryFunction( application, middlewareConfig );
+
+			if ( typeof fn !== 'function' ) {
+				this.log.warn( `'${middlewareName}' middleware factory does not produce valid middlewares, will not mount.` );
 				return;
 			}
 
 			try {
-				application.engine.use( middlewareFactoryFunction( application, middlewareConfig ) );
+				application.router.use( fn );
+				this.log.debug( `Middleware '${middlewareName}' mounted.` );
 			} catch ( err ) {
 				this.log.error( `Binding '${middlewareName}' to engine failed` );
 				this.log.debug( err );
