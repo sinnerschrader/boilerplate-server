@@ -24,9 +24,6 @@ var Ports = (function () {
 
 			return new Promise(function fullfill(resolve, reject) {
 				_portscanner.checkPortStatus.apply(undefined, [].concat(args, [function cb(error, result) {
-					if (error) {
-						return reject(error);
-					}
 					return resolve(result === 'closed');
 				}]));
 			});
@@ -40,9 +37,6 @@ var Ports = (function () {
 
 			return new Promise(function fullfill(resolve, reject) {
 				_portscanner.findAPortNotInUse.apply(undefined, [].concat(args, [function cb(error, result) {
-					if (error) {
-						return reject(error);
-					}
 					return resolve(result);
 				}]));
 			});
