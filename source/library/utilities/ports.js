@@ -4,9 +4,6 @@ class Ports {
 	static test ( ...args ) {
 		return new Promise( function fullfill ( resolve, reject ) {
 			test( ...[ ...args, function cb ( error, result ) {
-				if ( error ) {
-					return reject( error );
-				}
 				return resolve( result === 'closed' );
 			} ] );
 		} );
@@ -15,9 +12,6 @@ class Ports {
 	static find ( ...args ) {
 		return new Promise( function fullfill ( resolve, reject ) {
 			find( ...[ ...args, function cb ( error, result ) {
-				if ( error ) {
-					return reject( error );
-				}
 				return resolve( result );
 			} ] );
 		} );

@@ -6,6 +6,6 @@ Object.defineProperty(exports, '__esModule', {
 exports['default'] = {
 	'port': 1337,
 	'autoPort': true,
-	'host': '0.0.0.0'
+	'host': 'localhost'
 };
 module.exports = exports['default'];
