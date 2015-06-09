@@ -52,11 +52,16 @@ function engineBlueprint() {
 							http = _nameSpace$get.http;
 							server = application.configuration.server;
 
-							application.log.info('[application]', 'Starting engine ...');
-
 							if (application.router) {
+								application.log.info('[application]', 'Kicking off router ...');
 								fuel.use(application.router.routes());
 								fuel.use(application.router.allowedMethods());
+								application.log.info('[application]', 'Kicked off router ...');
+							}
+
+							if (!(application.runtime.env === 'development')) {
+								context$3$0.next = 18;
+								break;
 							}
 
 							context$3$0.next = 9;
@@ -102,15 +107,16 @@ function engineBlueprint() {
 						case 18:
 
 							application.log.info('[application]', 'Starting engine at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
-
 							context$3$0.next = 21;
-							return regeneratorRuntime.awrap(fuel.listen(server.port, server.host));
+							return regeneratorRuntime.awrap(fuel.listen(server.port));
 
 						case 21:
 							http = context$3$0.sent;
+
+							application.log.info('[application]', 'Started engine at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
 							return context$3$0.abrupt('return', application);
 
-						case 23:
+						case 24:
 						case 'end':
 							return context$3$0.stop();
 					}

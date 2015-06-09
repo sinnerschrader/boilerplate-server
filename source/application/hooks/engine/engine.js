@@ -20,38 +20,42 @@ function engineBlueprint () {
 			let { fuel, application, http } = nameSpace.get( this );
 			let server = application.configuration.server;
 
-			application.log.info( '[application]', `Starting engine ...` );
 
 			if ( application.router ) {
+				application.log.info( '[application]', `Kicking off router ...` );
 				fuel.use(application.router.routes());
 				fuel.use(application.router.allowedMethods());
+				application.log.info( '[application]', `Kicked off router ...` );
 			}
 
-			if ( await ports.test( port, host ) !== true ) {
-				if ( server.autoPort !== true ) {
-					throw new Error( `Port ${port} is taken and server.autPort is disabled, could not start server.` );
+			if ( application.runtime.env === 'development' ) {
+				if (await ports.test( port, host ) !== true) {
+					if ( server.autoPort !== true ) {
+						throw new Error( `Port ${port} is taken and server.autPort is disabled, could not start server.` );
+					}
+
+					application.log.warn( `[application] Port ${port} is taken, trying to obtain next open port... ` );
+					server.port = await ports.find( server.port + 1, server.port + 51, server.host );
+
+					application.subs.forEach(function(sub){
+						application.log.info( `[application:subapplication] Changing configuration of subapplications ${sub.name}` );
+
+						sub.mountable.configuration.server = server;
+						sub.mountable.configuration.client = Object.assign(sub.mountable.configuration.client || {}, {
+							host: server.host,
+							port: server.port
+						});
+
+						application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.server: ${JSON.stringify(sub.mountable.configuration.server)}` );
+						application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.client: ${JSON.stringify(sub.mountable.configuration.client)}` );
+					});
 				}
 
-				application.log.warn( `[application] Port ${port} is taken, trying to obtain next open port... ` );
-				server.port = await ports.find( server.port + 1, server.port + 51, server.host );
-
-				application.subs.forEach(function(sub){
-					application.log.info( `[application:subapplication] Changing configuration of subapplications ${sub.name}` );
-
-					sub.mountable.configuration.server = server;
-					sub.mountable.configuration.client = Object.assign(sub.mountable.configuration.client || {}, {
-						host: server.host,
-						port: server.port
-					});
-
-					application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.server: ${JSON.stringify(sub.mountable.configuration.server)}` );
-					application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.client: ${JSON.stringify(sub.mountable.configuration.client)}` );
-				});
 			}
 
 			application.log.info( '[application]', `Starting engine at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
-
-			http = await fuel.listen( server.port, server.host );
+			http = await fuel.listen( server.port );
+			application.log.info( '[application]', `Started engine at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
 			return application;
 		}
 
