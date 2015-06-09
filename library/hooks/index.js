@@ -1,3 +1,7 @@
+/*
+ * Load, schedule and run the default hooks
+ */
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6,10 +10,6 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-/*
- * Load, schedule and run the default hooks
- */
-
 var _path = require('path');
 
 var _load = require('./load');
@@ -17,7 +17,7 @@ var _load = require('./load');
 var _load2 = _interopRequireDefault(_load);
 
 function createHooks(application) {
-	application.hooks = _load2['default'](application, _path.resolve(application.runtime.base, 'application', 'hooks'));
+	application.hooks = (0, _load2['default'])(application, (0, _path.resolve)(application.runtime.base, 'application', 'hooks'));
 
 	application.hooks.forEach(function registerCoreHook(hook) {
 		hook.register(application);

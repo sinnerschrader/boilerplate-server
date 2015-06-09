@@ -24,11 +24,11 @@ exports['default'] = {
 
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					coreMiddlewares = _requireAll2['default'](_path.resolve(application.runtime.base, application.configuration.paths.middlewares));
-					userMiddlewaresPath = _path.resolve(application.runtime.cwd, this.configuration.path);
+					coreMiddlewares = (0, _requireAll2['default'])((0, _path.resolve)(application.runtime.base, application.configuration.paths.middlewares));
+					userMiddlewaresPath = (0, _path.resolve)(application.runtime.cwd, this.configuration.path);
 					userMiddlewares = {};
 					context$1$0.next = 5;
-					return _libraryUtilitiesFs.exists(userMiddlewaresPath);
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(userMiddlewaresPath));
 
 				case 5:
 					if (!context$1$0.sent) {
@@ -36,7 +36,7 @@ exports['default'] = {
 						break;
 					}
 
-					userMiddlewares = _requireAll2['default'](userMiddlewaresPath);
+					userMiddlewares = (0, _requireAll2['default'])(userMiddlewaresPath);
 
 				case 7:
 					moduleMiddlewares = Object.keys(this.configuration.enabled).filter(function (middlewareName) {

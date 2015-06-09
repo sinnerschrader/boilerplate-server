@@ -20,12 +20,12 @@ function boilerplate() {
 			case 0:
 				augmented = Object.assign({}, {
 					'cwd': process.cwd(),
-					'base': options.base || _path.resolve(__dirname, '../'),
+					'base': options.base || (0, _path.resolve)(__dirname, '../'),
 					'env': process.env.NODE_ENV || 'development',
 					'name': options.name || 'boilerplate-server'
 				}, options, { 'api': options });
 				context$1$0.next = 3;
-				return _boot2['default'](augmented);
+				return regeneratorRuntime.awrap((0, _boot2['default'])(augmented));
 
 			case 3:
 				return context$1$0.abrupt('return', context$1$0.sent);

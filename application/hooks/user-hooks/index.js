@@ -20,7 +20,7 @@ exports['default'] = {
 	'after': ['hooks:configure:start:after'],
 
 	'hookDidConfigure': function userHooksDidConfigure(application) {
-		this.configuration.path = _path.resolve(application.runtime.cwd, this.configuration.path);
+		this.configuration.path = (0, _path.resolve)(application.runtime.cwd, this.configuration.path);
 	},
 
 	'start': function startUserHook(application) {
@@ -30,15 +30,15 @@ exports['default'] = {
 
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					coreHookPath = _path.resolve(application.runtime.base, application.configuration.paths.hooks);
+					coreHookPath = (0, _path.resolve)(application.runtime.base, application.configuration.paths.hooks);
 					isProjectMode = this.configuration.path === coreHookPath;
 					context$1$0.next = 4;
-					return _libraryUtilitiesFs.exists(this.configuration.path);
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(this.configuration.path));
 
 				case 4:
-					context$1$0.t2 = context$1$0.sent;
+					context$1$0.t0 = context$1$0.sent;
 
-					if (!(context$1$0.t2 === false)) {
+					if (!(context$1$0.t0 === false)) {
 						context$1$0.next = 8;
 						break;
 					}
@@ -47,7 +47,7 @@ exports['default'] = {
 					return context$1$0.abrupt('return', this);
 
 				case 8:
-					hooks = _libraryHooksLoad2['default'](application, this.configuration.path, true);
+					hooks = (0, _libraryHooksLoad2['default'])(application, this.configuration.path, true);
 
 					hooks = hooks.map(function (hook) {
 						var conflictingCoreHooks = application.hooks.filter(function (coreHook) {

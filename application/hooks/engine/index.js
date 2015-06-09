@@ -17,7 +17,7 @@ exports['default'] = {
 		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					application.engine = _engine2['default'](application);
+					application.engine = (0, _engine2['default'])(application);
 					return context$1$0.abrupt('return', this);
 
 				case 2:

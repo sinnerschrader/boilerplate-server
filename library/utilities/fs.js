@@ -11,11 +11,11 @@ var _bluebird = require('bluebird');
 exports['default'] = {
 	'exists': function asyncExists(path) {
 		return new Promise(function resolveExists(resolve) {
-			_fs.exists(path, resolve);
+			(0, _fs.exists)(path, resolve);
 		});
 	},
-	'readFile': _bluebird.promisify(_fs.readFile),
-	'writeFile': _bluebird.promisify(_fs.writeFile),
-	'stat': _bluebird.promisify(_fs.stat)
+	'readFile': (0, _bluebird.promisify)(_fs.readFile),
+	'writeFile': (0, _bluebird.promisify)(_fs.writeFile),
+	'stat': (0, _bluebird.promisify)(_fs.stat)
 };
 module.exports = exports['default'];

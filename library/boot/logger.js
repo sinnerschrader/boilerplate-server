@@ -1,12 +1,13 @@
+/*
+ * Provides a sane-default boot logger
+ * that gets replaced after all configuration is loaded
+ */
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-/*
- * Provides a sane-default boot logger
- * that gets replaced after all configuration is loaded
- */
 
 var _winston = require('winston');
 

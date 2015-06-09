@@ -45,9 +45,9 @@ function serve(application, root) {
 					this['throw']('failed to decode', 400);
 				}
 
-				path = _resolvePath2['default'](root, path);
+				path = (0, _resolvePath2['default'])(root, path);
 
-				if (!(_path.basename(path)[0] === '.')) {
+				if (!((0, _path.basename)(path)[0] === '.')) {
 					context$1$0.next = 8;
 					break;
 				}
@@ -58,7 +58,7 @@ function serve(application, root) {
 				stats = undefined;
 				context$1$0.prev = 9;
 				context$1$0.next = 12;
-				return _libraryUtilitiesFs.stat(path);
+				return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.stat)(path));
 
 			case 12:
 				stats = context$1$0.sent;
@@ -76,9 +76,9 @@ function serve(application, root) {
 
 			case 17:
 				context$1$0.prev = 17;
-				context$1$0.t5 = context$1$0['catch'](9);
+				context$1$0.t0 = context$1$0['catch'](9);
 
-				if (!(notfound.indexOf(context$1$0.t5.code) > -1)) {
+				if (!(notfound.indexOf(context$1$0.t0.code) > -1)) {
 					context$1$0.next = 21;
 					break;
 				}
@@ -86,8 +86,8 @@ function serve(application, root) {
 				return context$1$0.abrupt('return');
 
 			case 21:
-				context$1$0.t5.status = 500;
-				throw context$1$0.t5;
+				context$1$0.t0.status = 500;
+				throw context$1$0.t0;
 
 			case 23:
 
@@ -95,8 +95,8 @@ function serve(application, root) {
 				this.set('Content-Length', stats.size);
 				this.set('Cache-Control', 'max-age=' + (configuration.options.maxage | 0));
 
-				this.type = _path.extname(path);
-				this.body = _fs.createReadStream(path);
+				this.type = (0, _path.extname)(path);
+				this.body = (0, _fs.createReadStream)(path);
 				return context$1$0.abrupt('return');
 
 			case 29:
@@ -107,8 +107,8 @@ function serve(application, root) {
 }
 
 function staticRouteFactory(application, configuration) {
-	var root = _path.resolve(application.runtime.base, application.configuration.paths['static']);
-	var userStaticPath = _path.resolve(application.runtime.cwd, configuration.options.root);
+	var root = (0, _path.resolve)(application.runtime.base, application.configuration.paths['static']);
+	var userStaticPath = (0, _path.resolve)(application.runtime.cwd, configuration.options.root);
 
 	return function staticRoute() {
 		var statist;
@@ -117,11 +117,11 @@ function staticRouteFactory(application, configuration) {
 				case 0:
 					statist = serve.bind(this);
 					context$2$0.next = 3;
-					return statist(application, root, configuration);
+					return regeneratorRuntime.awrap(statist(application, root, configuration));
 
 				case 3:
 					context$2$0.next = 5;
-					return statist(application, userStaticPath, configuration);
+					return regeneratorRuntime.awrap(statist(application, userStaticPath, configuration));
 
 				case 5:
 				case 'end':

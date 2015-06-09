@@ -31,7 +31,7 @@ function engineBlueprint() {
 			_classCallCheck(this, Engine);
 
 			var http = undefined;
-			var fuel = _koa2['default']();
+			var fuel = (0, _koa2['default'])();
 			fuel.experimental = true;
 
 			this.env = fuel.env;
@@ -58,12 +58,12 @@ function engineBlueprint() {
 							}
 
 							context$3$0.next = 8;
-							return _libraryUtilitiesPorts2['default'].test(port, host);
+							return regeneratorRuntime.awrap(_libraryUtilitiesPorts2['default'].test(port, host));
 
 						case 8:
-							context$3$0.t1 = context$3$0.sent;
+							context$3$0.t0 = context$3$0.sent;
 
-							if (!(context$3$0.t1 !== true)) {
+							if (!(context$3$0.t0 !== true)) {
 								context$3$0.next = 17;
 								break;
 							}
@@ -79,7 +79,7 @@ function engineBlueprint() {
 
 							application.log.warn('[application] Port ' + port + ' is taken, trying to obtain next open port... ');
 							context$3$0.next = 15;
-							return _libraryUtilitiesPorts2['default'].find(server.port + 1, server.port + 51, server.host);
+							return regeneratorRuntime.awrap(_libraryUtilitiesPorts2['default'].find(server.port + 1, server.port + 51, server.host));
 
 						case 15:
 							server.port = context$3$0.sent;
@@ -102,7 +102,7 @@ function engineBlueprint() {
 							application.log.info('[application]', 'Starting server at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
 
 							context$3$0.next = 20;
-							return fuel.listen(server.port, server.host);
+							return regeneratorRuntime.awrap(fuel.listen(server.port, server.host));
 
 						case 20:
 							http = context$3$0.sent;
@@ -126,14 +126,14 @@ function engineBlueprint() {
 							http = _nameSpace$get2.http;
 							application = _nameSpace$get2.application;
 							context$3$0.next = 5;
-							return server.close(function (err) {
+							return regeneratorRuntime.awrap(server.close(function (err) {
 								return new Promise(function fulfill(resolve, reject) {
 									if (err) {
 										return reject(err);
 									}
 									return resolve(application);
 								});
-							});
+							}));
 
 						case 5:
 							return context$3$0.abrupt('return', context$3$0.sent);

@@ -1,9 +1,9 @@
 #!/usr/bin/env node --harmony
+
+/*eslint-disable no-process-env, no-process-exit */
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*eslint-disable no-process-env, no-process-exit */
 
 var _path = require('path');
 
@@ -29,7 +29,7 @@ function start() {
 							case 0:
 								context$2$0.prev = 0;
 								context$2$0.next = 3;
-								return application.stop();
+								return regeneratorRuntime.awrap(application.stop());
 
 							case 3:
 								process.exit(0);
@@ -38,9 +38,9 @@ function start() {
 
 							case 6:
 								context$2$0.prev = 6;
-								context$2$0.t6 = context$2$0['catch'](0);
+								context$2$0.t0 = context$2$0['catch'](0);
 
-								application.log.error(context$2$0.t6);
+								application.log.error(context$2$0.t0);
 								process.exit(1);
 
 							case 10:
@@ -53,7 +53,7 @@ function start() {
 				application = undefined;
 				context$1$0.prev = 2;
 				context$1$0.next = 5;
-				return _2['default'](options);
+				return regeneratorRuntime.awrap((0, _2['default'])(options));
 
 			case 5:
 				application = context$1$0.sent;
@@ -62,11 +62,11 @@ function start() {
 
 			case 8:
 				context$1$0.prev = 8;
-				context$1$0.t7 = context$1$0['catch'](2);
+				context$1$0.t0 = context$1$0['catch'](2);
 				log = application ? application.log || console : console;
 
-				log.trace(context$1$0.t7);
-				throw new Error(context$1$0.t7);
+				log.trace(context$1$0.t0);
+				throw new Error(context$1$0.t0);
 
 			case 13:
 				context$1$0.prev = 13;
@@ -77,10 +77,10 @@ function start() {
 
 			case 17:
 				context$1$0.prev = 17;
-				context$1$0.t8 = context$1$0['catch'](13);
+				context$1$0.t1 = context$1$0['catch'](13);
 
-				application.log.error(context$1$0.t8);
-				throw new Error(context$1$0.t8);
+				application.log.error(context$1$0.t1);
+				throw new Error(context$1$0.t1);
 
 			case 21:
 
@@ -107,4 +107,4 @@ function start() {
 	}, null, this, [[2, 8], [13, 17]]);
 }
 
-start(_minimist2['default'](process.argv.slice(1)));
+start((0, _minimist2['default'])(process.argv.slice(1)));

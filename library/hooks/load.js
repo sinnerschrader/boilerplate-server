@@ -18,7 +18,7 @@ var _default2 = _interopRequireDefault(_default);
 function loadHooks(application, path) {
 	var modules = arguments[2] === undefined ? false : arguments[2];
 
-	var hooks = _requireAll2['default'](path);
+	var hooks = (0, _requireAll2['default'])(path);
 
 	if (modules && application.configuration) {
 
@@ -50,7 +50,7 @@ function loadHooks(application, path) {
 			return false;
 		}
 
-		return _default2['default'](application, hookName, data.index);
+		return (0, _default2['default'])(application, hookName, data.index);
 	}).filter(function (item) {
 		return item;
 	});

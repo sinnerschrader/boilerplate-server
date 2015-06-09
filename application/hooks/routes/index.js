@@ -28,13 +28,13 @@ exports['default'] = {
 
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					application.router = _koaRouter2['default']();
+					application.router = (0, _koaRouter2['default'])();
 
-					coreRoutes = _requireAll2['default'](_path.resolve(application.runtime.base, application.configuration.paths.routes));
+					coreRoutes = (0, _requireAll2['default'])((0, _path.resolve)(application.runtime.base, application.configuration.paths.routes));
 					userRoutes = {};
-					userRoutesPath = _path.resolve(application.runtime.cwd, this.configuration.path);
+					userRoutesPath = (0, _path.resolve)(application.runtime.cwd, this.configuration.path);
 					context$1$0.next = 6;
-					return _libraryUtilitiesFs.exists(userRoutesPath);
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(userRoutesPath));
 
 				case 6:
 					if (!context$1$0.sent) {
@@ -42,7 +42,7 @@ exports['default'] = {
 						break;
 					}
 
-					userRoutes = _requireAll2['default'](userRoutesPath);
+					userRoutes = (0, _requireAll2['default'])(userRoutesPath);
 
 				case 8:
 					moduleRoutes = Object.keys(this.configuration.enabled).filter(function (routeName) {

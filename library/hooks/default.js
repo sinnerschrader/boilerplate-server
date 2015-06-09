@@ -138,11 +138,11 @@ var Hook = (function () {
 
 							case 8:
 								context$4$0.next = 10;
-								return this.stage('configure', application);
+								return regeneratorRuntime.awrap(this.stage('configure', application));
 
 							case 10:
 								context$4$0.next = 12;
-								return this.stage('start', application);
+								return regeneratorRuntime.awrap(this.stage('start', application));
 
 							case 12:
 							case 'end':
@@ -189,11 +189,11 @@ var Hook = (function () {
 
 						context$2$0.prev = 6;
 						context$2$0.next = 9;
-						return this[lifecycle[stageName][0]](application);
+						return regeneratorRuntime.awrap(this[lifecycle[stageName][0]](application));
 
 					case 9:
 						context$2$0.next = 11;
-						return this[stageName](application);
+						return regeneratorRuntime.awrap(this[stageName](application));
 
 					case 11:
 						this.stages[stageName] = true;
@@ -202,18 +202,18 @@ var Hook = (function () {
 
 					case 14:
 						context$2$0.prev = 14;
-						context$2$0.t9 = context$2$0['catch'](6);
+						context$2$0.t0 = context$2$0['catch'](6);
 
 						this.log.error('An error ocurred on stage ' + stageName + ' of hook \'' + this.name + '\'');
-						this.log.error(context$2$0.t9);
+						this.log.error(context$2$0.t0);
 
-						throw new Error(context$2$0.t9);
+						throw new Error(context$2$0.t0);
 
 					case 19:
 
 						this.log.debug('Ran stage \'' + stageName + '\' on hook \'' + this.name + '\'');
 						context$2$0.next = 22;
-						return this[lifecycle[stageName][1]](application);
+						return regeneratorRuntime.awrap(this[lifecycle[stageName][1]](application));
 
 					case 22:
 

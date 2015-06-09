@@ -16,7 +16,7 @@ function loadConfiguration(path) {
 	var filter = arguments[1] === undefined ? /(.*).(js|json)$/ : arguments[1];
 	var env = arguments[2] === undefined ? 'development' : arguments[2];
 
-	var rawConfiguration = _requireAll2['default']({
+	var rawConfiguration = (0, _requireAll2['default'])({
 		'dirname': path,
 		'filter': filter
 	});
@@ -25,7 +25,7 @@ function loadConfiguration(path) {
 
 	var envConfiguration = rawConfiguration.environments[env] || {};
 
-	return _lodash.merge({}, rawConfiguration, envConfiguration, { 'environment': env });
+	return (0, _lodash.merge)({}, rawConfiguration, envConfiguration, { 'environment': env });
 }
 
 exports['default'] = loadConfiguration;
