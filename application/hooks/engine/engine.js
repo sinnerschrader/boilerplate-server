@@ -175,6 +175,18 @@ function engineBlueprint() {
 					application.router.stack.routes = application.router.stack.routes.concat(mountable.router.stack.routes);
 				}
 
+				application.router.stack.middleware.forEach(function (middleware) {
+					var match = mountable.router.stack.middleware.filter(function (mountMiddleware) {
+						return mountMiddleware.name === middleware.name;
+					})[0];
+
+					if (match) {
+						return;
+					}
+
+					mountable.router.stack.middleware.push(middleware);
+				});
+
 				fuel.use(mountable.router.routes());
 				fuel.use(mountable.router.allowedMethods());
 
