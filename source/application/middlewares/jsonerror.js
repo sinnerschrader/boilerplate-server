@@ -6,6 +6,10 @@ function JSONErrorFactory ( application ) {
 			error.expose = true;
 			this.response.status = error.status || 404;
 
+			if ( error.status === 401 ) {
+				this.set( 'WWW-Authenticate', 'Basic' );
+			}
+
 			var message = [
 				'Error',
 				error.pattern ? `in "${error.pattern}"` : '',
