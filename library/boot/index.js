@@ -72,7 +72,7 @@ var BoilerPlateServer = (function (_EventEmitter) {
 })(_events.EventEmitter);
 
 function boot(options) {
-	var application;
+	var application, result;
 	return regeneratorRuntime.async(function boot$(context$1$0) {
 		while (1) switch (context$1$0.prev = context$1$0.next) {
 			case 0:
@@ -81,9 +81,10 @@ function boot(options) {
 				return regeneratorRuntime.awrap((0, _hooks2['default'])(application));
 
 			case 3:
-				return context$1$0.abrupt('return', context$1$0.sent);
+				result = context$1$0.sent;
+				return context$1$0.abrupt('return', result);
 
-			case 4:
+			case 5:
 			case 'end':
 				return context$1$0.stop();
 		}

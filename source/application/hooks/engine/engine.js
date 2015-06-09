@@ -20,6 +20,8 @@ function engineBlueprint () {
 			let { fuel, application, http } = nameSpace.get( this );
 			let server = application.configuration.server;
 
+			application.log.info( '[application]', `Starting engine ...` );
+
 			if ( application.router ) {
 				fuel.use(application.router.routes());
 				fuel.use(application.router.allowedMethods());
@@ -47,7 +49,7 @@ function engineBlueprint () {
 				});
 			}
 
-			application.log.info( '[application]', `Starting server at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
+			application.log.info( '[application]', `Starting engine at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
 
 			http = await fuel.listen( server.port, server.host );
 			return application;

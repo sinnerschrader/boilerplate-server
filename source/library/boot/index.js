@@ -32,7 +32,8 @@ class BoilerPlateServer extends EventEmitter {
 
 async function boot ( options ) {
 	let application = new BoilerPlateServer( options );
-	return await hooks( application );
+	let result = await hooks( application );
+	return result;
 }
 
 export default boot;

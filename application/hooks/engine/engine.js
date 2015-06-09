@@ -52,36 +52,38 @@ function engineBlueprint() {
 							http = _nameSpace$get.http;
 							server = application.configuration.server;
 
+							application.log.info('[application]', 'Starting engine ...');
+
 							if (application.router) {
 								fuel.use(application.router.routes());
 								fuel.use(application.router.allowedMethods());
 							}
 
-							context$3$0.next = 8;
+							context$3$0.next = 9;
 							return regeneratorRuntime.awrap(_libraryUtilitiesPorts2['default'].test(port, host));
 
-						case 8:
+						case 9:
 							context$3$0.t0 = context$3$0.sent;
 
 							if (!(context$3$0.t0 !== true)) {
-								context$3$0.next = 17;
+								context$3$0.next = 18;
 								break;
 							}
 
 							if (!(server.autoPort !== true)) {
-								context$3$0.next = 12;
+								context$3$0.next = 13;
 								break;
 							}
 
 							throw new Error('Port ' + port + ' is taken and server.autPort is disabled, could not start server.');
 
-						case 12:
+						case 13:
 
 							application.log.warn('[application] Port ' + port + ' is taken, trying to obtain next open port... ');
-							context$3$0.next = 15;
+							context$3$0.next = 16;
 							return regeneratorRuntime.awrap(_libraryUtilitiesPorts2['default'].find(server.port + 1, server.port + 51, server.host));
 
-						case 15:
+						case 16:
 							server.port = context$3$0.sent;
 
 							application.subs.forEach(function (sub) {
@@ -97,18 +99,18 @@ function engineBlueprint() {
 								application.log.info('[application:subapplication] ' + sub.mountable.name + '.configuration.client: ' + JSON.stringify(sub.mountable.configuration.client));
 							});
 
-						case 17:
+						case 18:
 
-							application.log.info('[application]', 'Starting server at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
+							application.log.info('[application]', 'Starting engine at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
 
-							context$3$0.next = 20;
+							context$3$0.next = 21;
 							return regeneratorRuntime.awrap(fuel.listen(server.port, server.host));
 
-						case 20:
+						case 21:
 							http = context$3$0.sent;
 							return context$3$0.abrupt('return', application);
 
-						case 22:
+						case 23:
 						case 'end':
 							return context$3$0.stop();
 					}
