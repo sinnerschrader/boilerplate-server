@@ -5,13 +5,15 @@
   "main": "library/",
   "scripts": {
     "start": "node --harmony binary/boilerplate-server.js",
+    "console": "node --harmony binary/boilerplate-console.js",
     "build": "npm run babel",
     "watch": "npm run babel -- --watch",
     "babel": "npm run clean && babel source --out-dir ./",
     "clean": "rm -rf application binary configuration library"
   },
   "bin": {
-    "boilerplate-server": "binary/boilerplate-server.js"
+    "boilerplate-server": "binary/boilerplate-server.js",
+    "boilerplate-console": "binary/boilerplate-console.js"
   },
   "repository": {
     "type": "git",

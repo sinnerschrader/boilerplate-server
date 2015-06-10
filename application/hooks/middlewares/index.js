@@ -16,6 +16,7 @@ var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'after': ['hooks:routes:start:after'],
+	'modes': ['server'],
 
 	'start': function startMiddlewareHook(application) {
 		var coreMiddlewares, userMiddlewaresPath, userMiddlewares, moduleMiddlewares, middlewares;

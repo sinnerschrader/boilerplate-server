@@ -102,9 +102,10 @@ exports['default'] = {
 
 					(0, _lodash.merge)(application.configuration, core, user, application.runtime.api);
 					application.runtime.prefix = application.runtime.prefix || '/';
+					application.runtime.mode = application.runtime.mode || 'server';
 					return context$1$0.abrupt('return', this);
 
-				case 28:
+				case 29:
 				case 'end':
 					return context$1$0.stop();
 			}

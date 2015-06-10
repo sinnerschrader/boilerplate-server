@@ -7,6 +7,7 @@ import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'hooks:engine:start:after' ],
+	'modes': [ 'server' ],
 
 	'start': async function startRoutesHook ( application ) {
 		application.router = router();

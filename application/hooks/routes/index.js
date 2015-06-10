@@ -20,6 +20,7 @@ var _libraryUtilitiesFs = require('../../../library/utilities/fs');
 
 exports['default'] = {
 	'after': ['hooks:engine:start:after'],
+	'modes': ['server'],
 
 	'start': function startRoutesHook(application) {
 		var coreRoutes, userRoutes, userRoutesPath, moduleRoutes, routes;

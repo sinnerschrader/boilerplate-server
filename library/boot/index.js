@@ -33,7 +33,12 @@ var BoilerPlateServer = (function (_EventEmitter) {
 		this.name = options.name;
 		this.subs = options.subs || [];
 
-		this.runtime = options;
+		this.runtime = Object.assign({
+			'mode': 'server',
+			'prefix': '/',
+			'env': 'development'
+		}, options);
+
 		this.log = (0, _logger2['default'])(options, this);
 	}
 
@@ -44,16 +49,40 @@ var BoilerPlateServer = (function (_EventEmitter) {
 		value: function start() {
 			var host = arguments[0] === undefined ? this.configuration.server.host : arguments[0];
 			var port = arguments[1] === undefined ? this.configuration.server.port : arguments[1];
+			return regeneratorRuntime.async(function start$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						context$2$0.next = 2;
+						return regeneratorRuntime.awrap(this.engine.start(host, port));
 
-			this.engine.start(host, port);
-			return this;
+					case 2:
+						return context$2$0.abrupt('return', this);
+
+					case 3:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
 		}
 	}, {
 		key: 'stop',
 		value: function stop() {
-			this.log.info('\n[application:stop] Stopping server gracefully...');
-			this.engine.stop();
-			return this;
+			return regeneratorRuntime.async(function stop$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						this.log.info('\n[application:stop] Stopping server gracefully...');
+						context$2$0.next = 3;
+						return regeneratorRuntime.awrap(this.engine.stop());
+
+					case 3:
+						this.log.info('\n[application:stop] Stopped server gracefully...');
+						return context$2$0.abrupt('return', this);
+
+					case 5:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
 		}
 	}, {
 		key: 'mount',
@@ -65,6 +94,40 @@ var BoilerPlateServer = (function (_EventEmitter) {
 			}
 
 			(_engine = this.engine).mount.apply(_engine, args);
+			return this;
+		}
+	}, {
+		key: 'console',
+		value: function console() {
+			var _console;
+
+			for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+				args[_key2] = arguments[_key2];
+			}
+
+			return regeneratorRuntime.async(function console$(context$2$0) {
+				while (1) switch (context$2$0.prev = context$2$0.next) {
+					case 0:
+						if (this.console) {
+							context$2$0.next = 3;
+							break;
+						}
+
+						this.log.warn('[application:stop] application.console is not avaiable. Aborting.');
+						return context$2$0.abrupt('return', this);
+
+					case 3:
+						context$2$0.next = 5;
+						return regeneratorRuntime.awrap((_console = this.console).run.apply(_console, args));
+
+					case 5:
+						return context$2$0.abrupt('return', this);
+
+					case 6:
+					case 'end':
+						return context$2$0.stop();
+				}
+			}, null, this);
 		}
 	}]);
 

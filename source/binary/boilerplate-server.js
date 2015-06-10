@@ -1,6 +1,5 @@
 #!/usr/bin/env node --harmony
 /*eslint-disable no-process-env, no-process-exit */
-import { resolve } from 'path';
 
 import 'babel-core/polyfill';
 import minimist from 'minimist';
@@ -9,9 +8,10 @@ import boilerplate from '../';
 
 async function start ( options = {} ) {
 	let application;
+	let settings = Object.assign( options, { 'mode': 'server' } );
 
 	try {
-		application = await boilerplate( options );
+		application = await boilerplate( settings );
 	} catch ( error ) {
 		let log = application ? application.log || console : console;
 		log.trace( error );
@@ -19,7 +19,8 @@ async function start ( options = {} ) {
 	}
 
 	try {
-		application.start();
+		await application.start();
+		application.log.info('[application] Started without errors.');
 	} catch ( error ) {
 		application.log.error( error );
 		throw new Error( error );

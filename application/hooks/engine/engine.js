@@ -30,18 +30,17 @@ function engineBlueprint() {
 		function Engine(application) {
 			_classCallCheck(this, Engine);
 
-			var http = undefined;
 			var fuel = (0, _koa2['default'])();
 			fuel.experimental = true;
 
 			this.env = fuel.env;
-			nameSpace.set(this, { application: application, fuel: fuel, http: http, 'mounts': {} });
+			nameSpace.set(this, { application: application, fuel: fuel, 'mounts': {} });
 		}
 
 		_createClass(Engine, [{
 			key: 'start',
 			value: function start(host, port) {
-				var _nameSpace$get, fuel, application, http, server;
+				var _nameSpace$get, fuel, application, server, http;
 
 				return regeneratorRuntime.async(function start$(context$3$0) {
 					while (1) switch (context$3$0.prev = context$3$0.next) {
@@ -49,7 +48,6 @@ function engineBlueprint() {
 							_nameSpace$get = nameSpace.get(this);
 							fuel = _nameSpace$get.fuel;
 							application = _nameSpace$get.application;
-							http = _nameSpace$get.http;
 							server = application.configuration.server;
 
 							if (application.router) {
@@ -60,35 +58,35 @@ function engineBlueprint() {
 							}
 
 							if (!(application.runtime.env === 'development')) {
-								context$3$0.next = 18;
+								context$3$0.next = 17;
 								break;
 							}
 
-							context$3$0.next = 9;
+							context$3$0.next = 8;
 							return regeneratorRuntime.awrap(_libraryUtilitiesPorts2['default'].test(port, host));
 
-						case 9:
+						case 8:
 							context$3$0.t0 = context$3$0.sent;
 
 							if (!(context$3$0.t0 !== true)) {
-								context$3$0.next = 18;
+								context$3$0.next = 17;
 								break;
 							}
 
 							if (!(server.autoPort !== true)) {
-								context$3$0.next = 13;
+								context$3$0.next = 12;
 								break;
 							}
 
 							throw new Error('Port ' + port + ' is taken and server.autPort is disabled, could not start server.');
 
-						case 13:
+						case 12:
 
 							application.log.warn('[application] Port ' + port + ' is taken, trying to obtain next open port... ');
-							context$3$0.next = 16;
+							context$3$0.next = 15;
 							return regeneratorRuntime.awrap(_libraryUtilitiesPorts2['default'].find(server.port + 1, server.port + 51, server.host));
 
-						case 16:
+						case 15:
 							server.port = context$3$0.sent;
 
 							application.subs.forEach(function (sub) {
@@ -104,16 +102,18 @@ function engineBlueprint() {
 								application.log.info('[application:subapplication] ' + sub.mountable.name + '.configuration.client: ' + JSON.stringify(sub.mountable.configuration.client));
 							});
 
-						case 18:
+						case 17:
 
 							application.log.info('[application]', 'Starting engine at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
-							context$3$0.next = 21;
+							context$3$0.next = 20;
 							return regeneratorRuntime.awrap(fuel.listen(server.port));
 
-						case 21:
+						case 20:
 							http = context$3$0.sent;
 
 							application.log.info('[application]', 'Started engine at http://' + server.host + ':' + server.port + ' in environment \'' + application.configuration.environment + '\' ...');
+
+							nameSpace.set(this, { http: http });
 							return context$3$0.abrupt('return', application);
 
 						case 24:
@@ -134,7 +134,7 @@ function engineBlueprint() {
 							http = _nameSpace$get2.http;
 							application = _nameSpace$get2.application;
 							context$3$0.next = 5;
-							return regeneratorRuntime.awrap(server.close(function (err) {
+							return regeneratorRuntime.awrap(http.close(function (err) {
 								return new Promise(function fulfill(resolve, reject) {
 									if (err) {
 										return reject(err);

@@ -12,6 +12,7 @@ var _engine2 = _interopRequireDefault(_engine);
 
 exports['default'] = {
 	'after': ['hooks:user-hooks:start:after'],
+	'modes': ['server'],
 
 	'start': function startEngineHook(application) {
 		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
