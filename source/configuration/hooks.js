@@ -6,6 +6,7 @@ export default {
 		'engine': true,
 		'user-hooks': true,
 		'middlewares': true,
-		'routes': true
+		'routes': true,
+		'console': true
 	}
 };

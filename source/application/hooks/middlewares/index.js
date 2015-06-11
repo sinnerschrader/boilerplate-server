@@ -6,6 +6,7 @@ import { exists } from '../../../library/utilities/fs';
 
 export default {
 	'after': [ 'hooks:routes:start:after' ],
+	'modes': [ 'server' ],
 
 	'start': async function startMiddlewareHook ( application ) {
 		// Load physical core middlewares

@@ -22,6 +22,7 @@ var Hook = (function () {
 
 		this.wait = true;
 		this.disabled = false;
+		this.modes = [];
 		this.after = ['application:after'];
 		this.defaults = {};
 		this.configuration = {};
@@ -38,6 +39,7 @@ var Hook = (function () {
 		this.wait = typeof extender.wait !== 'undefined' ? extender.wait : this.wait;
 		this.disabled = typeof extender.disabled !== 'undefined' ? extender.disabled : this.disabled;
 
+		this.modes = extender.modes || this.modes;
 		this.after = extender.after || this.after;
 		this.defaults = extender.defaults || this.defaults;
 
@@ -117,44 +119,60 @@ var Hook = (function () {
 
 			this.log.silly('Registering hook \'' + this.name + '\'');
 
+			if (this.modes.length > 0 && this.modes.indexOf(application.runtime.mode) === -1) {
+				var modeWord = this.modes.length === 1 ? 'mode' : 'modes';
+				this.log.debug('Hook ' + this.name + ' is disabled in mode ' + application.runtime.mode + '. Enabled in ' + modeWord + ' ' + this.modes.join(', ') + '.');
+				this.disable(application);
+				return this;
+			}
+
+			function onSubscription() {
+				return regeneratorRuntime.async(function onSubscription$(context$3$0) {
+					while (1) switch (context$3$0.prev = context$3$0.next) {
+						case 0:
+							if (!(application.configuration && application.configuration.hooks.enabled[this.name] === false)) {
+								context$3$0.next = 4;
+								break;
+							}
+
+							this.log.debug('Hook \'' + this.name + '\' is disabled explicitly.');
+							this.disable(application);
+							return context$3$0.abrupt('return', this);
+
+						case 4:
+							context$3$0.next = 6;
+							return regeneratorRuntime.awrap(this.stage('configure', application));
+
+						case 6:
+							context$3$0.next = 8;
+							return regeneratorRuntime.awrap(this.stage('start', application));
+
+						case 8:
+						case 'end':
+							return context$3$0.stop();
+					}
+				}, null, this);
+			}
+
 			this.after.forEach(function (eventName) {
-				function onSubscription() {
-					return regeneratorRuntime.async(function onSubscription$(context$4$0) {
-						while (1) switch (context$4$0.prev = context$4$0.next) {
-							case 0:
-								if (!(application.configuration && application.configuration.hooks.enabled[this.name] === false)) {
-									context$4$0.next = 8;
-									break;
-								}
-
-								this.log.debug('Hook \'' + this.name + '\' is disabled');
-								this.disabled = true;
-
-								application.emit('hooks:' + this.name + ':configure:before');
-								application.emit('hooks:configure:before', this.name);
-								application.emit('hooks:' + this.name + ':start:after');
-								application.emit('hooks:start:after', this.name);
-								return context$4$0.abrupt('return', this);
-
-							case 8:
-								context$4$0.next = 10;
-								return regeneratorRuntime.awrap(this.stage('configure', application));
-
-							case 10:
-								context$4$0.next = 12;
-								return regeneratorRuntime.awrap(this.stage('start', application));
-
-							case 12:
-							case 'end':
-								return context$4$0.stop();
-						}
-					}, null, this);
-				}
-
 				application.on(eventName, onSubscription.bind(_this2));
 			});
 
 			this.hookDidRegister(application);
+			return this;
+		}
+	}, {
+		key: 'disable',
+		value: function disable(application) {
+			if (!this.disabled) {
+				this.disabled = true;
+
+				application.emit('hooks:' + this.name + ':configure:before');
+				application.emit('hooks:configure:before', this.name);
+				application.emit('hooks:' + this.name + ':start:after');
+				application.emit('hooks:start:after', this.name);
+			}
+
 			return this;
 		}
 	}, {
@@ -183,7 +201,7 @@ var Hook = (function () {
 					case 2:
 
 						this.stageName = stageName;
-						this.log.silly('Running stage \'' + stageName + '\' on hook \'' + this.name + '\'');
+						this.log.debug('Running stage \'' + stageName + '\' on hook \'' + this.name + '\'');
 						application.emit('hooks:' + this.name + ':' + stageName + ':before');
 						application.emit('hooks:' + stageName + ':before', this.name);
 
@@ -197,11 +215,20 @@ var Hook = (function () {
 
 					case 11:
 						this.stages[stageName] = true;
-						context$2$0.next = 19;
-						break;
 
-					case 14:
-						context$2$0.prev = 14;
+						this.log.debug('Ran stage \'' + stageName + '\' on hook \'' + this.name + '\'');
+						context$2$0.next = 15;
+						return regeneratorRuntime.awrap(this[lifecycle[stageName][1]](application));
+
+					case 15:
+
+						application.emit('hooks:' + this.name + ':' + stageName + ':after');
+						application.emit('hooks:' + stageName + ':after', this.name);
+
+						return context$2$0.abrupt('return', this);
+
+					case 20:
+						context$2$0.prev = 20;
 						context$2$0.t0 = context$2$0['catch'](6);
 
 						this.log.error('An error ocurred on stage ' + stageName + ' of hook \'' + this.name + '\'');
@@ -209,24 +236,11 @@ var Hook = (function () {
 
 						throw new Error(context$2$0.t0);
 
-					case 19:
-
-						this.log.debug('Ran stage \'' + stageName + '\' on hook \'' + this.name + '\'');
-						context$2$0.next = 22;
-						return regeneratorRuntime.awrap(this[lifecycle[stageName][1]](application));
-
-					case 22:
-
-						application.emit('hooks:' + this.name + ':' + stageName + ':after');
-						application.emit('hooks:' + stageName + ':after', this.name);
-
-						return context$2$0.abrupt('return', this);
-
 					case 25:
 					case 'end':
 						return context$2$0.stop();
 				}
-			}, null, this, [[6, 14]]);
+			}, null, this, [[6, 20]]);
 		}
 	}, {
 		key: 'configure',
@@ -328,3 +342,5 @@ function hookFactory() {
 
 exports['default'] = hookFactory;
 exports.Hook = Hook;
+
+// application.configuration is not ready before hooks:configure ran

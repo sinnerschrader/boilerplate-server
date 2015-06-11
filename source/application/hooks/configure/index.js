@@ -64,6 +64,7 @@ export default {
 
 		merge( application.configuration, core, user, application.runtime.api );
 		application.runtime.prefix = application.runtime.prefix || '/';
+		application.runtime.mode = application.runtime.mode || 'server';
 		return this;
 	}
 };

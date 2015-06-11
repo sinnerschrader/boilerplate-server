@@ -1,11 +1,10 @@
 #!/usr/bin/env node --harmony
 
 /*eslint-disable no-process-env, no-process-exit */
+
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _path = require('path');
 
 require('babel-core/polyfill');
 
@@ -19,7 +18,7 @@ var _2 = _interopRequireDefault(_);
 
 function start() {
 	var options = arguments[0] === undefined ? {} : arguments[0];
-	var application, log, stop;
+	var application, settings, log, stop;
 	return regeneratorRuntime.async(function start$(context$1$0) {
 		while (1) switch (context$1$0.prev = context$1$0.next) {
 			case 0:
@@ -51,38 +50,42 @@ function start() {
 				};
 
 				application = undefined;
-				context$1$0.prev = 2;
-				context$1$0.next = 5;
-				return regeneratorRuntime.awrap((0, _2['default'])(options));
+				settings = Object.assign(options, { 'mode': 'server' });
+				context$1$0.prev = 3;
+				context$1$0.next = 6;
+				return regeneratorRuntime.awrap((0, _2['default'])(settings));
 
-			case 5:
+			case 6:
 				application = context$1$0.sent;
-				context$1$0.next = 13;
+				context$1$0.next = 14;
 				break;
 
-			case 8:
-				context$1$0.prev = 8;
-				context$1$0.t0 = context$1$0['catch'](2);
+			case 9:
+				context$1$0.prev = 9;
+				context$1$0.t0 = context$1$0['catch'](3);
 				log = application ? application.log || console : console;
 
-				log.trace(context$1$0.t0);
+				log.error(context$1$0.t0);
 				throw new Error(context$1$0.t0);
 
-			case 13:
-				context$1$0.prev = 13;
-
-				application.start();
-				context$1$0.next = 21;
-				break;
+			case 14:
+				context$1$0.prev = 14;
+				context$1$0.next = 17;
+				return regeneratorRuntime.awrap(application.start());
 
 			case 17:
-				context$1$0.prev = 17;
-				context$1$0.t1 = context$1$0['catch'](13);
+				application.log.info('[application] Started without errors.');
+				context$1$0.next = 24;
+				break;
+
+			case 20:
+				context$1$0.prev = 20;
+				context$1$0.t1 = context$1$0['catch'](14);
 
 				application.log.error(context$1$0.t1);
 				throw new Error(context$1$0.t1);
 
-			case 21:
+			case 24:
 
 				process.on('SIGINT', function () {
 					return stop('SIGINT');
@@ -100,11 +103,11 @@ function start() {
 					return stop('SIGTERM');
 				});
 
-			case 26:
+			case 29:
 			case 'end':
 				return context$1$0.stop();
 		}
-	}, null, this, [[2, 8], [13, 17]]);
+	}, null, this, [[3, 9], [14, 20]]);
 }
 
 start((0, _minimist2['default'])(process.argv.slice(1)));

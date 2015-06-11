@@ -8,18 +8,16 @@ function engineBlueprint () {
 
 	return class Engine {
 		constructor ( application ) {
-			let http;
 			let fuel = koa();
 			fuel.experimental = true;
 
 			this.env = fuel.env;
-			nameSpace.set( this, { application, fuel, http, 'mounts': {} } );
+			nameSpace.set( this, { application, fuel, 'mounts': {} } );
 		}
 
 		async start ( host, port ) {
-			let { fuel, application, http } = nameSpace.get( this );
+			let { fuel, application } = nameSpace.get( this );
 			let server = application.configuration.server;
-
 
 			if ( application.router ) {
 				application.log.info( '[application]', `Kicking off router ...` );
@@ -54,15 +52,18 @@ function engineBlueprint () {
 			}
 
 			application.log.info( '[application]', `Starting engine at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
-			http = await fuel.listen( server.port );
+			let http = await fuel.listen( server.port );
 			application.log.info( '[application]', `Started engine at http://${server.host}:${server.port} in environment '${application.configuration.environment}' ...` );
+
+			nameSpace.set( this, { http } );
 			return application;
 		}
+
 
 		async stop () {
 			let { http, application } = nameSpace.get(this);
 
-			return await server.close( function( err ) {
+			return await http.close( function( err ) {
 				return new Promise( function fulfill( resolve, reject ) {
 					if ( err ) {
 						return reject( err );

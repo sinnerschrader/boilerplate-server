@@ -10,23 +10,42 @@ class BoilerPlateServer extends EventEmitter {
 		this.name = options.name;
 		this.subs = options.subs || [];
 
-		this.runtime = options;
+		this.runtime = Object.assign( {
+			'mode': 'server',
+			'prefix': '/',
+			'env': 'development'
+		}, options );
+
 		this.log = bootLogger( options, this );
 	}
 
-	start ( host = this.configuration.server.host, port = this.configuration.server.port ) {
-		this.engine.start( host, port );
+	async start ( host = this.configuration.server.host, port = this.configuration.server.port ) {
+		await this.engine.start( host, port );
 		return this;
 	}
 
-	stop () {
+	async stop () {
 		this.log.info( '\n[application:stop] Stopping server gracefully...' );
-		this.engine.stop();
+		await this.engine.stop();
+		this.log.info( '\n[application:stop] Stopped server gracefully...' );
 		return this;
 	}
 
 	mount ( ...args ) {
 		this.engine.mount( ...args );
+		return this;
+	}
+
+	async run ( options ) {
+		if ( !this.console ) {
+			this.log.warn( '[application:stop] application.console is not avaiable. Aborting.' );
+			return this;
+		}
+
+		let args = Object.assign( {}, options );
+		delete args._;
+
+		return await this.console.run( options._[ 1 ], args );
 	}
 }
 
