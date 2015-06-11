@@ -36,14 +36,16 @@ class BoilerPlateServer extends EventEmitter {
 		return this;
 	}
 
-	async console ( ...args ) {
+	async run ( options ) {
 		if ( !this.console ) {
 			this.log.warn( '[application:stop] application.console is not avaiable. Aborting.' );
 			return this;
 		}
 
-		await this.console.run( ...args );
-		return this;
+		let args = Object.assign( {}, options );
+		delete args._;
+
+		return await this.console.run( options._[ 1 ], args );
 	}
 }
 

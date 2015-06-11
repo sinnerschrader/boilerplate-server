@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 exports['default'] = {
-	'enabled': {
-		'console': false
-	}
+	'path': './application/tasks'
 };
 module.exports = exports['default'];

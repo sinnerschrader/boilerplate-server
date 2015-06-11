@@ -38,28 +38,30 @@ function start() {
 				context$1$0.t0 = context$1$0['catch'](2);
 				log = application ? application.log || console : console;
 
-				log.trace(context$1$0.t0);
+				log.error(context$1$0.t0);
 				throw new Error(context$1$0.t0);
 
 			case 13:
 				context$1$0.prev = 13;
+				context$1$0.next = 16;
+				return regeneratorRuntime.awrap(application.run(settings));
 
-				application.console(options._.slice(1));
-				context$1$0.next = 21;
+			case 16:
+				context$1$0.next = 22;
 				break;
 
-			case 17:
-				context$1$0.prev = 17;
+			case 18:
+				context$1$0.prev = 18;
 				context$1$0.t1 = context$1$0['catch'](13);
 
-				application.log.trace(context$1$0.t1);
+				application.log.error(context$1$0.t1);
 				throw new Error(context$1$0.t1);
 
-			case 21:
+			case 22:
 			case 'end':
 				return context$1$0.stop();
 		}
-	}, null, this, [[2, 8], [13, 17]]);
+	}, null, this, [[2, 8], [13, 18]]);
 }
 
 start((0, _minimist2['default'])(process.argv.slice(1)));

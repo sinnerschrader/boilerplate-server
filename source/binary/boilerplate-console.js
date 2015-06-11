@@ -14,14 +14,14 @@ async function start ( options = {} ) {
 		application = await boilerplate( settings );
 	} catch ( error ) {
 		let log = application ? application.log || console : console;
-		log.trace( error );
+		log.error( error );
 		throw new Error( error );
 	}
 
 	try {
-		application.console( options._.slice( 1 ) );
+		await application.run( settings );
 	} catch ( error ) {
-		application.log.trace( error );
+		application.log.error( error );
 		throw new Error( error );
 	}
 }

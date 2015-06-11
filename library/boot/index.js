@@ -97,15 +97,10 @@ var BoilerPlateServer = (function (_EventEmitter) {
 			return this;
 		}
 	}, {
-		key: 'console',
-		value: function console() {
-			var _console;
-
-			for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-				args[_key2] = arguments[_key2];
-			}
-
-			return regeneratorRuntime.async(function console$(context$2$0) {
+		key: 'run',
+		value: function run(options) {
+			var args;
+			return regeneratorRuntime.async(function run$(context$2$0) {
 				while (1) switch (context$2$0.prev = context$2$0.next) {
 					case 0:
 						if (this.console) {
@@ -117,13 +112,17 @@ var BoilerPlateServer = (function (_EventEmitter) {
 						return context$2$0.abrupt('return', this);
 
 					case 3:
-						context$2$0.next = 5;
-						return regeneratorRuntime.awrap((_console = this.console).run.apply(_console, args));
+						args = Object.assign({}, options);
 
-					case 5:
-						return context$2$0.abrupt('return', this);
+						delete args._;
 
-					case 6:
+						context$2$0.next = 7;
+						return regeneratorRuntime.awrap(this.console.run(options._[1], args));
+
+					case 7:
+						return context$2$0.abrupt('return', context$2$0.sent);
+
+					case 8:
 					case 'end':
 						return context$2$0.stop();
 				}

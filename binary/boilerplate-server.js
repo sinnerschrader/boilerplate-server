@@ -65,7 +65,7 @@ function start() {
 				context$1$0.t0 = context$1$0['catch'](3);
 				log = application ? application.log || console : console;
 
-				log.trace(context$1$0.t0);
+				log.error(context$1$0.t0);
 				throw new Error(context$1$0.t0);
 
 			case 14:
