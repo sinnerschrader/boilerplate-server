@@ -21,6 +21,11 @@ var routes = {
 				'hidden': false,
 				'defer': false
 			}
+		},
+		'health': {
+			'enabled': true,
+			'method': 'GET',
+			'path': '/health/'
 		}
 	}
 };
