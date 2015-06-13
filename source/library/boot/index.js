@@ -13,7 +13,7 @@ class BoilerPlateServer extends EventEmitter {
 		this.runtime = Object.assign( {
 			'mode': 'server',
 			'prefix': '/',
-			'env': 'development'
+			'env': process.env.BOILERPLATESERVER_ENV || process.env.BOILERPLATE_ENV || process.env.NODE_ENV || process.env.ENV || 'development'
 		}, options );
 
 		this.log = bootLogger( options, this );

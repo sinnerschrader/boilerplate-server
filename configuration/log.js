@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 exports['default'] = {
-	'level': 'silly',
+	'level': process.env.BOILERPLATESERVER_LOG_LEVEL || process.env.BOILERPLATE_LOG_LEVEL || process.env.NODE_LOG_LEVEL || process.env.LOG_LEVEL || 'silly',
 	'transports': ['console', 'file'],
 	'options': {
 		'console': {

@@ -7,7 +7,7 @@ exports['default'] = startLogMiddleware;
 
 function startLogMiddleware(application) {
 	return regeneratorRuntime.mark(function logMiddleware(next) {
-		var start;
+		var start, delta;
 		return regeneratorRuntime.wrap(function logMiddleware$(context$2$0) {
 			while (1) switch (context$2$0.prev = context$2$0.next) {
 				case 0:
@@ -16,9 +16,11 @@ function startLogMiddleware(application) {
 					return next;
 
 				case 3:
-					application.log.debug('[application:request]', '' + start + ' ' + this.method + ' ' + this.url + ' - ' + this.response.status + ' ' + this.response.message);
+					delta = new Date() - start;
 
-				case 4:
+					application.log.debug('[application:request]', '' + start + ' - ' + this.method + ' ' + this.url + ' - ' + this.response.status + ' ' + this.response.message + ' - ' + delta + 'ms');
+
+				case 5:
 				case 'end':
 					return context$2$0.stop();
 			}
