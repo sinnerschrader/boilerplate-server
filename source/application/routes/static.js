@@ -1,65 +1,25 @@
-import { resolve, basename, extname } from 'path';
-import { createReadStream } from 'fs';
+import {resolve} from 'path';
+import send from 'koa-send';
 
-import resolvePath from 'resolve-path';
-import { stat } from '../../library/utilities/fs';
+export default function staticRouteFactory (application, configuration) {
+	return function * staticRoute () {
+		let root = resolve( application.runtime.base, application.configuration.paths.static );
+		let roots = Array.isArray(configuration.options.root) ? configuration.options.root : [configuration.options.root];
 
-const notfound = [ 'ENOENT', 'ENAMETOOLONG', 'ENOTDIR' ];
+		roots = roots.map((item) => resolve(application.runtime.cwd, item));
+		roots.push(root);
 
-async function serve( application, root, configuration = {} ) {
-	if ( [ 'HEAD', 'GET' ].indexOf( this.method ) === -1 ) {
-		return;
-	}
+		this.assert(this.params.path, 404);
 
-	let path = this.captures[0];
-	path = path[ 0 ] === '/' ? path.slice( 1 ) : path;
+		for (let root of roots) {
+			yield send(this, this.params.path, {root});
 
-	try {
-		path = decodeURIComponent( path )
-	} catch ( err ) {
-		application.log.error( 'Could not decode path' );
-		application.log.debug( err );
-		this.throw( 'failed to decode', 400 );
-	}
-
-	path = resolvePath( root, path );
-
-	if ( basename( path )[ 0 ] === '.' ) {
-		return;
-	}
-
-	let stats;
-
-	try {
-		stats = await stat( path );
-		if ( stats.isDirectory() ) {
-			return;
+			if (this.status === 200) {
+				application.log.info(`[application:request] Matched ${this.params.path} on ${root}`);
+				break;
+			} else {
+				application.log.info(`[application:request] No match for ${this.params.path} on ${root}`);
+			}
 		}
-	} catch ( err ) {
-		if ( notfound.indexOf( err.code ) > -1 ) {
-			return;
-		}
-		err.status = 500;
-		throw err;
-	}
-
-	this.set( 'Last-Modified', stats.mtime.toUTCString() );
-	this.set( 'Content-Length', stats.size );
-	this.set( 'Cache-Control', `max-age=${configuration.options.maxage | 0}` );
-
-	this.type = extname( path );
-	this.body = createReadStream( path );
-	return;
-}
-
-export default function staticRouteFactory ( application, configuration ) {
-	let root = resolve( application.runtime.base, application.configuration.paths.static );
-	let userStaticPath = resolve( application.runtime.cwd, configuration.options.root );
-
-	return async function staticRoute ( ) {
-		let statist = serve.bind( this );
-
-		await statist( application, root, configuration );
-		await statist( application, userStaticPath, configuration );
 	};
 }

@@ -44,7 +44,7 @@ exports['default'] = {
 	},
 
 	'start': function startEngineHook(application) {
-		var core, corePkgPath, pkgPath, corePkg, pkg, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, configPath, userPath, user;
+		var core, corePkgPath, pkgPath, corePkg, pkg, user, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, configPath, userPath, userPathConfig;
 
 		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -66,13 +66,14 @@ exports['default'] = {
 					// Allow user to override core behaviour via cli and *rc files
 					core = (0, _lodash.merge)({}, core, { 'pkg': pkg }, application.runtime.api);
 
+					user = {};
 					_iteratorNormalCompletion = true;
 					_didIteratorError = false;
 					_iteratorError = undefined;
-					context$1$0.prev = 11;
+					context$1$0.prev = 12;
 					_iterator = core.paths.configuration[Symbol.iterator]();
 
-				case 13:
+				case 14:
 					if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
 						context$1$0.next = 37;
 						break;
@@ -80,7 +81,6 @@ exports['default'] = {
 
 					configPath = _step.value;
 					userPath = (0, _path.resolve)(application.runtime.cwd, configPath);
-					user = {};
 
 					this.log.warn('Searching for user configuration at \'' + userPath + '\'');
 
@@ -89,18 +89,19 @@ exports['default'] = {
 
 				case 20:
 					if (!context$1$0.sent) {
-						context$1$0.next = 32;
+						context$1$0.next = 33;
 						break;
 					}
 
 					context$1$0.prev = 21;
+					userPathConfig = (0, _libraryUtilitiesConfiguration2['default'])(userPath, this.configuration.filter, application.runtime.env);
 
-					user = (0, _libraryUtilitiesConfiguration2['default'])(userPath, this.configuration.filter, application.runtime.env);
-					context$1$0.next = 30;
+					user = (0, _lodash.merge)(user, userPathConfig);
+					context$1$0.next = 31;
 					break;
 
-				case 25:
-					context$1$0.prev = 25;
+				case 26:
+					context$1$0.prev = 26;
 					context$1$0.t0 = context$1$0['catch'](21);
 
 					this.log.error('Error while reading user configuration from ' + userPath + '.');
@@ -108,20 +109,16 @@ exports['default'] = {
 
 					throw new Error('Failed loading user configuration');
 
-				case 30:
-					context$1$0.next = 33;
+				case 31:
+					context$1$0.next = 34;
 					break;
 
-				case 32:
-					this.log.warn('No user configuration present at \'' + userPath + '\'');
-
 				case 33:
-
-					(0, _lodash.merge)(application.configuration, core, user, application.runtime.api);
+					this.log.warn('No user configuration present at \'' + userPath + '\'');
 
 				case 34:
 					_iteratorNormalCompletion = true;
-					context$1$0.next = 13;
+					context$1$0.next = 14;
 					break;
 
 				case 37:
@@ -130,7 +127,7 @@ exports['default'] = {
 
 				case 39:
 					context$1$0.prev = 39;
-					context$1$0.t1 = context$1$0['catch'](11);
+					context$1$0.t1 = context$1$0['catch'](12);
 					_didIteratorError = true;
 					_iteratorError = context$1$0.t1;
 
@@ -160,15 +157,17 @@ exports['default'] = {
 
 				case 51:
 
+					(0, _lodash.merge)(application.configuration, core, user, application.runtime.api);
+
 					application.runtime.prefix = application.runtime.prefix || '/';
 					application.runtime.mode = application.runtime.mode || 'server';
 					return context$1$0.abrupt('return', this);
 
-				case 54:
+				case 55:
 				case 'end':
 					return context$1$0.stop();
 			}
-		}, null, this, [[11, 39, 43, 51], [21, 25], [44,, 46, 50]]);
+		}, null, this, [[12, 39, 43, 51], [21, 26], [44,, 46, 50]]);
 	}
 };
 module.exports = exports['default'];
@@ -176,4 +175,5 @@ module.exports = exports['default'];
 // Load core configuration
 
 // Load package.jsons
+
 // Load user configuration

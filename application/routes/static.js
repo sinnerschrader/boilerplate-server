@@ -9,126 +9,100 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var _path = require('path');
 
-var _fs = require('fs');
+var _koaSend = require('koa-send');
 
-var _resolvePath = require('resolve-path');
-
-var _resolvePath2 = _interopRequireDefault(_resolvePath);
-
-var _libraryUtilitiesFs = require('../../library/utilities/fs');
-
-var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
-
-function serve(application, root) {
-	var configuration = arguments[2] === undefined ? {} : arguments[2];
-	var path, stats;
-	return regeneratorRuntime.async(function serve$(context$1$0) {
-		while (1) switch (context$1$0.prev = context$1$0.next) {
-			case 0:
-				if (!(['HEAD', 'GET'].indexOf(this.method) === -1)) {
-					context$1$0.next = 2;
-					break;
-				}
-
-				return context$1$0.abrupt('return');
-
-			case 2:
-				path = this.captures[0];
-
-				path = path[0] === '/' ? path.slice(1) : path;
-
-				try {
-					path = decodeURIComponent(path);
-				} catch (err) {
-					application.log.error('Could not decode path');
-					application.log.debug(err);
-					this['throw']('failed to decode', 400);
-				}
-
-				path = (0, _resolvePath2['default'])(root, path);
-
-				if (!((0, _path.basename)(path)[0] === '.')) {
-					context$1$0.next = 8;
-					break;
-				}
-
-				return context$1$0.abrupt('return');
-
-			case 8:
-				stats = undefined;
-				context$1$0.prev = 9;
-				context$1$0.next = 12;
-				return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.stat)(path));
-
-			case 12:
-				stats = context$1$0.sent;
-
-				if (!stats.isDirectory()) {
-					context$1$0.next = 15;
-					break;
-				}
-
-				return context$1$0.abrupt('return');
-
-			case 15:
-				context$1$0.next = 23;
-				break;
-
-			case 17:
-				context$1$0.prev = 17;
-				context$1$0.t0 = context$1$0['catch'](9);
-
-				if (!(notfound.indexOf(context$1$0.t0.code) > -1)) {
-					context$1$0.next = 21;
-					break;
-				}
-
-				return context$1$0.abrupt('return');
-
-			case 21:
-				context$1$0.t0.status = 500;
-				throw context$1$0.t0;
-
-			case 23:
-
-				this.set('Last-Modified', stats.mtime.toUTCString());
-				this.set('Content-Length', stats.size);
-				this.set('Cache-Control', 'max-age=' + (configuration.options.maxage | 0));
-
-				this.type = (0, _path.extname)(path);
-				this.body = (0, _fs.createReadStream)(path);
-				return context$1$0.abrupt('return');
-
-			case 29:
-			case 'end':
-				return context$1$0.stop();
-		}
-	}, null, this, [[9, 17]]);
-}
+var _koaSend2 = _interopRequireDefault(_koaSend);
 
 function staticRouteFactory(application, configuration) {
-	var root = (0, _path.resolve)(application.runtime.base, application.configuration.paths['static']);
-	var userStaticPath = (0, _path.resolve)(application.runtime.cwd, configuration.options.root);
+	return regeneratorRuntime.mark(function staticRoute() {
+		var root, roots, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, _root;
 
-	return function staticRoute() {
-		var statist;
-		return regeneratorRuntime.async(function staticRoute$(context$2$0) {
+		return regeneratorRuntime.wrap(function staticRoute$(context$2$0) {
 			while (1) switch (context$2$0.prev = context$2$0.next) {
 				case 0:
-					statist = serve.bind(this);
-					context$2$0.next = 3;
-					return regeneratorRuntime.awrap(statist(application, root, configuration));
+					root = (0, _path.resolve)(application.runtime.base, application.configuration.paths['static']);
+					roots = Array.isArray(configuration.options.root) ? configuration.options.root : [configuration.options.root];
 
-				case 3:
-					context$2$0.next = 5;
-					return regeneratorRuntime.awrap(statist(application, userStaticPath, configuration));
+					roots = roots.map(function (item) {
+						return (0, _path.resolve)(application.runtime.cwd, item);
+					});
+					roots.push(root);
 
-				case 5:
+					this.assert(this.params.path, 404);
+
+					_iteratorNormalCompletion = true;
+					_didIteratorError = false;
+					_iteratorError = undefined;
+					context$2$0.prev = 8;
+					_iterator = roots[Symbol.iterator]();
+
+				case 10:
+					if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+						context$2$0.next = 23;
+						break;
+					}
+
+					_root = _step.value;
+					context$2$0.next = 14;
+					return (0, _koaSend2['default'])(this, this.params.path, { root: _root });
+
+				case 14:
+					if (!(this.status === 200)) {
+						context$2$0.next = 19;
+						break;
+					}
+
+					application.log.info('[application:request] Matched ' + this.params.path + ' on ' + _root);
+					return context$2$0.abrupt('break', 23);
+
+				case 19:
+					application.log.info('[application:request] No match for ' + this.params.path + ' on ' + _root);
+
+				case 20:
+					_iteratorNormalCompletion = true;
+					context$2$0.next = 10;
+					break;
+
+				case 23:
+					context$2$0.next = 29;
+					break;
+
+				case 25:
+					context$2$0.prev = 25;
+					context$2$0.t0 = context$2$0['catch'](8);
+					_didIteratorError = true;
+					_iteratorError = context$2$0.t0;
+
+				case 29:
+					context$2$0.prev = 29;
+					context$2$0.prev = 30;
+
+					if (!_iteratorNormalCompletion && _iterator['return']) {
+						_iterator['return']();
+					}
+
+				case 32:
+					context$2$0.prev = 32;
+
+					if (!_didIteratorError) {
+						context$2$0.next = 35;
+						break;
+					}
+
+					throw _iteratorError;
+
+				case 35:
+					return context$2$0.finish(32);
+
+				case 36:
+					return context$2$0.finish(29);
+
+				case 37:
 				case 'end':
 					return context$2$0.stop();
 			}
-		}, null, this);
-	};
+		}, staticRoute, this, [[8, 25, 29, 37], [30,, 32, 36]]);
+	});
 }
 
 module.exports = exports['default'];

@@ -14,12 +14,9 @@ var routes = {
 		'static': {
 			'enabled': true,
 			'method': 'GET',
-			'path': /\/static\/(.*)/,
+			'path': '/static/:path*',
 			'options': {
-				'root': './static',
-				'maxage': 3600000,
-				'hidden': false,
-				'defer': false
+				'root': './static'
 			}
 		},
 		'health': {

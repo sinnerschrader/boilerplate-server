@@ -45,16 +45,18 @@ export default {
 		// Allow user to override core behaviour via cli and *rc files
 		core = merge( {}, core, { 'pkg': pkg }, application.runtime.api );
 
+		let user = {};
+
 		// Load user configuration
 		for ( let configPath of core.paths.configuration ) {
 			let userPath = resolve( application.runtime.cwd, configPath );
-			let user = {};
 
 			this.log.warn( `Searching for user configuration at '${userPath}'` );
 
 			if ( await exists( userPath ) ) {
 				try {
-					user = load( userPath, this.configuration.filter, application.runtime.env );
+					let userPathConfig = load( userPath, this.configuration.filter, application.runtime.env );
+					user = merge( user, userPathConfig );
 				} catch ( err ) {
 					this.log.error( `Error while reading user configuration from ${userPath}.` );
 					this.log.error( err );
@@ -64,9 +66,9 @@ export default {
 			} else {
 				this.log.warn( `No user configuration present at '${userPath}'` );
 			}
-
-			merge( application.configuration, core, user, application.runtime.api );
 		}
+
+		merge( application.configuration, core, user, application.runtime.api );
 
 		application.runtime.prefix = application.runtime.prefix || '/';
 		application.runtime.mode = application.runtime.mode || 'server';
