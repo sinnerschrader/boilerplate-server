@@ -46,23 +46,28 @@ export default {
 		core = merge( {}, core, { 'pkg': pkg }, application.runtime.api );
 
 		// Load user configuration
-		let userPath = resolve( application.runtime.cwd, core.paths.configuration );
-		let user = {};
+		for ( let configPath of core.paths.configuration ) {
+			let userPath = resolve( application.runtime.cwd, configPath );
+			let user = {};
 
-		if ( await exists( userPath ) ) {
-			try {
-				user = load( userPath, this.configuration.filter, application.runtime.env );
-			} catch ( err ) {
-				this.log.error( `Error while reading user configuration from ${userPath}.` );
-				this.log.error( err );
+			this.log.warn( `Searching for user configuration at '${userPath}'` );
 
-				throw new Error( 'Failed loading user configuration' );
+			if ( await exists( userPath ) ) {
+				try {
+					user = load( userPath, this.configuration.filter, application.runtime.env );
+				} catch ( err ) {
+					this.log.error( `Error while reading user configuration from ${userPath}.` );
+					this.log.error( err );
+
+					throw new Error( 'Failed loading user configuration' );
+				}
+			} else {
+				this.log.warn( `No user configuration present at '${userPath}'` );
 			}
-		} else {
-			this.log.warn( `No user configuration present at '${userPath}'` );
+
+			merge( application.configuration, core, user, application.runtime.api );
 		}
 
-		merge( application.configuration, core, user, application.runtime.api );
 		application.runtime.prefix = application.runtime.prefix || '/';
 		application.runtime.mode = application.runtime.mode || 'server';
 		return this;

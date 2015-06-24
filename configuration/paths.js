@@ -7,7 +7,7 @@ exports['default'] = {
 	'hooks': './application/hooks',
 	'middlewares': './application/middlewares',
 	'routes': './application/routes',
-	'configuration': './configuration',
+	'configuration': ['./configuration'],
 	'static': './static',
 	'log': './log',
 	'build': './build',
