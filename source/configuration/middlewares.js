@@ -4,7 +4,8 @@ const middlewares = {
 		'environment': true,
 		'log': true,
 		'response-time': true,
-		'revision': true
+		'revision': true,
+		'etags': true
 	}
 };
 
