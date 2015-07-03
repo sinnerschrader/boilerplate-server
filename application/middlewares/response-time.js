@@ -18,7 +18,7 @@ function responseTimeMiddlewareFactory() {
 				case 3:
 					responseTime = new Date() - start;
 
-					this.set('X-Response-Time', '' + responseTime + 'ms');
+					this.set('X-Response-Time', responseTime + 'ms');
 
 				case 5:
 				case 'end':

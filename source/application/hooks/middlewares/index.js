@@ -31,7 +31,7 @@ export default {
 				Object.assign(userMiddlewares, requireAll( middlewarePath ));
 			}
 		}
-
+		
 		// Load module middlewares
 		let moduleMiddlewares = Object.keys( this.configuration.enabled )
 			.filter( ( middlewareName ) => typeof this.configuration.enabled[ middlewareName ].enabled === 'string' )

@@ -151,7 +151,7 @@ exports['default'] = {
 						var fn = routeFactoryFunction(application, routeConfig);
 
 						if (typeof fn !== 'function') {
-							_this.log.info('' + routeName + ' factory returned no valid route for ' + routeConfig.path);
+							_this.log.info(routeName + ' factory returned no valid route for ' + routeConfig.path);
 							return;
 						}
 

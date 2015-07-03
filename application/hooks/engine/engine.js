@@ -219,16 +219,12 @@ function engineBlueprint() {
 		}, {
 			key: 'use',
 			value: function use() {
-				for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-					args[_key] = arguments[_key];
-				}
-
 				var _nameSpace$get4 = nameSpace.get(this);
 
 				var fuel = _nameSpace$get4.fuel;
 				var application = _nameSpace$get4.application;
 
-				fuel.use.apply(fuel, args);
+				fuel.use.apply(fuel, arguments);
 				return application;
 			}
 		}]);
@@ -238,8 +234,8 @@ function engineBlueprint() {
 }
 
 function engineFactory() {
-	for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-		args[_key2] = arguments[_key2];
+	for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+		args[_key] = arguments[_key];
 	}
 
 	return new (_bind.apply(engineBlueprint(), [null].concat(args)))();

@@ -18,7 +18,7 @@ function startLogMiddleware(application) {
 				case 3:
 					delta = new Date() - start;
 
-					application.log.debug('[application:request]', '' + start + ' - ' + this.method + ' ' + this.url + ' - ' + this.response.status + ' ' + this.response.message + ' - ' + delta + 'ms');
+					application.log.debug('[application:request]', start + ' - ' + this.method + ' ' + this.url + ' - ' + this.response.status + ' ' + this.response.message + ' - ' + delta + 'ms');
 
 				case 5:
 				case 'end':

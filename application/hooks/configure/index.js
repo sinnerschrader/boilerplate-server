@@ -12,7 +12,9 @@ var _path = require('path');
 
 var _lodash = require('lodash');
 
-var _appRootPath = require('app-root-path');
+var _findRoot = require('find-root');
+
+var _findRoot2 = _interopRequireDefault(_findRoot);
 
 var _libraryUtilitiesConfiguration = require('../../../library/utilities/configuration');
 
@@ -53,7 +55,7 @@ exports['default'] = {
 		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					core = (0, _libraryUtilitiesConfiguration2['default'])((0, _path.resolve)(_appRootPath.path, this.configuration.path), this.configuration.filter, application.runtime.env);
+					core = (0, _libraryUtilitiesConfiguration2['default'])((0, _path.resolve)((0, _findRoot2['default'])(__dirname), this.configuration.path), this.configuration.filter, application.runtime.env);
 					corePkgPath = (0, _path.resolve)(application.runtime.base, 'package.json');
 					pkgPath = (0, _path.resolve)(application.runtime.cwd, 'package.json');
 					corePkg = require(corePkgPath);
@@ -100,7 +102,13 @@ exports['default'] = {
 					modulePaths = [].concat(_toConsumableArray(new Set(modulePaths)));
 
 					modulePaths = modulePaths.filter(function (modulePath) {
-						return !modulePath.includes(_appRootPath.path);
+						return !modulePath.includes((0, _findRoot2['default'])(__dirname));
+					}) // Filter paths below boilerplate-server
+					.filter(function (modulePath) {
+						return !modulePath.includes('patternplate-server');
+					}) // TODO: Resolve this properly
+					.filter(function (modulePath) {
+						return !modulePath.includes('patternplate-client');
 					});existingModulePaths = [];
 					_iteratorNormalCompletion = true;
 					_didIteratorError = false;
@@ -399,7 +407,6 @@ exports['default'] = {
 				case 154:
 
 					(0, _lodash.merge)(application.configuration, core, user, application.runtime.api);
-
 					application.runtime.prefix = application.runtime.prefix || '/';
 					application.runtime.mode = application.runtime.mode || 'server';
 					return context$1$0.abrupt('return', this);
@@ -418,7 +425,7 @@ module.exports = exports['default'];
 // Load package.jsons
 
 // Find the root node module
-// Filer paths below boilerplate-server
+// TODO: Resolve this properly
 
 // boilerplate instance project cwd
 // Check which user config paths exist

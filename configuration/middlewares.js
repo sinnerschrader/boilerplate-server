@@ -10,7 +10,9 @@ var middlewares = {
 		'log': true,
 		'response-time': true,
 		'revision': true,
-		'etags': true
+		'etags': true,
+		'jsonerror': true,
+		'basicauth': false
 	}
 };
 

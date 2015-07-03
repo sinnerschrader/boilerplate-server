@@ -1,6 +1,6 @@
 import { resolve, dirname } from 'path';
 import { merge } from 'lodash';
-import { path as boilerplateServerPath } from 'app-root-path';
+import findRoot from 'find-root';
 
 import load from '../../../library/utilities/configuration';
 import { exists } from '../../../library/utilities/fs';
@@ -25,7 +25,7 @@ export default {
 
 	'start': async function startEngineHook ( application ) {
 		// Load boilerplate-server core configuration
-		let core = load( resolve(boilerplateServerPath, this.configuration.path), this.configuration.filter, application.runtime.env );
+		let core = load( resolve(findRoot(__dirname), this.configuration.path), this.configuration.filter, application.runtime.env );
 
 		// Load package.jsons
 		let corePkgPath = resolve( application.runtime.base, 'package.json' );
@@ -66,7 +66,9 @@ export default {
 		modulePaths = [...new Set(modulePaths)];
 
 		modulePaths = modulePaths
-			.filter((modulePath) => !modulePath.includes(boilerplateServerPath)); // Filer paths below boilerplate-server
+			.filter((modulePath) => !modulePath.includes(findRoot(__dirname))) // Filter paths below boilerplate-server
+			.filter((modulePath) => !modulePath.includes('patternplate-server')) // TODO: Resolve this properly
+			.filter((modulePath) => !modulePath.includes('patternplate-client')); // TODO: Resolve this properly
 
 		let existingModulePaths = [];
 
@@ -129,7 +131,6 @@ export default {
 		}
 
 		merge( application.configuration, core, user, application.runtime.api );
-
 		application.runtime.prefix = application.runtime.prefix || '/';
 		application.runtime.mode = application.runtime.mode || 'server';
 		return this;
