@@ -23,7 +23,8 @@ exports['default'] = {
 	'modes': ['server'],
 
 	'start': function startRoutesHook(application) {
-		var coreRoutes, userRoutes, userRoutesPath, moduleRoutes, routes;
+		var coreRoutes, userRoutes, routePaths, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, routePath, moduleRoutes, routes;
+
 		return regeneratorRuntime.async(function startRoutesHook$(context$1$0) {
 			var _this = this;
 
@@ -33,19 +34,82 @@ exports['default'] = {
 
 					coreRoutes = (0, _requireAll2['default'])((0, _path.resolve)(application.runtime.base, application.configuration.paths.routes));
 					userRoutes = {};
-					userRoutesPath = (0, _path.resolve)(application.runtime.cwd, this.configuration.path);
-					context$1$0.next = 6;
-					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(userRoutesPath));
 
-				case 6:
-					if (!context$1$0.sent) {
-						context$1$0.next = 8;
+					this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
+					// TODO: Fix for mysteriously split last path, investigate
+					this.configuration.path = this.configuration.path.filter(function (item) {
+						return item.length > 1;
+					});
+
+					routePaths = this.configuration.path.reduce(function (items, item) {
+						return items.concat(application.runtime.cwds.map(function (cwd) {
+							return (0, _path.resolve)(cwd, item);
+						}));
+					}, []);
+					_iteratorNormalCompletion = true;
+					_didIteratorError = false;
+					_iteratorError = undefined;
+					context$1$0.prev = 9;
+					_iterator = routePaths[Symbol.iterator]();
+
+				case 11:
+					if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+						context$1$0.next = 20;
 						break;
 					}
 
-					userRoutes = (0, _requireAll2['default'])(userRoutesPath);
+					routePath = _step.value;
+					context$1$0.next = 15;
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(routePath));
 
-				case 8:
+				case 15:
+					if (!context$1$0.sent) {
+						context$1$0.next = 17;
+						break;
+					}
+
+					Object.assign(userRoutes, (0, _requireAll2['default'])(routePath));
+
+				case 17:
+					_iteratorNormalCompletion = true;
+					context$1$0.next = 11;
+					break;
+
+				case 20:
+					context$1$0.next = 26;
+					break;
+
+				case 22:
+					context$1$0.prev = 22;
+					context$1$0.t0 = context$1$0['catch'](9);
+					_didIteratorError = true;
+					_iteratorError = context$1$0.t0;
+
+				case 26:
+					context$1$0.prev = 26;
+					context$1$0.prev = 27;
+
+					if (!_iteratorNormalCompletion && _iterator['return']) {
+						_iterator['return']();
+					}
+
+				case 29:
+					context$1$0.prev = 29;
+
+					if (!_didIteratorError) {
+						context$1$0.next = 32;
+						break;
+					}
+
+					throw _iteratorError;
+
+				case 32:
+					return context$1$0.finish(29);
+
+				case 33:
+					return context$1$0.finish(26);
+
+				case 34:
 					moduleRoutes = Object.keys(this.configuration.enabled).filter(function (routeName) {
 						return typeof _this.configuration.enabled[routeName].enabled === 'string';
 					}).reduce(function (result, routeName) {
@@ -110,11 +174,11 @@ exports['default'] = {
 
 					return context$1$0.abrupt('return', application);
 
-				case 12:
+				case 38:
 				case 'end':
 					return context$1$0.stop();
 			}
-		}, null, this);
+		}, null, this, [[9, 22, 26, 34], [27,, 29, 33]]);
 	}
 };
 module.exports = exports['default'];
@@ -122,4 +186,4 @@ module.exports = exports['default'];
 
 // load physical user routes
 
-// load modules routes
+// load module routes

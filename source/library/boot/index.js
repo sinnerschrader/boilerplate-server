@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import appRootPath from 'app-root-path';
 
 import bootLogger from './logger';
 import hooks from '../hooks';
@@ -10,10 +11,12 @@ class BoilerPlateServer extends EventEmitter {
 		this.name = options.name;
 		this.subs = options.subs || [];
 
-		this.runtime = Object.assign( {
+		this.runtime = Object.assign({
 			'mode': 'server',
 			'prefix': '/',
-			'env': process.env.BOILERPLATESERVER_ENV || process.env.BOILERPLATE_ENV || process.env.NODE_ENV || process.env.ENV || 'development'
+			'env': process.env.BOILERPLATESERVER_ENV || process.env.BOILERPLATE_ENV || process.env.NODE_ENV || process.env.ENV || 'development',
+			'cwds': [],
+			'cwd': appRootPath.path
 		}, options );
 
 		this.log = bootLogger( options, this );

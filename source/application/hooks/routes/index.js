@@ -17,13 +17,22 @@ export default {
 
 		// load physical user routes
 		let userRoutes = {};
-		let userRoutesPath = resolve( application.runtime.cwd, this.configuration.path );
+		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
+		// TODO: Fix for mysteriously split last path, investigate
+		this.configuration.path = this.configuration.path.filter((item) => item.length > 1);
 
-		if ( await exists( userRoutesPath ) ) {
-			userRoutes = requireAll( userRoutesPath );
+		let routePaths = this.configuration.path
+			.reduce((items, item) => items.concat(
+				application.runtime.cwds.map((cwd) => resolve(cwd, item))
+			), []);
+
+		for (let routePath of routePaths) {
+			if ( await exists( routePath ) ) {
+				Object.assign(userRoutes, requireAll( routePath ));
+			}
 		}
 
-		// load modules routes
+		// load module routes
 		let moduleRoutes = Object.keys( this.configuration.enabled )
 			.filter( ( routeName ) => typeof this.configuration.enabled[ routeName ].enabled === 'string' )
 			.reduce( ( result, routeName ) => {

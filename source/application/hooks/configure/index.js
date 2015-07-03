@@ -1,5 +1,6 @@
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
 import { merge } from 'lodash';
+import { path as boilerplateServerPath } from 'app-root-path';
 
 import load from '../../../library/utilities/configuration';
 import { exists } from '../../../library/utilities/fs';
@@ -23,8 +24,8 @@ export default {
 	},
 
 	'start': async function startEngineHook ( application ) {
-		// Load core configuration
-		let core = load( this.configuration.path, this.configuration.filter, application.runtime.env );
+		// Load boilerplate-server core configuration
+		let core = load( resolve(boilerplateServerPath, this.configuration.path), this.configuration.filter, application.runtime.env );
 
 		// Load package.jsons
 		let corePkgPath = resolve( application.runtime.base, 'package.json' );
@@ -45,26 +46,85 @@ export default {
 		// Allow user to override core behaviour via cli and *rc files
 		core = merge( {}, core, { 'pkg': pkg }, application.runtime.api );
 
-		let user = {};
+		let callerPath = require.main.filename;
+		let callerRoot = callerPath;
 
-		// Load user configuration
+		let modulePaths = [dirname(module.filename)];
+		let moduleRoot = module;
+
+		// Find the root node module
+		while (!await exists(resolve(callerRoot, 'package.json'))) {
+			callerRoot = dirname(callerRoot);
+		}
+
+		// Find all node modules on the way from here to the top
+		while(moduleRoot.parent) {
+			moduleRoot = moduleRoot.parent;
+			modulePaths.push(dirname(moduleRoot.filename));
+		}
+
+		modulePaths = [...new Set(modulePaths)];
+
+		modulePaths = modulePaths
+			.filter((modulePath) => !modulePath.includes(boilerplateServerPath)); // Filer paths below boilerplate-server
+
+		let existingModulePaths = [];
+
+		for (let modulePath of modulePaths) {
+			let moduleRoot = modulePath;
+
+			while(!await exists(resolve(moduleRoot, 'package.json'))) {
+				moduleRoot = dirname(moduleRoot);
+			}
+
+			existingModulePaths.push(moduleRoot);
+		}
+
+		// Set application runtime cwds
+		application.runtime.cwds = [
+			...new Set([
+				application.runtime.cwd, // boilerplate instance project cwd
+				...existingModulePaths, // way between
+				callerRoot, // top level / caller module
+				process.cwd() // cwd
+			])
+		];
+
+		// Check which user config paths exist
+		let existingConfigPaths = [];
 		for ( let configPath of core.paths.configuration ) {
-			let userPath = resolve( application.runtime.cwd, configPath );
+			for ( let cwd of application.runtime.cwds ) {
+				for (let suffix of ['', pkg.name]) {
+					let userPath = resolve( cwd, configPath, suffix);
 
-			this.log.warn( `Searching for user configuration at '${userPath}'` );
-
-			if ( await exists( userPath ) ) {
-				try {
-					let userPathConfig = load( userPath, this.configuration.filter, application.runtime.env );
-					user = merge( user, userPathConfig );
-				} catch ( err ) {
-					this.log.error( `Error while reading user configuration from ${userPath}.` );
-					this.log.error( err );
-
-					throw new Error( 'Failed loading user configuration' );
+					if ( await exists( userPath ) ) {
+						existingConfigPaths.push(userPath);
+					}
 				}
-			} else {
-				this.log.warn( `No user configuration present at '${userPath}'` );
+			}
+		}
+
+		// Load most specific paths only
+		// Check if paths have siblings that contain them completely, thus are sub directories / more specific configuration folders
+		existingConfigPaths = existingConfigPaths.filter(function(configPath) {
+			return existingConfigPaths.filter(function(subConfigPath){
+				return subConfigPath.includes(configPath) && subConfigPath !== configPath;
+			}).length === 0;
+		});
+
+		// Load dem configs from filtered paths
+		let user = {};
+		for ( let userPath of existingConfigPaths ) {
+			this.log.warn( `Loading configuration from '${userPath}'` );
+
+			try {
+				let userPathConfig = load( userPath, this.configuration.filter, application.runtime.env );
+				user = merge( user, userPathConfig );
+			} catch ( err ) {
+				this.log.error( `Error while reading configuration from ${userPath}.` );
+				this.log.error( err );
+				err.message = 'Failed loading configuration';
+				throw err;
 			}
 		}
 

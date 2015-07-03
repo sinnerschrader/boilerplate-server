@@ -6,9 +6,13 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var _path = require('path');
 
 var _lodash = require('lodash');
+
+var _appRootPath = require('app-root-path');
 
 var _libraryUtilitiesConfiguration = require('../../../library/utilities/configuration');
 
@@ -44,12 +48,12 @@ exports['default'] = {
 	},
 
 	'start': function startEngineHook(application) {
-		var core, corePkgPath, pkgPath, corePkg, pkg, user, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, configPath, userPath, userPathConfig;
+		var core, corePkgPath, pkgPath, corePkg, pkg, callerPath, callerRoot, modulePaths, moduleRoot, existingModulePaths, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, modulePath, _moduleRoot, existingConfigPaths, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, configPath, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, cwd, _arr, _i, suffix, userPath, user, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, userPathConfig;
 
 		return regeneratorRuntime.async(function startEngineHook$(context$1$0) {
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					core = (0, _libraryUtilitiesConfiguration2['default'])(this.configuration.path, this.configuration.filter, application.runtime.env);
+					core = (0, _libraryUtilitiesConfiguration2['default'])((0, _path.resolve)(_appRootPath.path, this.configuration.path), this.configuration.filter, application.runtime.env);
 					corePkgPath = (0, _path.resolve)(application.runtime.base, 'package.json');
 					pkgPath = (0, _path.resolve)(application.runtime.cwd, 'package.json');
 					corePkg = require(corePkgPath);
@@ -66,96 +70,333 @@ exports['default'] = {
 					// Allow user to override core behaviour via cli and *rc files
 					core = (0, _lodash.merge)({}, core, { 'pkg': pkg }, application.runtime.api);
 
-					user = {};
+					callerPath = require.main.filename;
+					callerRoot = callerPath;
+					modulePaths = [(0, _path.dirname)(module.filename)];
+					moduleRoot = module;
+
+				case 12:
+					context$1$0.next = 14;
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)((0, _path.resolve)(callerRoot, 'package.json')));
+
+				case 14:
+					if (context$1$0.sent) {
+						context$1$0.next = 18;
+						break;
+					}
+
+					callerRoot = (0, _path.dirname)(callerRoot);
+					context$1$0.next = 12;
+					break;
+
+				case 18:
+
+					// Find all node modules on the way from here to the top
+					while (moduleRoot.parent) {
+						moduleRoot = moduleRoot.parent;
+						modulePaths.push((0, _path.dirname)(moduleRoot.filename));
+					}
+
+					modulePaths = [].concat(_toConsumableArray(new Set(modulePaths)));
+
+					modulePaths = modulePaths.filter(function (modulePath) {
+						return !modulePath.includes(_appRootPath.path);
+					});existingModulePaths = [];
 					_iteratorNormalCompletion = true;
 					_didIteratorError = false;
 					_iteratorError = undefined;
-					context$1$0.prev = 12;
-					_iterator = core.paths.configuration[Symbol.iterator]();
+					context$1$0.prev = 25;
+					_iterator = modulePaths[Symbol.iterator]();
 
-				case 14:
+				case 27:
 					if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-						context$1$0.next = 37;
+						context$1$0.next = 40;
 						break;
 					}
 
-					configPath = _step.value;
-					userPath = (0, _path.resolve)(application.runtime.cwd, configPath);
+					modulePath = _step.value;
+					_moduleRoot = modulePath;
 
-					this.log.warn('Searching for user configuration at \'' + userPath + '\'');
+				case 30:
+					context$1$0.next = 32;
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)((0, _path.resolve)(_moduleRoot, 'package.json')));
 
-					context$1$0.next = 20;
-					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(userPath));
-
-				case 20:
-					if (!context$1$0.sent) {
-						context$1$0.next = 33;
+				case 32:
+					if (context$1$0.sent) {
+						context$1$0.next = 36;
 						break;
 					}
 
-					context$1$0.prev = 21;
-					userPathConfig = (0, _libraryUtilitiesConfiguration2['default'])(userPath, this.configuration.filter, application.runtime.env);
-
-					user = (0, _lodash.merge)(user, userPathConfig);
-					context$1$0.next = 31;
+					_moduleRoot = (0, _path.dirname)(_moduleRoot);
+					context$1$0.next = 30;
 					break;
 
-				case 26:
-					context$1$0.prev = 26;
-					context$1$0.t0 = context$1$0['catch'](21);
+				case 36:
 
-					this.log.error('Error while reading user configuration from ' + userPath + '.');
-					this.log.error(context$1$0.t0);
-
-					throw new Error('Failed loading user configuration');
-
-				case 31:
-					context$1$0.next = 34;
-					break;
-
-				case 33:
-					this.log.warn('No user configuration present at \'' + userPath + '\'');
-
-				case 34:
-					_iteratorNormalCompletion = true;
-					context$1$0.next = 14;
-					break;
+					existingModulePaths.push(_moduleRoot);
 
 				case 37:
-					context$1$0.next = 43;
+					_iteratorNormalCompletion = true;
+					context$1$0.next = 27;
 					break;
 
-				case 39:
-					context$1$0.prev = 39;
-					context$1$0.t1 = context$1$0['catch'](12);
-					_didIteratorError = true;
-					_iteratorError = context$1$0.t1;
+				case 40:
+					context$1$0.next = 46;
+					break;
 
-				case 43:
-					context$1$0.prev = 43;
-					context$1$0.prev = 44;
+				case 42:
+					context$1$0.prev = 42;
+					context$1$0.t0 = context$1$0['catch'](25);
+					_didIteratorError = true;
+					_iteratorError = context$1$0.t0;
+
+				case 46:
+					context$1$0.prev = 46;
+					context$1$0.prev = 47;
 
 					if (!_iteratorNormalCompletion && _iterator['return']) {
 						_iterator['return']();
 					}
 
-				case 46:
-					context$1$0.prev = 46;
+				case 49:
+					context$1$0.prev = 49;
 
 					if (!_didIteratorError) {
-						context$1$0.next = 49;
+						context$1$0.next = 52;
 						break;
 					}
 
 					throw _iteratorError;
 
-				case 49:
+				case 52:
+					return context$1$0.finish(49);
+
+				case 53:
 					return context$1$0.finish(46);
 
-				case 50:
-					return context$1$0.finish(43);
+				case 54:
 
-				case 51:
+					// Set application runtime cwds
+					application.runtime.cwds = [].concat(_toConsumableArray(new Set([application.runtime.cwd].concat(existingModulePaths, [// way between
+					callerRoot, // top level / caller module
+					process.cwd() // cwd
+					]))));
+
+					existingConfigPaths = [];
+					_iteratorNormalCompletion2 = true;
+					_didIteratorError2 = false;
+					_iteratorError2 = undefined;
+					context$1$0.prev = 59;
+					_iterator2 = core.paths.configuration[Symbol.iterator]();
+
+				case 61:
+					if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+						context$1$0.next = 102;
+						break;
+					}
+
+					configPath = _step2.value;
+					_iteratorNormalCompletion4 = true;
+					_didIteratorError4 = false;
+					_iteratorError4 = undefined;
+					context$1$0.prev = 66;
+					_iterator4 = application.runtime.cwds[Symbol.iterator]();
+
+				case 68:
+					if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
+						context$1$0.next = 85;
+						break;
+					}
+
+					cwd = _step4.value;
+					_arr = ['', pkg.name];
+					_i = 0;
+
+				case 72:
+					if (!(_i < _arr.length)) {
+						context$1$0.next = 82;
+						break;
+					}
+
+					suffix = _arr[_i];
+					userPath = (0, _path.resolve)(cwd, configPath, suffix);
+					context$1$0.next = 77;
+					return regeneratorRuntime.awrap((0, _libraryUtilitiesFs.exists)(userPath));
+
+				case 77:
+					if (!context$1$0.sent) {
+						context$1$0.next = 79;
+						break;
+					}
+
+					existingConfigPaths.push(userPath);
+
+				case 79:
+					_i++;
+					context$1$0.next = 72;
+					break;
+
+				case 82:
+					_iteratorNormalCompletion4 = true;
+					context$1$0.next = 68;
+					break;
+
+				case 85:
+					context$1$0.next = 91;
+					break;
+
+				case 87:
+					context$1$0.prev = 87;
+					context$1$0.t1 = context$1$0['catch'](66);
+					_didIteratorError4 = true;
+					_iteratorError4 = context$1$0.t1;
+
+				case 91:
+					context$1$0.prev = 91;
+					context$1$0.prev = 92;
+
+					if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+						_iterator4['return']();
+					}
+
+				case 94:
+					context$1$0.prev = 94;
+
+					if (!_didIteratorError4) {
+						context$1$0.next = 97;
+						break;
+					}
+
+					throw _iteratorError4;
+
+				case 97:
+					return context$1$0.finish(94);
+
+				case 98:
+					return context$1$0.finish(91);
+
+				case 99:
+					_iteratorNormalCompletion2 = true;
+					context$1$0.next = 61;
+					break;
+
+				case 102:
+					context$1$0.next = 108;
+					break;
+
+				case 104:
+					context$1$0.prev = 104;
+					context$1$0.t2 = context$1$0['catch'](59);
+					_didIteratorError2 = true;
+					_iteratorError2 = context$1$0.t2;
+
+				case 108:
+					context$1$0.prev = 108;
+					context$1$0.prev = 109;
+
+					if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+						_iterator2['return']();
+					}
+
+				case 111:
+					context$1$0.prev = 111;
+
+					if (!_didIteratorError2) {
+						context$1$0.next = 114;
+						break;
+					}
+
+					throw _iteratorError2;
+
+				case 114:
+					return context$1$0.finish(111);
+
+				case 115:
+					return context$1$0.finish(108);
+
+				case 116:
+
+					// Load most specific paths only
+					// Check if paths have siblings that contain them completely, thus are sub directories / more specific configuration folders
+					existingConfigPaths = existingConfigPaths.filter(function (configPath) {
+						return existingConfigPaths.filter(function (subConfigPath) {
+							return subConfigPath.includes(configPath) && subConfigPath !== configPath;
+						}).length === 0;
+					});
+
+					user = {};
+					_iteratorNormalCompletion3 = true;
+					_didIteratorError3 = false;
+					_iteratorError3 = undefined;
+					context$1$0.prev = 121;
+					_iterator3 = existingConfigPaths[Symbol.iterator]();
+
+				case 123:
+					if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
+						context$1$0.next = 140;
+						break;
+					}
+
+					userPath = _step3.value;
+
+					this.log.warn('Loading configuration from \'' + userPath + '\'');
+
+					context$1$0.prev = 126;
+					userPathConfig = (0, _libraryUtilitiesConfiguration2['default'])(userPath, this.configuration.filter, application.runtime.env);
+
+					user = (0, _lodash.merge)(user, userPathConfig);
+					context$1$0.next = 137;
+					break;
+
+				case 131:
+					context$1$0.prev = 131;
+					context$1$0.t3 = context$1$0['catch'](126);
+
+					this.log.error('Error while reading configuration from ' + userPath + '.');
+					this.log.error(context$1$0.t3);
+					context$1$0.t3.message = 'Failed loading configuration';
+					throw context$1$0.t3;
+
+				case 137:
+					_iteratorNormalCompletion3 = true;
+					context$1$0.next = 123;
+					break;
+
+				case 140:
+					context$1$0.next = 146;
+					break;
+
+				case 142:
+					context$1$0.prev = 142;
+					context$1$0.t4 = context$1$0['catch'](121);
+					_didIteratorError3 = true;
+					_iteratorError3 = context$1$0.t4;
+
+				case 146:
+					context$1$0.prev = 146;
+					context$1$0.prev = 147;
+
+					if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+						_iterator3['return']();
+					}
+
+				case 149:
+					context$1$0.prev = 149;
+
+					if (!_didIteratorError3) {
+						context$1$0.next = 152;
+						break;
+					}
+
+					throw _iteratorError3;
+
+				case 152:
+					return context$1$0.finish(149);
+
+				case 153:
+					return context$1$0.finish(146);
+
+				case 154:
 
 					(0, _lodash.merge)(application.configuration, core, user, application.runtime.api);
 
@@ -163,17 +404,22 @@ exports['default'] = {
 					application.runtime.mode = application.runtime.mode || 'server';
 					return context$1$0.abrupt('return', this);
 
-				case 55:
+				case 158:
 				case 'end':
 					return context$1$0.stop();
 			}
-		}, null, this, [[12, 39, 43, 51], [21, 26], [44,, 46, 50]]);
+		}, null, this, [[25, 42, 46, 54], [47,, 49, 53], [59, 104, 108, 116], [66, 87, 91, 99], [92,, 94, 98], [109,, 111, 115], [121, 142, 146, 154], [126, 131], [147,, 149, 153]]);
 	}
 };
 module.exports = exports['default'];
 
-// Load core configuration
+// Load boilerplate-server core configuration
 
 // Load package.jsons
 
-// Load user configuration
+// Find the root node module
+// Filer paths below boilerplate-server
+
+// boilerplate instance project cwd
+// Check which user config paths exist
+// Load dem configs from filtered paths

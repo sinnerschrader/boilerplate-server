@@ -16,6 +16,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _events = require('events');
 
+var _appRootPath = require('app-root-path');
+
+var _appRootPath2 = _interopRequireDefault(_appRootPath);
+
 var _logger = require('./logger');
 
 var _logger2 = _interopRequireDefault(_logger);
@@ -36,7 +40,9 @@ var BoilerPlateServer = (function (_EventEmitter) {
 		this.runtime = Object.assign({
 			'mode': 'server',
 			'prefix': '/',
-			'env': process.env.BOILERPLATESERVER_ENV || process.env.BOILERPLATE_ENV || process.env.NODE_ENV || process.env.ENV || 'development'
+			'env': process.env.BOILERPLATESERVER_ENV || process.env.BOILERPLATE_ENV || process.env.NODE_ENV || process.env.ENV || 'development',
+			'cwds': [],
+			'cwd': _appRootPath2['default'].path
 		}, options);
 
 		this.log = (0, _logger2['default'])(options, this);

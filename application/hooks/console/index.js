@@ -22,14 +22,14 @@ exports['default'] = {
 	'after': ['hooks:log:start:after'],
 
 	'start': function startConsoleHook(application) {
-		var taskPaths, exisingtaskPaths, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, taskPath, tasks;
+		var taskPaths, exisingtaskPaths, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, taskPath, tasks, moduleTasks;
 
 		return regeneratorRuntime.async(function startConsoleHook$(context$1$0) {
 			var _this = this;
 
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					taskPaths = [application.runtime.base, application.runtime.cwd].map(function (loadPath) {
+					taskPaths = application.runtime.cwds.map(function (loadPath) {
 						return (0, _path.resolve)(loadPath, _this.configuration.path);
 					}).filter(function (item, index, list) {
 						return list.lastIndexOf(item) !== index || list.indexOf(item) === index;
@@ -104,11 +104,27 @@ exports['default'] = {
 					}).reduce(function (results, task) {
 						return Object.assign(results, task);
 					}, {});
+					moduleTasks = Object.keys(this.configuration).filter(function (taskName) {
+						return typeof _this.configuration[taskName].enabled === 'string';
+					}).reduce(function (result, taskName) {
+						var taskModuleName = _this.configuration.enabled[taskName].enabled;
 
+						try {
+							result[taskName] = require(taskModuleName);
+							_this.log.debug('Required module route \'' + taskName + '\' from module \'' + taskModuleName + '\'');
+						} catch (err) {
+							_this.log.warn('Could not require module route \'' + taskName + '\' from module \'' + taskModuleName + '\'');
+							_this.log.debug(err);
+						}
+
+						return result;
+					}, {});
+
+					Object.assign(tasks, moduleTasks);
 					application.console = (0, _console2['default'])(application, Object.assign({}, this.configuration, { tasks: tasks }));
 					return context$1$0.abrupt('return', this);
 
-				case 33:
+				case 35:
 				case 'end':
 					return context$1$0.stop();
 			}
@@ -116,3 +132,5 @@ exports['default'] = {
 	}
 };
 module.exports = exports['default'];
+
+// load module tasks

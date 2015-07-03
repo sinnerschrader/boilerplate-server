@@ -1,4 +1,5 @@
 export default {
+	'roots': [],
 	'hooks': './application/hooks',
 	'middlewares': './application/middlewares',
 	'routes': './application/routes',

@@ -13,18 +13,30 @@ export default {
 		let coreMiddlewares = requireAll( resolve( application.runtime.base, application.configuration.paths.middlewares ) );
 
 		// Load physical user middlewares
-		let userMiddlewaresPath = resolve( application.runtime.cwd, this.configuration.path );
 		let userMiddlewares = {};
 
-		if ( await exists( userMiddlewaresPath ) ) {
-			userMiddlewares = requireAll( userMiddlewaresPath );
+
+		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
+
+		// TODO: Fix for mysteriously split last path, investigate
+		this.configuration.path = this.configuration.path.filter((item) => item.length > 1);
+
+		let middlewarePaths = this.configuration.path
+			.reduce((items, item) => items.concat(
+				application.runtime.cwds.map((cwd) => resolve(cwd, item))
+			), []);
+
+		for (let middlewarePath of middlewarePaths) {
+			if ( await exists( middlewarePath ) ) {
+				Object.assign(userMiddlewares, requireAll( middlewarePath ));
+			}
 		}
 
 		// Load module middlewares
 		let moduleMiddlewares = Object.keys( this.configuration.enabled )
-			.filter( ( middlewareName ) => typeof this.configuration.enabled[ middlewareName ] === 'string' )
+			.filter( ( middlewareName ) => typeof this.configuration.enabled[ middlewareName ].enabled === 'string' )
 			.reduce( ( result, middlewareName ) => {
-				let middlewareModuleName = this.configuration.enabled[ middlewareName ];
+				let middlewareModuleName = this.configuration.enabled[ middlewareName ].enabled;
 
 				try {
 					result[ middlewareName ] = require( middlewareModuleName );

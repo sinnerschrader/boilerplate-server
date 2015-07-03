@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 exports['default'] = {
+	'roots': [],
 	'hooks': './application/hooks',
 	'middlewares': './application/middlewares',
 	'routes': './application/routes',
