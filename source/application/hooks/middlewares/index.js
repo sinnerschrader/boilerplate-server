@@ -31,7 +31,7 @@ export default {
 				Object.assign(userMiddlewares, requireAll( middlewarePath ));
 			}
 		}
-		
+
 		// Load module middlewares
 		let moduleMiddlewares = Object.keys( this.configuration.enabled )
 			.filter( ( middlewareName ) => typeof this.configuration.enabled[ middlewareName ].enabled === 'string' )
@@ -61,7 +61,9 @@ export default {
 				return;
 			}
 
-			if ( middlewareConfig === false ) {
+			let isObject = typeof middlewareConfig === 'object';
+
+			if ( middlewareConfig === false || isObject && middlewareConfig.enabled !== true ) {
 				this.log.debug( `Middleware '${middlewareName}' is explicitly disabled.` );
 				return;
 			}

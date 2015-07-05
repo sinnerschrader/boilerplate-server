@@ -31,7 +31,7 @@ export default {
 				let transportConfig = Object.assign( {}, this.configuration.options[ transportName ], { 'name': transportName, 'level': this.configuration.level } );
 
 				if ( transportName === 'file' ) {
-					transportConfig.filename = resolve( this.configuration.path, [ transportName, 'log' ].join( '.' ) )
+					transportConfig.filename = resolve( this.configuration.path, [ transportName, 'log' ].join( '.' ) );
 				}
 
 				return new Transport( transportConfig );
@@ -39,28 +39,40 @@ export default {
 			.filter( ( item ) => item );
 
 		let log = new Logger( {
-			'transports': transporters
+			'transports': transporters,
+			'colors': this.configuration.colors || {
+				trace: 'magenta',
+				input: 'grey',
+				verbose: 'cyan',
+				prompt: 'grey',
+				debug: 'blue',
+				info: 'green',
+				data: 'grey',
+				help: 'cyan',
+				warn: 'yellow',
+				error: 'red'
+			}
 		} );
 
 		application.log.error = function (...args) {
 			return log.error( ...[ `[${application.name}]`, ...args ] );
-		}
+		};
 
 		application.log.warn = function (...args) {
 			return log.warn( ...[ `[${application.name}]`, ...args ] );
-		}
+		};
 
 		application.log.info = function (...args) {
 			return log.info( ...[ `[${application.name}]`, ...args ] );
-		}
+		};
 
 		application.log.debug = function (...args) {
 			return log.debug( ...[ `[${application.name}]`, ...args ] );
-		}
+		};
 
 		application.log.silly = function (...args) {
 			return log.silly( ...[ `[${application.name}]`, ...args ] );
-		}
+		};
 
 		return this;
 	}

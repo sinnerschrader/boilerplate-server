@@ -60,7 +60,19 @@ exports['default'] = {
 						return item;
 					});
 					log = new _winston.Logger({
-						'transports': transporters
+						'transports': transporters,
+						'colors': this.configuration.colors || {
+							trace: 'magenta',
+							input: 'grey',
+							verbose: 'cyan',
+							prompt: 'grey',
+							debug: 'blue',
+							info: 'green',
+							data: 'grey',
+							help: 'cyan',
+							warn: 'yellow',
+							error: 'red'
+						}
 					});
 
 					application.log.error = function () {

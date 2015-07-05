@@ -1,7 +1,7 @@
 import engine from './engine';
 
 export default {
-	'after': [ 'hooks:user-hooks:start:after' ],
+	'after': [ 'hooks:log:start:after' ],
 	'modes': [ 'server' ],
 
 	'start': async function startEngineHook ( application ) {

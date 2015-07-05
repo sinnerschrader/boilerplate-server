@@ -3,9 +3,9 @@ export default {
 	'transports': [ 'console' ],
 	'options': {
 		'console': {
-			'colorize': false,
-			'timestamp': false,
-			'showLevel': false
+			'colorize': true,
+			'timestamp': true,
+			'showLevel': true
 		}
 	}
 };

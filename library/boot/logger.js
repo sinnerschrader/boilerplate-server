@@ -13,22 +13,13 @@ var _winston = require('winston');
 
 function bootLogger(options, application) {
 	var ConsoleTransport = _winston.transports.Console;
-	var FileTransport = _winston.transports.File;
-
 	var level = options.loglevel || 'debug';
 
 	var log = new _winston.Logger({
 		'transports': [new ConsoleTransport({
 			'name': 'bootConsole',
 			'level': level,
-			'colorize': false,
-			'showLevel': false,
-			'timestamp': false
-		}), new FileTransport({
-			'name': 'bootFile',
-			'filename': 'server_debug.log',
-			'level': 'error',
-			'colorize': false,
+			'colorize': true,
 			'showLevel': true,
 			'timestamp': true
 		})]

@@ -7,8 +7,6 @@ import { Logger, transports } from 'winston';
 
 function bootLogger ( options, application ) {
 	let ConsoleTransport = transports.Console;
-	let FileTransport = transports.File;
-
 	let level = options.loglevel || 'debug';
 
 	let log = new Logger( {
@@ -16,15 +14,7 @@ function bootLogger ( options, application ) {
 			new ConsoleTransport( {
 				'name': 'bootConsole',
 				'level': level,
-				'colorize': false,
-				'showLevel': false,
-				'timestamp': false
-			} ),
-			new FileTransport( {
-				'name': 'bootFile',
-				'filename': 'server_debug.log',
-				'level': 'error',
-				'colorize': false,
+				'colorize': true,
 				'showLevel': true,
 				'timestamp': true
 			} )

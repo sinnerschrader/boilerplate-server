@@ -132,7 +132,9 @@ exports['default'] = {
 							return;
 						}
 
-						if (middlewareConfig === false) {
+						var isObject = typeof middlewareConfig === 'object';
+
+						if (middlewareConfig === false || isObject && middlewareConfig.enabled !== true) {
 							_this.log.debug('Middleware \'' + middlewareName + '\' is explicitly disabled.');
 							return;
 						}

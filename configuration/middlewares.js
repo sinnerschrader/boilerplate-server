@@ -12,7 +12,14 @@ var middlewares = {
 		'revision': true,
 		'etags': true,
 		'jsonerror': true,
-		'basicauth': false
+		'basicauth': {
+			'enabled': false,
+			'credentials': {
+				'name': process.env.NODE_BASIC_AUTH_LOGIN || 'boilerplate-server',
+				'pass': process.env.NODE_BASIC_AUTH_PASS || 'boilerplate-server'
+			},
+			'exclude': '/health'
+		}
 	}
 };
 

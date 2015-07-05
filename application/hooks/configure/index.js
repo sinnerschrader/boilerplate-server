@@ -347,7 +347,7 @@ exports['default'] = {
 
 					userPath = _step3.value;
 
-					this.log.warn('Loading configuration from \'' + userPath + '\'');
+					this.log.info('Loading configuration from \'' + userPath + '\'');
 
 					context$1$0.prev = 126;
 					userPathConfig = (0, _libraryUtilitiesConfiguration2['default'])(userPath, this.configuration.filter, application.runtime.env);
@@ -362,7 +362,7 @@ exports['default'] = {
 
 					this.log.error('Error while reading configuration from ' + userPath + '.');
 					this.log.error(context$1$0.t3);
-					context$1$0.t3.message = 'Failed loading configuration';
+					context$1$0.t3.message = 'Failed loading configuration from ${userPath}';
 					throw context$1$0.t3;
 
 				case 137:

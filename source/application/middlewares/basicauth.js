@@ -20,8 +20,9 @@ function basicAuthMiddlewareFactory (application, config) {
 					this.status = 401;
 					this.set('WWW-Authenticate', 'Basic');
 					this.body = 'Unauthorized';
+					return next;
 				}
-				return next;
+				this.throw(error.status);
 			}
 		} else {
 			yield next;

@@ -19,7 +19,7 @@ function basicAuthMiddlewareFactory(application, config) {
 					}
 
 					if (excluded) {
-						context$2$0.next = 15;
+						context$2$0.next = 19;
 						break;
 					}
 
@@ -29,29 +29,35 @@ function basicAuthMiddlewareFactory(application, config) {
 					return authorize(next);
 
 				case 7:
-					context$2$0.next = 13;
+					context$2$0.next = 17;
 					break;
 
 				case 9:
 					context$2$0.prev = 9;
 					context$2$0.t0 = context$2$0['catch'](4);
 
-					if (context$2$0.t0.status === 401) {
-						this.status = 401;
-						this.set('WWW-Authenticate', 'Basic');
-						this.body = 'Unauthorized';
+					if (!(context$2$0.t0.status === 401)) {
+						context$2$0.next = 16;
+						break;
 					}
+
+					this.status = 401;
+					this.set('WWW-Authenticate', 'Basic');
+					this.body = 'Unauthorized';
 					return context$2$0.abrupt('return', next);
 
-				case 13:
-					context$2$0.next = 17;
-					break;
-
-				case 15:
-					context$2$0.next = 17;
-					return next;
+				case 16:
+					this['throw'](context$2$0.t0.status);
 
 				case 17:
+					context$2$0.next = 21;
+					break;
+
+				case 19:
+					context$2$0.next = 21;
+					return next;
+
+				case 21:
 				case 'end':
 					return context$2$0.stop();
 			}

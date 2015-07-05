@@ -22,18 +22,14 @@ exports['default'] = {
 	'after': ['hooks:configure:start:after'],
 
 	'start': function startUserHook(application) {
-		var coreHookPath, isProjectMode, userHookPaths, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, userHookPath, hooks, moduleHooks;
+		var coreHookPath, userHookPaths, userHooks, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, userHookPath, loadedHooks;
 
 		return regeneratorRuntime.async(function startUserHook$(context$1$0) {
-			var _this = this;
-
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
 					coreHookPath = (0, _path.resolve)(application.runtime.base, application.configuration.paths.hooks);
-					isProjectMode = this.configuration.path === coreHookPath;
 
 					this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
-
 					// TODO: Fix for mysteriously split last path, investigate
 					this.configuration.path = this.configuration.path.filter(function (item) {
 						return item.length > 1;
@@ -43,10 +39,12 @@ exports['default'] = {
 						return items.concat(application.runtime.cwds.map(function (cwd) {
 							return (0, _path.resolve)(cwd, item);
 						}));
-					}, []);
+					}, []).filter(function (item) {
+						return item !== coreHookPath;
+					});
 
 					userHookPaths = [].concat(_toConsumableArray(new Set(userHookPaths)));
-
+					userHooks = [];
 					_iteratorNormalCompletion = true;
 					_didIteratorError = false;
 					_iteratorError = undefined;
@@ -55,7 +53,7 @@ exports['default'] = {
 
 				case 11:
 					if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-						context$1$0.next = 26;
+						context$1$0.next = 27;
 						break;
 					}
 
@@ -67,108 +65,94 @@ exports['default'] = {
 					context$1$0.t0 = context$1$0.sent;
 
 					if (!(context$1$0.t0 === false)) {
-						context$1$0.next = 19;
+						context$1$0.next = 20;
 						break;
 					}
 
-					this.log.warn('No user hooks found at ' + coreHookPath);
-					return context$1$0.abrupt('return', this);
+					return context$1$0.abrupt('continue', 24);
 
-				case 19:
-					hooks = (0, _libraryHooksLoad2['default'])(application, userHookPath, true);
+				case 20:
+					application.log.info('Loading user hooks from ' + userHookPath + '...');
 
-					hooks = hooks.map(function (hook) {
-						var conflictingCoreHooks = application.hooks.filter(function (coreHook) {
-							return coreHook.name === hook.name;
-						});
+				case 21:
+					loadedHooks = (0, _libraryHooksLoad2['default'])(application, userHookPath, true);
 
-						if (conflictingCoreHooks.length > 0) {
-							if (isProjectMode === false) {
-								_this.log.warn('User hook \'' + hook.name + '\' conflicts with core hook \'' + conflictingCoreHooks[0].name + '\'');
-							}
-							return false;
-						}
+					userHooks = userHooks.concat(loadedHooks);
+					application.log.info('Loaded ' + loadedHooks.length + ' user hooks: ' + loadedHooks.map(function (loadedHook) {
+						return loadedHook.name;
+					}));
 
-						return hook;
-					}).filter(function (item) {
-						return item;
-					});
-
-					application.hooks = application.hooks.concat(hooks);
-					hooks.forEach(function (hook) {
-						return hook.register(application);
-					});
-
-				case 23:
+				case 24:
 					_iteratorNormalCompletion = true;
 					context$1$0.next = 11;
 					break;
 
-				case 26:
-					context$1$0.next = 32;
+				case 27:
+					context$1$0.next = 33;
 					break;
 
-				case 28:
-					context$1$0.prev = 28;
+				case 29:
+					context$1$0.prev = 29;
 					context$1$0.t1 = context$1$0['catch'](9);
 					_didIteratorError = true;
 					_iteratorError = context$1$0.t1;
 
-				case 32:
-					context$1$0.prev = 32;
+				case 33:
 					context$1$0.prev = 33;
+					context$1$0.prev = 34;
 
 					if (!_iteratorNormalCompletion && _iterator['return']) {
 						_iterator['return']();
 					}
 
-				case 35:
-					context$1$0.prev = 35;
+				case 36:
+					context$1$0.prev = 36;
 
 					if (!_didIteratorError) {
-						context$1$0.next = 38;
+						context$1$0.next = 39;
 						break;
 					}
 
 					throw _iteratorError;
 
-				case 38:
-					return context$1$0.finish(35);
-
 				case 39:
-					return context$1$0.finish(32);
+					return context$1$0.finish(36);
 
 				case 40:
-					moduleHooks = Object.keys(this.configuration.enabled).filter(function (hookName) {
-						return typeof _this.configuration.enabled[hookName].enabled === 'string';
-					}).reduce(function (result, hookName) {
-						var hookModuleName = _this.configuration.enabled[hookName].enabled;
+					return context$1$0.finish(33);
 
-						try {
-							result.push(require(hookModuleName));
-							_this.log.debug('Required module route \'' + hookName + '\' from module \'' + hookModuleName + '\'');
-						} catch (err) {
-							_this.log.warn('Could not require module route \'' + hookName + '\' from module \'' + hookModuleName + '\'');
-							_this.log.debug(err);
+				case 41:
+
+					// Let the last user hook with a given name reign
+					userHooks = [].concat(_toConsumableArray(new Set(userHooks.reverse()))).reverse();
+
+					userHooks = userHooks.map(function (userHook) {
+						// Detect hooks conflictsing with core hooks
+						var conflictingCoreHook = application.hooks.filter(function (coreHook) {
+							return coreHook.name === userHook.name;
+						})[0];
+
+						if (conflictingCoreHook) {
+							application.log.warn('Hook "' + userHook.name + '" from ' + userHook.requirePath + ' conflicts with core hook "' + conflictingCoreHook.name + '", will not load.');
+							return null;
 						}
-
-						return result;
-					}, []);
-
-					application.hooks = application.hooks.concat(moduleHooks);
-					moduleHooks.forEach(function (hook) {
-						return hook.register(application);
+						return userHook;
+					}).filter(function (item) {
+						return item;
 					});
 
+					userHooks.forEach(function (hook) {
+						return hook.register(application);
+					});
 					return context$1$0.abrupt('return', this);
 
-				case 44:
+				case 45:
 				case 'end':
 					return context$1$0.stop();
 			}
-		}, null, this, [[9, 28, 32, 40], [33,, 35, 39]]);
+		}, null, this, [[9, 29, 33, 41], [34,, 36, 40]]);
 	}
 };
 module.exports = exports['default'];
 
-// load module hooks
+// load user hooks

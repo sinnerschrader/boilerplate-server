@@ -117,7 +117,7 @@ export default {
 		// Load dem configs from filtered paths
 		let user = {};
 		for ( let userPath of existingConfigPaths ) {
-			this.log.warn( `Loading configuration from '${userPath}'` );
+			this.log.info( `Loading configuration from '${userPath}'` );
 
 			try {
 				let userPathConfig = load( userPath, this.configuration.filter, application.runtime.env );
@@ -125,7 +125,7 @@ export default {
 			} catch ( err ) {
 				this.log.error( `Error while reading configuration from ${userPath}.` );
 				this.log.error( err );
-				err.message = 'Failed loading configuration';
+				err.message = 'Failed loading configuration from ${userPath}';
 				throw err;
 			}
 		}

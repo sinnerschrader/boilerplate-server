@@ -21,26 +21,11 @@ class Hook {
 	};
 
 	constructor ( application, name, extender ) {
-		this.name = name;
-		this.configurationKey = extender.configurationKey || name;
+		Object.assign(this, extender);
 
+		this.configurationKey = extender.configurationKey || name;
 		this.wait = typeof extender.wait !== 'undefined' ? extender.wait : this.wait;
 		this.disabled = typeof extender.disabled !== 'undefined' ? extender.disabled : this.disabled;
-
-		this.modes = extender.modes || this.modes;
-		this.after = extender.after || this.after;
-		this.defaults = extender.defaults || this.defaults;
-
-		this.configure = extender.configure || this.configure;
-		this.hookWillConfigure = extender.hookWillConfigure || this.hookWillConfigure;
-		this.hookDidConfigure = extender.hookDidConfigure || this.hookDidConfigure;
-
-		this.start = extender.start || this.start;
-		this.hookWillStart = extender.hookWillStart || this.hookWillStart;
-		this.hookDidStart = extender.hookDidStart || this.hookDidStart;
-
-		this.hookWillRegister = extender.hookWillRegister || this.hookWillRegister;
-		this.hookDidRegister = extender.hookDidRegister || this.hookDidRegister;
 
 		this.log = {
 			'error': ( ...args ) => { application.log.error( `[hook:${this.name}:${this.stageName}]`, ...args ); },
