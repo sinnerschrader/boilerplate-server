@@ -19,6 +19,10 @@ var _koaRouter = require('koa-router');
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
+var _lodashMerge = require('lodash.merge');
+
+var _lodashMerge2 = _interopRequireDefault(_lodashMerge);
+
 var _libraryUtilitiesPorts = require('../../../library/utilities/ports');
 
 var _libraryUtilitiesPorts2 = _interopRequireDefault(_libraryUtilitiesPorts);
@@ -98,8 +102,8 @@ function engineBlueprint() {
 									port: server.port
 								});
 
-								application.log.info('[application:subapplication] ' + sub.mountable.name + '.configuration.server: ' + JSON.stringify(sub.mountable.configuration.server));
-								application.log.info('[application:subapplication] ' + sub.mountable.name + '.configuration.client: ' + JSON.stringify(sub.mountable.configuration.client));
+								application.log.silly('[application:subapplication] ' + sub.mountable.name + '.configuration.server: ' + JSON.stringify(sub.mountable.configuration.server));
+								application.log.silly('[application:subapplication] ' + sub.mountable.name + '.configuration.client: ' + JSON.stringify(sub.mountable.configuration.client));
 							});
 
 						case 17:
@@ -194,6 +198,43 @@ function engineBlueprint() {
 
 					mountable.router.stack.middleware.push(middleware);
 				});
+
+				mountable.configuration.middlewares = mountable.configuration.middlewares || {};
+
+				// Override middleware config on mountable by host middleware config
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
+
+				try {
+					for (var _iterator = Object.keys(application.configuration.middlewares.enabled || {})[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						var middlewareName = _step.value;
+
+						var config = application.configuration.middlewares.enabled[middlewareName];
+						var mountableConfig = mountable.configuration.middlewares.enabled[middlewareName];
+
+						mountableConfig = typeof mountableConfig === 'undefined' ? config : mountableConfig;
+
+						if (typeof config === 'object') {
+							(0, _lodashMerge2['default'])(mountableConfig, config);
+						} else {
+							mountableConfig = config;
+						}
+					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion && _iterator['return']) {
+							_iterator['return']();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
+					}
+				}
 
 				fuel.use(mountable.router.routes());
 				fuel.use(mountable.router.allowedMethods());

@@ -1,22 +1,27 @@
 import auth from 'koa-basic-auth';
 
-function basicAuthMiddlewareFactory (application, config) {
-	var authorization = auth(config.credentials);
+function basicAuthMiddlewareFactory (application) {
 
 	return function * basicAuthMiddleware (next) {
-		var excluded = false;
+		let config = application.configuration.middlewares.enabled.basicauth;
+
+		if (config.enabled === false) {
+			yield next;
+		}
+
+		let authorization = auth(config.credentials);
+		let excluded = false;
 
 		if (config.exclude) {
-			var matcher = new RegExp(config.exclude, 'g');
+			let matcher = new RegExp(config.exclude, 'g');
 			excluded = matcher.test(this.path);
 		}
 
 		if (!excluded) {
-			var authorize = authorization.bind(this);
+			let authorize = authorization.bind(this);
 			try {
 				yield authorize(next);
 			} catch (error) {
-				console.log(error);
 				if (error.status === 401) {
 					this.status = 401;
 					this.set('WWW-Authenticate', 'Basic');

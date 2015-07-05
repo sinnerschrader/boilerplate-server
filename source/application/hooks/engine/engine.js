@@ -1,5 +1,6 @@
 import koa from 'koa';
 import router from 'koa-router';
+import merge from 'lodash.merge';
 
 import ports from '../../../library/utilities/ports';
 
@@ -44,8 +45,8 @@ function engineBlueprint () {
 							port: server.port
 						});
 
-						application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.server: ${JSON.stringify(sub.mountable.configuration.server)}` );
-						application.log.info( `[application:subapplication] ${sub.mountable.name}.configuration.client: ${JSON.stringify(sub.mountable.configuration.client)}` );
+						application.log.silly( `[application:subapplication] ${sub.mountable.name}.configuration.server: ${JSON.stringify(sub.mountable.configuration.server)}` );
+						application.log.silly( `[application:subapplication] ${sub.mountable.name}.configuration.client: ${JSON.stringify(sub.mountable.configuration.client)}` );
 					});
 				}
 
@@ -106,6 +107,22 @@ function engineBlueprint () {
 
 				mountable.router.stack.middleware.push(middleware);
 			});
+
+			mountable.configuration.middlewares = mountable.configuration.middlewares || {};
+
+			// Override middleware config on mountable by host middleware config
+			for (let middlewareName of Object.keys(application.configuration.middlewares.enabled || {})) {
+				let config = application.configuration.middlewares.enabled[middlewareName];
+				let mountableConfig = mountable.configuration.middlewares.enabled[middlewareName];
+
+				mountableConfig = typeof mountableConfig === 'undefined' ? config : mountableConfig;
+
+				if (typeof config === 'object') {
+					merge(mountableConfig, config);
+				} else {
+					mountableConfig = config;
+				}
+			}
 
 			fuel.use(mountable.router.routes());
 			fuel.use(mountable.router.allowedMethods());
