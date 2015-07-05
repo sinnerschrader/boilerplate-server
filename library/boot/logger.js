@@ -13,7 +13,7 @@ var _winston = require('winston');
 
 function bootLogger(options, application) {
 	var ConsoleTransport = _winston.transports.Console;
-	var level = options.loglevel || 'debug';
+	var level = options.log && options.log.level || 'silly';
 
 	var log = new _winston.Logger({
 		'transports': [new ConsoleTransport({

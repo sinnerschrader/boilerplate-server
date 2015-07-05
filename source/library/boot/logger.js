@@ -7,7 +7,7 @@ import { Logger, transports } from 'winston';
 
 function bootLogger ( options, application ) {
 	let ConsoleTransport = transports.Console;
-	let level = options.loglevel || 'debug';
+	let level = options.log && options.log.level || 'silly';
 
 	let log = new Logger( {
 		'transports': [

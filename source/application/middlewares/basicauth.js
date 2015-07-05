@@ -1,4 +1,4 @@
-var auth = require('koa-basic-auth');
+import auth from 'koa-basic-auth';
 
 function basicAuthMiddlewareFactory (application, config) {
 	var authorization = auth(config.credentials);
@@ -16,12 +16,15 @@ function basicAuthMiddlewareFactory (application, config) {
 			try {
 				yield authorize(next);
 			} catch (error) {
+				console.log(error);
 				if (error.status === 401) {
 					this.status = 401;
 					this.set('WWW-Authenticate', 'Basic');
 					this.body = 'Unauthorized';
-					return next;
+					//this.throw(401);
+					return;
 				}
+
 				this.throw(error.status);
 			}
 		} else {
@@ -30,4 +33,4 @@ function basicAuthMiddlewareFactory (application, config) {
 	};
 }
 
-module.exports = basicAuthMiddlewareFactory;
+export default basicAuthMiddlewareFactory;

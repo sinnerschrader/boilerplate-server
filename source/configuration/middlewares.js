@@ -10,8 +10,8 @@ const middlewares = {
 		'basicauth': {
 			'enabled': false,
 			'credentials': {
-				'name': process.env.NODE_BASIC_AUTH_LOGIN || 'boilerplate-server',
-				'pass': process.env.NODE_BASIC_AUTH_PASS || 'boilerplate-server'
+				'name': process.env.BOILERPLATE_SERVER_BASIC_AUTH_LOGIN || process.env.NODE_BASIC_AUTH_LOGIN || 'boilerplate-server',
+				'pass': process.env.BOILERPLATE_SERVER_BASIC_AUTH_PASS || process.env.NODE_BASIC_AUTH_PASS || 'boilerplate-server'
 			},
 			'exclude': '/health'
 		}
