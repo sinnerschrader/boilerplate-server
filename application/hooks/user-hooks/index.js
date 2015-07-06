@@ -127,7 +127,7 @@ exports['default'] = {
 					userHooks = [].concat(_toConsumableArray(new Set(userHooks.reverse()))).reverse();
 
 					userHooks = userHooks.map(function (userHook) {
-						// Detect hooks conflictsing with core hooks
+						// Detect hooks conflicting with core hooks
 						var conflictingCoreHook = application.hooks.filter(function (coreHook) {
 							return coreHook.name === userHook.name;
 						})[0];
@@ -144,9 +144,10 @@ exports['default'] = {
 					userHooks.forEach(function (hook) {
 						return hook.register(application);
 					});
+					application.hooks = application.hooks.concat(userHooks);
 					return context$1$0.abrupt('return', this);
 
-				case 45:
+				case 46:
 				case 'end':
 					return context$1$0.stop();
 			}

@@ -42,7 +42,7 @@ export default {
 
 		userHooks = userHooks
 			.map(function(userHook){
-				// Detect hooks conflictsing with core hooks
+				// Detect hooks conflicting with core hooks
 				let conflictingCoreHook = application.hooks.filter((coreHook) => coreHook.name === userHook.name)[0];
 
 				if (conflictingCoreHook) {
@@ -53,6 +53,7 @@ export default {
 			}).filter((item) => (item));
 
 		userHooks.forEach( ( hook ) => hook.register( application ) );
+		application.hooks = application.hooks.concat(userHooks);
 		return this;
 	}
 };
