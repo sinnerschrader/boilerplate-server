@@ -64,11 +64,7 @@ export default {
 		}
 
 		modulePaths = [...new Set(modulePaths)];
-
-		modulePaths = modulePaths
-			.filter((modulePath) => !modulePath.includes(findRoot(__dirname))) // Filter paths below boilerplate-server
-			.filter((modulePath) => !modulePath.includes('patternplate-server')) // TODO: Resolve this properly
-			.filter((modulePath) => !modulePath.includes('patternplate-client')); // TODO: Resolve this properly
+		modulePaths = modulePaths.filter((modulePath) => !modulePath.includes(findRoot(__dirname)));
 
 		let existingModulePaths = [];
 
@@ -130,9 +126,19 @@ export default {
 			}
 		}
 
-		merge( application.configuration, core, user, application.runtime.api );
+		merge( application.configuration, core, user, application.runtime.api, function(a, b){
+			if (Array.isArray(a)) {
+				return a.concat(b).filter((item) => typeof item !== 'undefined');
+			}
+
+			if (!Array.isArray(a) && Array.isArray(b)) {
+				return [a].concat(b).filter((item) => typeof item !== 'undefined');
+			}
+		});
+
 		application.runtime.prefix = application.runtime.prefix || '/';
 		application.runtime.mode = application.runtime.mode || 'server';
+
 		return this;
 	}
 };

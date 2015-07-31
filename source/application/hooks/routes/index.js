@@ -18,8 +18,6 @@ export default {
 		// load physical user routes
 		let userRoutes = {};
 		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
-		// TODO: Fix for mysteriously split last path, investigate
-		this.configuration.path = this.configuration.path.filter((item) => item.length > 1);
 
 		let routePaths = this.configuration.path
 			.reduce((items, item) => items.concat(

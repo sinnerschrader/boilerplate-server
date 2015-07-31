@@ -15,11 +15,7 @@ export default {
 		// Load physical user middlewares
 		let userMiddlewares = {};
 
-
 		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
-
-		// TODO: Fix for mysteriously split last path, investigate
-		this.configuration.path = this.configuration.path.filter((item) => item.length > 1);
 
 		let middlewarePaths = this.configuration.path
 			.reduce((items, item) => items.concat(

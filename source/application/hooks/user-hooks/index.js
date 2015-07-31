@@ -12,8 +12,6 @@ export default {
 		let coreHookPath = resolve(application.runtime.base, application.configuration.paths.hooks);
 
 		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
-		// TODO: Fix for mysteriously split last path, investigate
-		this.configuration.path = this.configuration.path.filter((item) => item.length > 1);
 
 		let userHookPaths = this.configuration.path
 			.reduce((items, item) => items.concat(
