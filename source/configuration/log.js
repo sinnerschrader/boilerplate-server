@@ -1,11 +1,20 @@
-export default {
+const log = {
 	'level': process.env.BOILERPLATESERVER_LOG_LEVEL || process.env.BOILERPLATE_LOG_LEVEL || process.env.NODE_LOG_LEVEL || process.env.LOG_LEVEL || 'silly',
-	'transports': [ 'console' ],
-	'options': {
-		'console': {
-			'colorize': true,
-			'timestamp': true,
-			'showLevel': true
-		}
+	'colorize': true,
+	'timestamp': true,
+	'showLevel': true,
+	'colors': {
+		'trace': 'magenta',
+		'input': 'grey',
+		'verbose': 'cyan',
+		'prompt': 'grey',
+		'debug': 'blue',
+		'info': 'green',
+		'data': 'grey',
+		'help': 'cyan',
+		'warn': 'yellow',
+		'error': 'red'
 	}
 };
+
+export default log;

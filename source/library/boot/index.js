@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import appRootPath from 'app-root-path';
 
-import bootLogger from './logger';
+import queuedLogger from '../utilities/queued-logger';
 import hooks from '../hooks';
 
 class BoilerPlateServer extends EventEmitter {
@@ -19,7 +19,7 @@ class BoilerPlateServer extends EventEmitter {
 			'cwd': appRootPath.path
 		}, options );
 
-		this.log = bootLogger( options, this );
+		this.log = queuedLogger(this.name);
 	}
 
 	async start ( host = this.configuration.server.host, port = this.configuration.server.port ) {

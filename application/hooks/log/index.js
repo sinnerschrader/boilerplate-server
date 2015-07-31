@@ -1,18 +1,21 @@
 /*eslint-disable no-console */
+
+/**
+ * Log Hook
+ * Abstract: Provides logging facilities on application.log
+ * Configuration: configuration/log.js
+ **/
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _winston = require('winston');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _path = require('path');
+var _logger = require('./logger');
 
-var transportMethods = {
-	'file': _winston.transports.File,
-	'console': _winston.transports.Console
-};
+var _logger2 = _interopRequireDefault(_logger);
 
 exports['default'] = {
 	'after': ['hooks:user-hooks:start:after'],
@@ -23,11 +26,9 @@ exports['default'] = {
 				case 0:
 					this.configuration = Object.assign(this.configuration, this.defaults, application.configuration[this.name]);
 					this.configuration.level = application.runtime.api.loglevel || this.configuration.level;
-					this.configuration.path = (0, _path.resolve)(application.runtime.cwd, application.configuration.paths.log);
-
 					return context$1$0.abrupt('return', this);
 
-				case 4:
+				case 3:
 				case 'end':
 					return context$1$0.stop();
 			}
@@ -35,89 +36,21 @@ exports['default'] = {
 	},
 
 	'start': function startLogHook(application) {
-		var transporters, log;
+		var logger;
 		return regeneratorRuntime.async(function startLogHook$(context$1$0) {
-			var _this = this;
-
 			while (1) switch (context$1$0.prev = context$1$0.next) {
 				case 0:
-					transporters = this.configuration.transports.map(function (transportName) {
-						var Transport = transportMethods[transportName];
+					logger = (0, _logger2['default'])('[' + application.name + ']', this.configuration);
 
-						if (typeof Transport !== 'function') {
-							_this.log.warn('Trying to add log transport \'' + transportName + '\' but it is unavailable.');
-							return false;
-						}
+					application.log.silly('Draining boot logger queue...');
+					application.log.drain(logger);
 
-						var transportConfig = Object.assign({}, _this.configuration.options[transportName], { 'name': transportName, 'level': _this.configuration.level });
-
-						if (transportName === 'file') {
-							transportConfig.filename = (0, _path.resolve)(_this.configuration.path, [transportName, 'log'].join('.'));
-						}
-
-						return new Transport(transportConfig);
-					}).filter(function (item) {
-						return item;
-					});
-					log = new _winston.Logger({
-						'transports': transporters,
-						'colors': this.configuration.colors || {
-							trace: 'magenta',
-							input: 'grey',
-							verbose: 'cyan',
-							prompt: 'grey',
-							debug: 'blue',
-							info: 'green',
-							data: 'grey',
-							help: 'cyan',
-							warn: 'yellow',
-							error: 'red'
-						}
-					});
-
-					application.log.error = function () {
-						for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-							args[_key] = arguments[_key];
-						}
-
-						return log.error.apply(log, ['[' + application.name + ']'].concat(args));
-					};
-
-					application.log.warn = function () {
-						for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-							args[_key2] = arguments[_key2];
-						}
-
-						return log.warn.apply(log, ['[' + application.name + ']'].concat(args));
-					};
-
-					application.log.info = function () {
-						for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-							args[_key3] = arguments[_key3];
-						}
-
-						return log.info.apply(log, ['[' + application.name + ']'].concat(args));
-					};
-
-					application.log.debug = function () {
-						for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-							args[_key4] = arguments[_key4];
-						}
-
-						return log.debug.apply(log, ['[' + application.name + ']'].concat(args));
-					};
-
-					application.log.silly = function () {
-						for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-							args[_key5] = arguments[_key5];
-						}
-
-						return log.silly.apply(log, ['[' + application.name + ']'].concat(args));
-					};
+					logger.silly('Deploying application logger...');
+					application.log.deploy(logger);
 
 					return context$1$0.abrupt('return', this);
 
-				case 8:
+				case 6:
 				case 'end':
 					return context$1$0.stop();
 			}
@@ -125,3 +58,4 @@ exports['default'] = {
 	}
 };
 module.exports = exports['default'];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9hcHBsaWNhdGlvbi9ob29rcy9sb2cvaW5kZXguanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7O3NCQU93QixVQUFVOzs7O3FCQUVuQjtBQUNkLFFBQU8sRUFBRSxDQUFFLDhCQUE4QixDQUFFOztBQUUzQyxZQUFXLEVBQUUsU0FBZSxnQkFBZ0IsQ0FBRyxXQUFXOzs7O0FBQ3pELFNBQUksQ0FBQyxhQUFhLEdBQUcsTUFBTSxDQUFDLE1BQU0sQ0FBRSxJQUFJLENBQUMsYUFBYSxFQUFFLElBQUksQ0FBQyxRQUFRLEVBQUUsV0FBVyxDQUFDLGFBQWEsQ0FBRSxJQUFJLENBQUMsSUFBSSxDQUFFLENBQUUsQ0FBQztBQUNoSCxTQUFJLENBQUMsYUFBYSxDQUFDLEtBQUssR0FBRyxXQUFXLENBQUMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxRQUFRLElBQUksSUFBSSxDQUFDLGFBQWEsQ0FBQyxLQUFLLENBQUM7eUNBQ2pGLElBQUk7Ozs7Ozs7RUFDWDs7QUFFRCxRQUFPLEVBQUUsU0FBZSxZQUFZLENBQUcsV0FBVztNQUM3QyxNQUFNOzs7O0FBQU4sV0FBTSxHQUFHLCtCQUFnQixXQUFXLENBQUMsSUFBSSxRQUFLLElBQUksQ0FBQyxhQUFhLENBQUM7O0FBRXJFLGdCQUFXLENBQUMsR0FBRyxDQUFDLEtBQUssQ0FBQywrQkFBK0IsQ0FBQyxDQUFDO0FBQ3ZELGdCQUFXLENBQUMsR0FBRyxDQUFDLEtBQUssQ0FBQyxNQUFNLENBQUMsQ0FBQzs7QUFFOUIsV0FBTSxDQUFDLEtBQUssQ0FBQyxpQ0FBaUMsQ0FBQyxDQUFDO0FBQ2hELGdCQUFXLENBQUMsR0FBRyxDQUFDLE1BQU0sQ0FBQyxNQUFNLENBQUMsQ0FBQzs7eUNBRXhCLElBQUk7Ozs7Ozs7RUFDWDtDQUNEIiwiZmlsZSI6ImluZGV4LmpzIiwic291cmNlc0NvbnRlbnQiOlsiLyplc2xpbnQtZGlzYWJsZSBuby1jb25zb2xlICovXG5cbi8qKlxuICogTG9nIEhvb2tcbiAqIEFic3RyYWN0OiBQcm92aWRlcyBsb2dnaW5nIGZhY2lsaXRpZXMgb24gYXBwbGljYXRpb24ubG9nXG4gKiBDb25maWd1cmF0aW9uOiBjb25maWd1cmF0aW9uL2xvZy5qc1xuICoqL1xuaW1wb3J0IHN0YXJ0TG9nZ2VyIGZyb20gJy4vbG9nZ2VyJztcblxuZXhwb3J0IGRlZmF1bHQge1xuXHQnYWZ0ZXInOiBbICdob29rczp1c2VyLWhvb2tzOnN0YXJ0OmFmdGVyJyBdLFxuXG5cdCdjb25maWd1cmUnOiBhc3luYyBmdW5jdGlvbiBjb25maWd1cmVMb2dIb29rICggYXBwbGljYXRpb24gKSB7XG5cdFx0dGhpcy5jb25maWd1cmF0aW9uID0gT2JqZWN0LmFzc2lnbiggdGhpcy5jb25maWd1cmF0aW9uLCB0aGlzLmRlZmF1bHRzLCBhcHBsaWNhdGlvbi5jb25maWd1cmF0aW9uWyB0aGlzLm5hbWUgXSApO1xuXHRcdHRoaXMuY29uZmlndXJhdGlvbi5sZXZlbCA9IGFwcGxpY2F0aW9uLnJ1bnRpbWUuYXBpLmxvZ2xldmVsIHx8IHRoaXMuY29uZmlndXJhdGlvbi5sZXZlbDtcblx0XHRyZXR1cm4gdGhpcztcblx0fSxcblxuXHQnc3RhcnQnOiBhc3luYyBmdW5jdGlvbiBzdGFydExvZ0hvb2sgKCBhcHBsaWNhdGlvbiApIHtcblx0XHRsZXQgbG9nZ2VyID0gc3RhcnRMb2dnZXIoYFske2FwcGxpY2F0aW9uLm5hbWV9XWAsIHRoaXMuY29uZmlndXJhdGlvbik7XG5cblx0XHRhcHBsaWNhdGlvbi5sb2cuc2lsbHkoJ0RyYWluaW5nIGJvb3QgbG9nZ2VyIHF1ZXVlLi4uJyk7XG5cdFx0YXBwbGljYXRpb24ubG9nLmRyYWluKGxvZ2dlcik7XG5cblx0XHRsb2dnZXIuc2lsbHkoJ0RlcGxveWluZyBhcHBsaWNhdGlvbiBsb2dnZXIuLi4nKTtcblx0XHRhcHBsaWNhdGlvbi5sb2cuZGVwbG95KGxvZ2dlcik7XG5cblx0XHRyZXR1cm4gdGhpcztcblx0fVxufTtcbiJdfQ==
