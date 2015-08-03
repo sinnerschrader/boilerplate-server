@@ -14,15 +14,15 @@ export default {
 				return list.lastIndexOf( item ) !== index || list.indexOf( item ) === index;
 			});
 
-		let exisingtaskPaths = [];
+		let existingtaskPaths = [];
 
 		for ( let taskPath of taskPaths ) {
 			if ( await exists( taskPath ) ) {
-				exisingtaskPaths.push( taskPath );
+				existingtaskPaths.push( taskPath );
 			}
 		}
 
-		let tasks = exisingtaskPaths.map( ( tasksPath ) => requireAll( tasksPath ) )
+		let tasks = existingtaskPaths.map( ( tasksPath ) => requireAll( tasksPath ) )
 			.reduce( ( results, task ) => Object.assign( results, task ), {} );
 
 			// load module tasks
