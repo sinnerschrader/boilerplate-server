@@ -1,5 +1,5 @@
 # boilerplate-server
-A lean an mean node server framework designed to get you kicking and hacking on the edge of things real fast.
+A lean JS server framework designed to get you kicking and hacking on the edge of things real fast.
 
 # Design principles
 * **Convention over configuration** boilerplate-server heavily borrows from the Ruby on Rails concept to behave by convention instead of explicit configuration. In practice this means that boilerplate-server does a lot of things automagically based on sane defaults. See [Extending boilerplate-server](#extending-boilerplate-server) for examples.
