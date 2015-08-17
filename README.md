@@ -23,7 +23,7 @@ We recommend `nvm` or `n` for node/io version management.
 
 ```bash
 # Fetch and start the project
-git clone git@git.sinnerschrader.com:patternplate/boilerplate-server.git
+git clone https://github.com/sinnerschrader/boilerplate-server.git
 cd boilerplate-server
 nvm use v1.4.3 # assuming nvm is installed
 npm install
@@ -32,7 +32,7 @@ npm start
 or
 ```bash
 # Install and use as dependency
-npm install --save git@git.sinnerschrader.com:patternplate/boilerplate-server.git
+npm install --save git+https://github.com/sinnerschrader/boilerplate-server.git
 ```
 ```javascript
 // in your package.json
