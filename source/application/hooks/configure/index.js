@@ -81,9 +81,9 @@ export default {
 		// Set application runtime cwds
 		application.runtime.cwds = [
 			...new Set([
+				callerRoot, // top level / caller module
 				application.runtime.cwd, // boilerplate instance project cwd
 				...existingModulePaths, // way between
-				callerRoot, // top level / caller module
 				process.cwd() // cwd
 			])
 		];
