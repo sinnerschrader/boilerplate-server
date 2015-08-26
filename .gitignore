@@ -27,5 +27,8 @@ node_modules
 .lock-wscript
 
 # Generated files
-dist
-pkg
+/dist
+/pkg
+/application
+/library
+/configuration
