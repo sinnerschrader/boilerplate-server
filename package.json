@@ -1,6 +1,6 @@
 {
   "name": "boilerplate-server",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
   "main": "library/",
   "scripts": {
@@ -12,7 +12,7 @@
     "watch": "npm run babel -- --watch",
     "babel": "npm run clean && babel source --out-dir ./ --source-maps inline",
     "clean": "rm -rf application binary configuration library",
-    "publish": "npm run build && npm run publish" 
+    "publish": "npm run build && npm publish"
   },
   "bin": {
     "boilerplate-server": "binary/boilerplate-server.js",
