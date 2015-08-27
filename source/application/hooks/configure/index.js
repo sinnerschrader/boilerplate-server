@@ -127,12 +127,8 @@ export default {
 		}
 
 		merge( application.configuration, core, user, application.runtime.api, function(a, b){
-			if (Array.isArray(a)) {
-				return a.concat(b).filter((item) => typeof item !== 'undefined');
-			}
-
-			if (!Array.isArray(a) && Array.isArray(b)) {
-				return [a].concat(b).filter((item) => typeof item !== 'undefined');
+			if (Array.isArray(b) && typeof a === 'string') {
+				return b;
 			}
 		});
 
