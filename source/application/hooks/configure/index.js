@@ -46,17 +46,9 @@ export default {
 		// Allow user to override core behaviour via cli and *rc files
 		core = merge( {}, core, { 'pkg': pkg }, application.runtime.api );
 
-		let callerPath = require.main.filename;
-		let callerRoot = callerPath;
-
 		let modulePaths = [dirname(module.filename)];
 		let moduleRoot = module;
-
-		// Find the root node module
-		while (!await exists(resolve(callerRoot, 'package.json'))) {
-			callerRoot = dirname(callerRoot);
-		}
-
+		
 		// Find all node modules on the way from here to the top
 		while(moduleRoot.parent) {
 			moduleRoot = moduleRoot.parent;
@@ -81,7 +73,6 @@ export default {
 		// Set application runtime cwds
 		application.runtime.cwds = [
 			...new Set([
-				callerRoot, // top level / caller module
 				application.runtime.cwd, // boilerplate instance project cwd
 				...existingModulePaths, // way between
 				process.cwd() // cwd
