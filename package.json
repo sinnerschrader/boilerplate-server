@@ -12,7 +12,7 @@
     "watch": "npm run babel -- --watch",
     "babel": "npm run clean && babel source --out-dir ./ --source-maps inline",
     "clean": "rm -rf application binary configuration library",
-    "publish": "npm run build && npm publish"
+    "prepublish": "npm run build"
   },
   "bin": {
     "boilerplate-server": "binary/boilerplate-server.js",
