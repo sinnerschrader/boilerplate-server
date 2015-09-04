@@ -5,6 +5,7 @@
   "main": "library/",
   "scripts": {
     "start": "node binary/boilerplate-server.js",
+    "prestart": "npm run build",
     "debug": "node-debug binary/boilerplate-server.js",
     "console": "node binary/boilerplate-console.js",
     "debug-console": "node-debug binary/boilerplate-console.js",
@@ -12,7 +13,7 @@
     "watch": "npm run babel -- --watch",
     "babel": "npm run clean && babel source --out-dir ./ --source-maps inline",
     "clean": "rm -rf application binary configuration library",
-    "prepublish": "npm run build"
+    "pre-publish": "npm run build && npm publish"
   },
   "bin": {
     "boilerplate-server": "binary/boilerplate-server.js",
