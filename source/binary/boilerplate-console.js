@@ -6,24 +6,16 @@ import minimist from 'minimist';
 
 import boilerplate from '../';
 
-async function start ( options = {} ) {
-	let application;
-	let settings = Object.assign( options, { 'mode': 'console' } );
+async function start (options) {
+	const mode = 'console';
+	const settings = {...options, mode};
+	const application = await boilerplate(settings);
 
-	try {
-		application = await boilerplate( settings );
-	} catch ( error ) {
-		let log = application ? application.log || console : console;
-		log.error( error );
-		throw new Error( error );
-	}
-
-	try {
-		await application.run( settings );
-	} catch ( error ) {
-		application.log.error( error );
-		throw new Error( error );
-	}
+	const command = settings._[1]
+	await application.run(command, settings);
 }
 
-start( minimist( process.argv.slice( 1 ) ) );
+const args = minimist(process.argv.slice(1));
+
+start(args)
+	.catch(err => {throw err});
