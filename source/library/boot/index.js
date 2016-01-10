@@ -45,7 +45,8 @@ class BoilerPlateServer extends EventEmitter {
 			return this;
 		}
 
-		return await this.console.run(command, options);
+		await this.console.run(command, options);
+		return this;
 	}
 }
 
