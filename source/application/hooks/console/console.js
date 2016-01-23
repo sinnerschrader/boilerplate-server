@@ -6,7 +6,7 @@ class TaskConsole {
 	}
 
 	async run ( taskName, options ) {
-		let { application, tasks } = nameSpace.get(this);
+		const { application, tasks } = nameSpace.get(this);
 
 		if ( typeof taskName !== 'string' ) {
 			throw new Error( 'Missing taskName parameter.' );
@@ -22,15 +22,15 @@ class TaskConsole {
 
 		application.log.info(`[console:run] Starting taskName "${taskName}"...`);
 
-		let task = tasks[taskName].index;
-		let taskOptions = application.configuration.tasks[taskName];
+		const task = tasks[taskName].index;
+		const taskConfiguration = {...application.configuration.tasks[taskName], ...options};
 
-		if ( !taskOptions ) {
+		if (!taskConfiguration) {
 			application.log.warn(`[console:run] Starting taskName "${taskName}" without configuration...`);
 		}
 
 		try {
-			await task( application, taskOptions || {} );
+			await task(application, taskConfiguration);
 			application.log.info(`[console:run] taskName "${taskName}" executed successfully`);
 		} catch (err) {
 			throw err;
