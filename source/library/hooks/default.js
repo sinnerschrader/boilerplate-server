@@ -1,6 +1,10 @@
+import {
+	merge
+} from 'lodash';
+
 const lifecycle = {
-	'configure': [ 'hookWillConfigure', 'hookDidConfigure' ],
-	'start': [ 'hookWillStart', 'hookDidStart' ]
+	configure: ['hookWillConfigure', 'hookDidConfigure'],
+	start: ['hookWillStart', 'hookDidStart']
 };
 
 class Hook {
@@ -8,153 +12,124 @@ class Hook {
 	disabled = false;
 	modes = [];
 
-	after = [ 'application:after' ];
+	after = ['application:after'];
 	defaults = {};
 	configuration = {};
 
 	stageName = 'init';
 
 	stages = {
-		'register': false,
-		'configure': false,
-		'start': false
+		register: false,
+		configure: false,
+		start: false
 	};
 
-	constructor ( application, name, extender ) {
-		Object.assign(this, extender);
+	constructor(application, name, extender) {
+		merge(this, extender);
 
 		this.configurationKey = extender.configurationKey || name;
-		this.wait = typeof extender.wait !== 'undefined' ? extender.wait : this.wait;
-		this.disabled = typeof extender.disabled !== 'undefined' ? extender.disabled : this.disabled;
-
-		this.log = {
-			'error': ( ...args ) => { application.log.error( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'warn': ( ...args ) => { application.log.warn( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'info': ( ...args ) => { application.log.info( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'debug': ( ...args ) => { application.log.debug( `[hook:${this.name}:${this.stageName}]`, ...args ); },
-			'silly': ( ...args ) => { application.log.silly( `[hook:${this.name}:${this.stageName}]`, ...args ); }
-		};
+		this.wait = typeof extender.wait === 'undefined' ? this.wait : extender.wait;
+		this.disabled = typeof extender.disabled === 'undefined' ? this.disabled : extender.disabled;
+		this.log = application.log;
 	}
 
-	register ( application ) {
-		if ( this.stages.register ) {
-			this.log.warn( `Hook '${this.name}' already registered.` );
+	register(application) {
+		this.hookWillRegister(application);
+
+		this.log.silly(`Registering hook '${this.name}'`);
+
+		const hasModes = this.modes.length > 0;
+		const matchesModes = hasModes &&
+			this.modes.indexOf(application.runtime.mode) > -1;
+
+		if (hasModes && !matchesModes) {
+			this.log.debug(`Hook ${this.name} is disabled in mode ${application.runtime.mode}.`);
+			this.disable(application);
 			return this;
 		}
 
-		this.hookWillRegister( application );
+		this.hookDidRegister(application);
 		this.stages.register = true;
-		this.stageName = 'register';
-
-		this.log.silly( `Registering hook '${this.name}'` );
-
-		if ( this.modes.length > 0 && this.modes.indexOf( application.runtime.mode ) === -1 ) {
-			let modeWord = this.modes.length === 1 ? 'mode' : 'modes';
-			this.log.debug( `Hook ${this.name} is disabled in mode ${application.runtime.mode}. Enabled in ${modeWord} ${this.modes.join( ', ' )}.` );
-			this.disable( application );
-			return this;
-		}
-
-		async function onSubscription () {
-			// application.configuration is not ready before hooks:configure ran
-			if ( application.configuration && application.configuration.hooks.enabled[ this.name ] === false ) {
-				this.log.debug( `Hook '${this.name}' is disabled explicitly.` );
-				this.disable( application );
-				return this;
-			}
-
-			await this.stage( 'configure', application );
-			await this.stage( 'start', application );
-		}
-
-		this.after.forEach( ( eventName ) => {
-			application.on( eventName, onSubscription.bind( this ) );
-		} );
-
-		this.hookDidRegister( application );
 		return this;
 	}
 
-	disable ( application ) {
-		if ( !this.disabled ) {
+	disable() {
+		if (!this.disabled) {
 			this.disabled = true;
-
-			application.emit( `hooks:${this.name}:configure:before` );
-			application.emit( `hooks:configure:before`, this.name );
-			application.emit( `hooks:${this.name}:start:after` );
-			application.emit( `hooks:start:after`, this.name );
 		}
-
 		return this;
 	}
 
-	hookWillRegister ( application ) {
+	hookWillRegister() {
 		return this;
 	}
 
-	hookDidRegister ( application ) {
+	hookDidRegister() {
 		return this;
 	}
 
-	async stage ( stageName, application ) {
-		if ( this.stages[ stageName ] ) {
+	async stage(stageName, application) {
+		if (this.stages[stageName] || this.disabled) {
 			return this;
 		}
 
-		this.stageName = stageName;
-		this.log.debug( `Running stage '${stageName}' on hook '${this.name}'` );
-		application.emit( `hooks:${this.name}:${stageName}:before` );
-		application.emit( `hooks:${stageName}:before`, this.name );
+		this.stages[stageName] = true;
+		this.log.debug(`Running stage '${stageName}' on hook '${this.name}'`);
 
 		try {
-			await this[ lifecycle[ stageName ][ 0 ] ]( application );
-			await this[ stageName ]( application );
-			this.stages[ stageName ] = true;
-
-			this.log.debug( `Ran stage '${stageName}' on hook '${this.name}'` );
-			await this[ lifecycle[ stageName ][ 1 ] ]( application );
-
-			application.emit( `hooks:${this.name}:${stageName}:after` );
-			application.emit( `hooks:${stageName}:after`, this.name );
-
+			await this[lifecycle[stageName][0]](application);
+			await this[stageName](application);
+			this.log.debug(`Ran stage '${stageName}' on hook '${this.name}'`);
+			await this[lifecycle[stageName][1]](application);
 			return this;
-		} catch ( e ) {
-			this.log.error( `An error ocurred on stage ${stageName} of hook '${this.name}'` );
-			this.log.error( e );
-
-			throw new Error( e );
+		} catch (error) {
+			this.log.error(`An error ocurred on stage ${stageName} of hook '${this.name}'`);
+			if (error.stack) {
+				this.log.error(error.stack);
+			}
+			throw error;
 		}
 	}
 
-	async configure ( application ) {
-		this.configuration = Object.assign( this.configuration, this.defaults, application.configuration[ this.configurationKey ] );
+	async configure(application) {
+		if (this.disabled) {
+			return this;
+		}
+
+		this.configuration = merge(
+			this.configuration,
+			this.defaults,
+			application.configuration[this.configurationKey]
+		);
 		return this;
 	}
 
-	async hookWillConfigure ( application ) {
+	async hookWillConfigure() {
 		return this;
 	}
 
-	async hookDidConfigure ( application ) {
+	async hookDidConfigure() {
 		return this;
 	}
 
-	async start ( application ) {
+	async start() {
 		return this;
 	}
 
-	async hookWillStart ( application ) {
+	async hookWillStart() {
 		return this;
 	}
 
-	async hookDidStart ( application ) {
+	async hookDidStart() {
 		return this;
 	}
 }
 
-function hookFactory ( ...args ) {
-	return new Hook( ...args );
+function hookFactory(...args) {
+	return new Hook(...args);
 }
 
 export default hookFactory;
-export { Hook as Hook };
+export {
+	Hook as Hook
+};

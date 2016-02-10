@@ -1,56 +1,62 @@
-import { resolve, dirname } from 'path';
-import { merge } from 'lodash';
+import {
+	dirname,
+	resolve
+} from 'path';
+import {
+	merge
+} from 'lodash';
 import findRoot from 'find-root';
 
 import load from '../../../library/utilities/configuration';
-import { exists } from '../../../library/utilities/fs';
+import {
+	exists
+} from '../../../library/utilities/fs';
 
 export default {
-	'after': [ 'application:before' ],
+	after: ['application:before'],
 
-	'defaults': {
-		'path': './configuration',
-		'filter': /(.*).(js|json)$/
+	defaults: {
+		path: './configuration',
+		filter: /(.*).(js|json)$/
 	},
 
-	'configure': async function configureEngineHook ( application ) {
+	async configure(application) {
 		application.configuration = {};
-
-		this.configuration = Object.assign( this.configuration, this.defaults, {
-			'path': resolve( application.runtime.base, this.defaults.path )
-		} );
-
+		this.configuration = merge(
+			{},
+			this.defaults,
+			{
+				path: resolve(application.runtime.base, this.defaults.path)
+			}
+		);
 		return this;
 	},
 
-	'start': async function startEngineHook ( application ) {
+	async start(application) {
 		// Load boilerplate-server core configuration
-		let core = load( resolve(findRoot(__dirname), this.configuration.path), this.configuration.filter, application.runtime.env );
+		const core = load(
+			resolve(
+				findRoot(__dirname),
+				this.configuration.path
+			),
+			this.configuration.filter,
+			application.runtime.env
+		);
 
 		// Load package.jsons
-		let corePkgPath = resolve( application.runtime.base, 'package.json' );
-		let pkgPath = resolve( application.runtime.cwd, 'package.json' );
+		const corePkgPath = resolve(application.runtime.base, 'package.json');
+		const pkgPath = resolve(application.runtime.cwd, 'package.json');
 
-		let corePkg = require( corePkgPath );
-
-		let pkg = {};
-
-		try {
-			pkg = require( pkgPath );
-		} catch ( err ) {
-			this.log.warn( `Could not read ${pkgPath}.` );
-		}
-
-		pkg = merge( {}, corePkg, pkg );
+		const corePkg = require(corePkgPath);
+		const pkg = merge({}, require(pkgPath), corePkg, pkg);
 
 		// Allow user to override core behaviour via cli and *rc files
-		core = merge( {}, core, { 'pkg': pkg }, application.runtime.api );
+		merge(core, {pkg}, application.runtime.api);
 
+		// Find all node modules on the way from here to the top
 		let modulePaths = [dirname(module.filename)];
 		let moduleRoot = module;
-		
-		// Find all node modules on the way from here to the top
-		while(moduleRoot.parent) {
+		while (moduleRoot.parent) {
 			moduleRoot = moduleRoot.parent;
 			modulePaths.push(dirname(moduleRoot.filename));
 		}

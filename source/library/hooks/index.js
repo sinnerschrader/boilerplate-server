@@ -1,32 +1,25 @@
-/*
- * Load, schedule and run the default hooks
- */
+import {
+	resolve
+} from 'path';
 
-import { resolve } from 'path';
+import getHookTree from './get-hook-tree';
 import load from './load';
+import runHookTree from './run-hook-tree';
 
-function createHooks ( application ) {
-	application.hooks = load( application, resolve( application.runtime.base, 'application', 'hooks' ) );
+export default async function(application) {
+	// load the system hooks
+	const hooks = await load(application, resolve(application.runtime.base, 'application', 'hooks'));
 
-	application.hooks.forEach( function registerCoreHook ( hook ) {
-		hook.register( application );
-	} );
+	// allow access to all the hooks
+	application.hooks = hooks;
 
-	application.emit( 'application:before' );
+	// register them
+	const registered = await Promise.all(hooks.map(async hook => hook.register(application)));
 
-	return new Promise( function resolveHooks ( fulfill ) {
-		application.on( 'hooks:start:after', function onAfterHookStart () {
-			var remaining = application.hooks.filter( ( hook ) => hook.wait && hook.stages.start === false && hook.disabled === false );
+	// get interpendence tree
+	const tree = getHookTree(registered);
 
-			if ( remaining.length === 0 ) {
-				application.emit( 'application:after' );
-				application.log.debug( '[application:hooks]', 'All core hooks executed' );
-
-				application.removeListener( 'hooks:start:after', onAfterHookStart );
-				fulfill( application );
-			}
-		} );
-	} );
-}
-
-export default createHooks;
+	// run the tree, wait for all dependencies
+	await* runHookTree(tree, registered, application, {});
+	return application;
+};

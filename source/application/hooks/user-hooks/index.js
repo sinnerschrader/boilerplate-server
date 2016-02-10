@@ -1,57 +1,73 @@
-import { resolve } from 'path';
+import {
+	resolve
+} from 'path';
 
+import {
+	exists
+} from '../../../library/utilities/fs';
+
+import getHookTree from '../../../library/hooks/get-hook-tree';
 import load from '../../../library/hooks/load';
-import { exists } from '../../../library/utilities/fs';
+import runHookTree from '../../../library/hooks/run-hook-tree';
 
 export default {
-	'configurationKey': 'hooks',
-
-	'after': [ 'hooks:configure:start:after' ],
-
-	'start': async function startUserHook ( application ) {
-		let coreHookPath = resolve(application.runtime.base, application.configuration.paths.hooks);
+	configurationKey: 'hooks',
+	after: ['hooks:configure:start:after'],
+	async start(application) {
+		const coreHookPath = resolve(application.runtime.base, application.configuration.paths.hooks);
 
 		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
 
-		let userHookPaths = this.configuration.path
-			.reduce((items, item) => items.concat(
-				application.runtime.cwds.map((cwd) => resolve(cwd, item))
-			), [])
-			.filter((item) => item !== coreHookPath);
+		const userHookPaths = [...this.configuration.path
+			.reduce((items, item) => [
+				...items,
+				...application.runtime.cwds.map(cwd => resolve(cwd, item))
+			], [])
+			.filter(item => item !== coreHookPath)];
 
-		userHookPaths = [...new Set(userHookPaths)];
 		let userHooks = [];
 
 		// load user hooks
-		for (let userHookPath of userHookPaths) {
-			if ( await exists( userHookPath ) === false ) {
+		for (const userHookPath of userHookPaths) {
+			if (await exists(userHookPath) === false) {
 				continue;
 			} else {
 				application.log.info(`Loading user hooks from ${userHookPath}...`);
 			}
 
-			let loadedHooks = load( application, userHookPath, true );
-			userHooks = userHooks.concat(loadedHooks);
-			application.log.info(`Loaded ${loadedHooks.length} user hooks: ${loadedHooks.map((loadedHook) => loadedHook.name)}`);
+			try {
+				const loadedHooks = load(application, userHookPath, true);
+				userHooks = userHooks.concat(loadedHooks);
+				application.log.info(`Loaded ${loadedHooks.length} user hooks: ${loadedHooks.map(loadedHook => loadedHook.name)}`);
+			} catch (error) {
+				application.log.error(`Failed loading hooks from ${userHookPath}: ${error.message}`);
+				if (error.stack) {
+					application.log.error(`${error.stack}`);
+				}
+				throw error;
+			}
 		}
 
 		// Let the last user hook with a given name reign
 		userHooks = [...new Set(userHooks.reverse())].reverse();
 
 		userHooks = userHooks
-			.map(function(userHook){
+			.map(userHook => {
 				// Detect hooks conflicting with core hooks
-				let conflictingCoreHook = application.hooks.filter((coreHook) => coreHook.name === userHook.name)[0];
-
+				const conflictingCoreHook = application.hooks.filter(coreHook => coreHook.name === userHook.name)[0];
 				if (conflictingCoreHook) {
-					application.log.warn(`Hook "${userHook.name}" from ${userHook.requirePath} conflicts with core hook "${conflictingCoreHook.name}", will not load.`);
-					return null;
+					throw new Error(`Hook "${userHook.name}" from ${userHook.requirePath} conflicts with core hook "${conflictingCoreHook.name}", will not load.`);
 				}
 				return userHook;
-			}).filter((item) => (item));
+			})
+			.filter(Boolean);
 
-		userHooks.forEach( ( hook ) => hook.register( application ) );
-		application.hooks = application.hooks.concat(userHooks);
+		const registered = [
+			...application.hooks,
+			...userHooks
+		].map(hook => hook.register(application));
+
+		await* runHookTree(getHookTree(registered), registered, application, {});
 		return this;
 	}
 };
