@@ -67,6 +67,7 @@ export default {
 		].map(hook => hook.register(application));
 
 		await* runHookTree(getHookTree(registered), registered, application, {});
+		application.hooks = registered;
 		return this;
 	}
 };
