@@ -1,19 +1,21 @@
-import { merge } from 'lodash';
+import {merge} from 'lodash';
 import requireAll from 'require-all';
 
-function loadConfiguration ( path, filter = /(.*).(js|json)$/, env = 'development' ) {
-
-	let rawConfiguration = requireAll( {
-		'dirname': path,
-		'filter': filter
-	} );
+function loadConfiguration(dirname, filter = /(.*).(js|json)$/, env = 'development') {
+	const rawConfiguration = requireAll({
+		dirname,
+		filter
+	});
 
 	rawConfiguration.environments = rawConfiguration.environments || {};
+	const envConfiguration = rawConfiguration.environments[env] || {};
 
-	let envConfiguration = rawConfiguration.environments[ env ] || {};
-
-	return merge( {},
-		rawConfiguration, envConfiguration, { 'environment': env } );
+	return merge(
+		{},
+		rawConfiguration,
+		envConfiguration,
+		{environment: env}
+	);
 }
 
 export default loadConfiguration;

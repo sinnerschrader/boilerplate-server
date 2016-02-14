@@ -61,6 +61,7 @@
     "lodash": "^3.7.0",
     "lodash.merge": "^3.3.2",
     "minimist": "^1.1.1",
+    "path-exists": "^2.1.0",
     "portscanner": "^1.0.0",
     "rc": "^1.0.1",
     "require-all": "^1.0.0",

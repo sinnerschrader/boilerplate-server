@@ -62,6 +62,9 @@ class BoilerPlateServer extends EventEmitter {
 	}
 
 	mount(...args) {
+		const [sub] = args;
+		sub.runtime.cwds.splice(1, 0, ...this.runtime.cwds);
+		sub.runtime.cwds = [...new Set(sub.runtime.cwds)];
 		this.engine.mount(...args);
 		return this;
 	}

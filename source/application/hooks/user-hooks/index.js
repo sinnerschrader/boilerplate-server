@@ -15,7 +15,6 @@ export default {
 	after: ['hooks:configure:start:after'],
 	async start(application) {
 		const coreHookPath = resolve(application.runtime.base, application.configuration.paths.hooks);
-
 		this.configuration.path = Array.isArray(this.configuration.path) ? this.configuration.path : [this.configuration.path];
 
 		const userHookPaths = [...this.configuration.path
@@ -50,6 +49,17 @@ export default {
 
 		// Let the last user hook with a given name reign
 		userHooks = [...new Set(userHooks.reverse())].reverse();
+
+		userHooks = userHooks
+			.map(userHook => {
+				// Detect hooks conflicting with core hooks
+				const conflictingCoreHook = application.hooks.filter(coreHook => coreHook.name === userHook.name)[0];
+				if (conflictingCoreHook) {
+					throw new Error(`Hook "${userHook.name}" from ${userHook.requirePath} conflicts with core hook "${conflictingCoreHook.name}", will not load.`);
+				}
+				return userHook;
+			})
+			.filter(Boolean);
 
 		const registered = [
 			...application.hooks,
