@@ -52,10 +52,35 @@ export default {
 		// Allow user to override core behaviour via cli and *rc files
 		merge(core, {pkg}, application.runtime.api);
 
+		// Find all node modules on the way from here to the top
+		let modulePaths = [dirname(module.filename)];
+		let moduleRoot = module;
+		while (moduleRoot.parent) {
+			moduleRoot = moduleRoot.parent;
+			modulePaths.push(dirname(moduleRoot.filename));
+		}
+
+		modulePaths = [...new Set(modulePaths)];
+		modulePaths = modulePaths.filter(modulePath => !modulePath.includes(findRoot(__dirname)));
+
+		const existingModulePaths = [];
+
+		console.log('modulePaths', modulePaths);
+
+		for (let modulePath of modulePaths) { // eslint-disable-line
+			let moduleRoot = modulePath;
+			while (await exists(resolve(moduleRoot, 'package.json')) === false) {
+				console.log('root', moduleRoot);
+				moduleRoot = dirname(moduleRoot);
+			}
+			existingModulePaths.push(moduleRoot);
+		}
+
 		// Set application runtime cwds
 		application.runtime.cwds = [
 			...new Set([
 				application.runtime.cwd,
+				...existingModulePaths,
 				process.cwd()
 			])
 		];
