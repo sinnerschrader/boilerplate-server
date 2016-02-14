@@ -61,10 +61,6 @@ export default {
 			const routeFactoryFunction = routes[routeName];
 			const routeConfig = this.configuration.enabled[routeName];
 
-			if (routeName === 'api') {
-				// console.log(routeConfig);
-			}
-
 			if (typeof routeFactoryFunction !== 'function') {
 				throw new Error(`'${routeName}' is no valid route factory`);
 			}

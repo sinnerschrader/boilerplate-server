@@ -65,12 +65,9 @@ export default {
 
 		const existingModulePaths = [];
 
-		console.log('modulePaths', modulePaths);
-
 		for (let modulePath of modulePaths) { // eslint-disable-line
 			let moduleRoot = modulePath;
 			while (await exists(resolve(moduleRoot, 'package.json')) === false) {
-				console.log('root', moduleRoot);
 				moduleRoot = dirname(moduleRoot);
 			}
 			existingModulePaths.push(moduleRoot);
@@ -91,7 +88,6 @@ export default {
 			for (const cwd of application.runtime.cwds) {
 				for (const suffix of ['', userPkg.name]) {
 					const userPath = resolve(cwd, configPath, suffix);
-					console.log(userPath);
 					if (await exists(userPath)) {
 						existingConfigPaths.push(userPath);
 					}
