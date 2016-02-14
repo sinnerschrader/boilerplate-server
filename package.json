@@ -1,6 +1,6 @@
 {
   "name": "boilerplate-server",
-  "version": "0.11.4",
+  "version": "0.11.5",
   "description": "Lean and mean server module intended to get you kicking on the edge of things real fast.",
   "main": "library/",
   "scripts": {
