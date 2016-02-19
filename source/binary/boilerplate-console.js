@@ -8,3 +8,9 @@ async function main(options) {
 }
 
 execute(main, {mode: 'console'});
+
+// Catch unhandled rejections globally
+process.on('unhandledRejection', (reason, promise) => {
+	console.log('Unhandled Rejection at: Promise ', promise, ' reason: ', reason);
+	throw reason;
+});
