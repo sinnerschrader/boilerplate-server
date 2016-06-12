@@ -1,6 +1,6 @@
 import koa from 'koa';
 import router from 'koa-router';
-import merge from 'lodash.merge';
+import {merge} from 'lodash';
 
 import ports from '../../../library/utilities/ports';
 
