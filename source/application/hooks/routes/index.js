@@ -8,10 +8,13 @@ import {exists} from '../../../library/utilities/fs';
 
 export default {
 	after: ['hooks:engine:start:after'],
-	modes: ['server'],
 
 	async start(application) {
 		application.router = router();
+
+		if (application.mode === 'console') {
+			return;
+		}
 
 		// load physical core routes
 		const coreRoutes = requireAll(resolve(application.runtime.base, application.configuration.paths.routes));
