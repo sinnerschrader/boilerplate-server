@@ -20,6 +20,8 @@ export default async function(application) {
 	const tree = getHookTree(registered);
 
 	// run the tree, wait for all dependencies
-	await* runHookTree(tree, registered, application, {});
+	const jobs = runHookTree(tree, registered, application, {});
+	await Promise.all(jobs);
+
 	return application;
 };

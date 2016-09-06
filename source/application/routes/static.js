@@ -16,10 +16,10 @@ export default function staticRouteFactory (application, configuration) {
 			yield send(this, this.params.path, {root});
 
 			if (this.status === 200) {
-				application.log.info(`[application:request] Matched ${this.params.path} on ${root}`);
+				application.log.debug(`[application:request] Matched ${this.params.path} on ${root}`);
 				break;
 			} else {
-				application.log.info(`[application:request] No match for ${this.params.path} on ${root}`);
+				application.log.debug(`[application:request] No match for ${this.params.path} on ${root}`);
 			}
 		}
 	};

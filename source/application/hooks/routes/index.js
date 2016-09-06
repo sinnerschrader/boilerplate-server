@@ -13,7 +13,7 @@ export default {
 		application.router = router();
 
 		if (application.mode === 'console') {
-			return;
+			return application;
 		}
 
 		// load physical core routes
@@ -82,11 +82,11 @@ export default {
 			const fn = routeFactoryFunction(application, routeConfig);
 
 			if (typeof fn !== 'function') {
-				this.log.info(`${routeName} factory returned no valid route for ${routeConfig.path}`);
+				this.log.warn(`${routeName} factory returned no valid route for ${routeConfig.path}`);
 				return;
 			}
 
-			this.log.info(`Mounting ${routeName} on ${routeConfig.path}`);
+			this.log.debug(`Mounting ${routeName} on ${routeConfig.path}`);
 
 			application.router.register(routeName, routeConfig.path, methods, function * runRoute(next) {
 				yield fn.bind(this)(next);

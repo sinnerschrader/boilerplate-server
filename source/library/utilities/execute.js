@@ -1,4 +1,3 @@
-import 'babel-core/polyfill';
 import {basename, extname} from 'path';
 import {merge} from 'lodash';
 import minimist from 'minimist';
@@ -21,7 +20,7 @@ const options = {
  */
 function handleSuccess(instance) {
 	if (instance && instance.log) {
-		instance.log.info(`[application] ${options.entry} executed sucessfully.`);
+		// instance.log.info(`[application] ${options.entry} executed sucessfully.`);
 	}
 }
 
@@ -31,7 +30,7 @@ function handleSuccess(instance) {
  * @private
  */
 function handleError(error) {
-	console.log(`${options.entry} failed.`)
+	console.log(`${options.entry} failed.`);
 	console.trace(error);
 
 	setTimeout(() => {

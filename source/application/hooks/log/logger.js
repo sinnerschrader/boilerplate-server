@@ -1,36 +1,36 @@
-import { Logger as WinstonLogger, transports as winstonTransports } from 'winston';
+import {Logger as WinstonLogger, transports as winstonTransports} from 'winston';
 
 const privates = new WeakMap();
 
 class Logger {
-	constructor (prefix, options) {
-		let engine = new WinstonLogger(options);
+	constructor(prefix, options) {
+		const engine = new WinstonLogger(options);
 		engine.add(winstonTransports.Console, options);
-		privates.set(this, { prefix, options, engine });
+		privates.set(this, {prefix, options, engine});
 	}
 
-	log (method, ...args) {
-		let { engine, prefix } = privates.get(this);
+	log(method, ...args) {
+		const {engine, prefix} = privates.get(this);
 		engine[method](...[prefix, ...args]);
 	}
 
-	error (...args) {
+	error(...args) {
 		this.log('error', ...args);
 	}
 
-	warn (...args) {
+	warn(...args) {
 		this.log('warn', ...args);
 	}
 
-	info (...args) {
+	info(...args) {
 		this.log('info', ...args);
 	}
 
-	debug (...args) {
+	debug(...args) {
 		this.log('debug', ...args);
 	}
 
-	silly (...args) {
+	silly(...args) {
 		this.log('silly', ...args);
 	}
 }
@@ -40,4 +40,4 @@ function loggerFactory(...args) {
 }
 
 export default loggerFactory;
-export { Logger as Logger };
+export {Logger as Logger};

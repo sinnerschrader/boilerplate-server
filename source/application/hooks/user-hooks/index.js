@@ -28,16 +28,16 @@ export default {
 
 		// load user hooks
 		for (const userHookPath of userHookPaths) {
-			if (await exists(userHookPath) === false) {
+			if (await exists(userHookPath) === false) { // eslint-disable-line
 				continue;
 			} else {
-				application.log.info(`Loading user hooks from ${userHookPath}...`);
+				application.log.debug(`Loading user hooks from ${userHookPath}...`);
 			}
 
 			try {
 				const loadedHooks = load(application, userHookPath, true);
 				userHooks = userHooks.concat(loadedHooks);
-				application.log.info(`Loaded ${loadedHooks.length} user hooks: ${loadedHooks.map(loadedHook => loadedHook.name)}`);
+				application.log.debug(`Loaded ${loadedHooks.length} user hooks: ${loadedHooks.map(loadedHook => loadedHook.name)}`);
 			} catch (error) {
 				application.log.error(`Failed loading hooks from ${userHookPath}: ${error.message}`);
 				if (error.stack) {
@@ -66,7 +66,8 @@ export default {
 			...userHooks
 		].map(hook => hook.register(application));
 
-		await* runHookTree(getHookTree(registered), registered, application, {});
+		const jobs = runHookTree(getHookTree(registered), registered, application, {});
+		await Promise.all(jobs);
 		application.hooks = registered;
 		return this;
 	}
