@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import boilerplate from '../';
+import 'babel-polyfill';
+import boilerplate from '../library';
 import execute from '../library/utilities/execute';
 
 async function main(options = {}) {

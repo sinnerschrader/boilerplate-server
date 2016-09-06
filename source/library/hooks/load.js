@@ -1,41 +1,39 @@
-import { resolve } from 'path'
+import {resolve} from 'path';
 
 import requireAll from 'require-all';
 import hookFactory from './default';
 
-export default function loadHooks ( application, path, modules = false ) {
-	let hooks = requireAll( path );
+export default function loadHooks(application, path, modules = false) {
+	const rawAppHooks = requireAll(path);
+	const enabledHooks = selectEnabledHooks(application);
 
-	hooks = Object.keys(hooks)
-		.map((name) => Object.assign(hooks[name].index ? hooks[name].index : hooks[name], { name }))
-		.map((hook) => Object.assign(hook, { 'requirePath': resolve(path, hook.name) }));
+	const appHooks = Object.entries(rawAppHooks)
+		.map(entry => {
+			const [name, hook] = entry;
+			const mod = hook.index || hook;
+			const requirePath = resolve(path, name);
+			return {...mod, name, requirePath};
+		})
+		.map(hook => Object.assign(hook, {requirePath: resolve(path, hook.name)}));
 
-	if ( modules && application.configuration ) {
-		let moduleHookNames = Object.keys( application.configuration.hooks.enabled )
-			.filter( ( key ) => typeof application.configuration.hooks.enabled[ key ] === 'string' );
+	const moduleHooks = modules ?
+		Object.values(enabledHooks)
+			.filter(moduleName => typeof moduleName === 'string')
+			.map(moduleName => {
+				const requirePath = require.resolve(moduleName);
+				const mod = require(moduleName);
+				mod.requirePath = requirePath;
+				return mod;
+			}) :
+		[];
 
-		let moduleHooks = moduleHookNames
-			.map( function requireHookModules ( moduleHookName ) {
-				let moduleName = application.configuration.hooks.enabled[ moduleHookName ];
+	return [...appHooks, ...moduleHooks]
+		.filter(Boolean).map(hook => hookFactory(application, hook.name, hook));
+}
 
-				try {
-					let moduleHook = require( moduleName );
-					moduleHook.name = moduleHookName;
-					moduleHook.requirePath = require.resolve(moduleName);
-					application.log.debug( '[application:hooks]', `Required module hook '${moduleHookName}' from module '${moduleName}'` );
-				} catch (err) {
-					application.log.warn( '[application:hooks]', `Could not require module hook '${moduleHookName}' from module '${moduleName}'` );
-				}
-			});
-
-		hooks = hooks.concat(moduleHooks);
-	}
-
-	hooks = hooks
-		.filter((hook) => hook)
-		.map(function hookCallback (hook) {
-			return hookFactory(application, hook.name, hook);
-		});
-
-	return hooks;
+function selectEnabledHooks(application) {
+	const config = application.configuration || {};
+	const hooks = config.hooks || {};
+	const enabled = hooks.enabled || {};
+	return enabled;
 }

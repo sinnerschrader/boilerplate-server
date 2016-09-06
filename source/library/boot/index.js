@@ -55,9 +55,9 @@ class BoilerPlateServer extends EventEmitter {
 	}
 
 	async stop() {
-		this.log.info('\n[application:stop] Stopping server gracefully...');
+		this.log.info('\nStopping server gracefully...');
 		await this.engine.stop();
-		this.log.info('\n[application:stop] Stopped server gracefully...');
+		this.log.info('\nStopped server gracefully...');
 		return this;
 	}
 
@@ -71,7 +71,7 @@ class BoilerPlateServer extends EventEmitter {
 
 	async run(command, options) {
 		if (!this.console) {
-			this.log.warn('[application:stop] application.console is not avaiable. Aborting.');
+			this.log.warn('application.console is not avaiable. Aborting.');
 			return this;
 		}
 

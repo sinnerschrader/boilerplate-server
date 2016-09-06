@@ -47,7 +47,7 @@ export default {
 
 		const corePkg = require(corePkgPath);
 		const userPkg = require(pkgPath);
-		const pkg = merge({}, corePkg, pkg, userPkg);
+		const pkg = merge({}, corePkg, userPkg);
 
 		// Allow user to override core behaviour via cli and *rc files
 		merge(core, {pkg}, application.runtime.api);
@@ -67,7 +67,7 @@ export default {
 
 		for (let modulePath of modulePaths) { // eslint-disable-line
 			let moduleRoot = modulePath;
-			while (await exists(resolve(moduleRoot, 'package.json')) === false) {
+			while (await exists(resolve(moduleRoot, 'package.json')) === false) { // eslint-disable-line
 				moduleRoot = dirname(moduleRoot);
 			}
 			existingModulePaths.push(moduleRoot);
@@ -88,7 +88,7 @@ export default {
 			for (const cwd of application.runtime.cwds) {
 				for (const suffix of ['', userPkg.name]) {
 					const userPath = resolve(cwd, configPath, suffix);
-					if (await exists(userPath)) {
+					if (await exists(userPath)) { // eslint-disable-line
 						existingConfigPaths.push(userPath);
 					}
 				}
@@ -107,7 +107,7 @@ export default {
 		// Load dem configs from filtered paths
 		let user = {};
 		for (const userPath of existingConfigPaths) {
-			this.log.info(`Loading configuration from '${userPath}'`);
+			this.log.debug(`Loading configuration from '${userPath}'`);
 
 			try {
 				const userPathConfig = load(userPath, this.configuration.filter, application.runtime.env);
