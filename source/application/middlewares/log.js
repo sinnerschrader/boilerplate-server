@@ -3,6 +3,6 @@ export default function startLogMiddleware ( application ) {
 		let start = new Date();
 		yield next;
 		let delta = new Date() - start;
-		application.log.debug( '[application:request]', `${start} - ${this.method} ${this.url} - ${this.response.status} ${this.response.message} - ${delta}ms` );
+		application.log.debug(`${start} - ${this.method} ${this.url} - ${this.response.status} ${this.response.message} - ${delta}ms`);
 	};
 }

@@ -10,7 +10,7 @@ export default {
 	},
 
 	start(application) {
-		const logger = startLogger(`[${application.name}]`, this.configuration);
+		const logger = startLogger('', this.configuration);
 
 		application.log.silly('Draining boot logger queue...');
 		application.log.drain(logger);

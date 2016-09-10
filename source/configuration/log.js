@@ -6,8 +6,8 @@ const level = process.env.BOILERPLATESERVER_LOG_LEVEL ||
 
 const log = {
 	level,
-	colorize: true,
-	timestamp: true,
+	colorize: process.stdout.isTTY,
+	timestamp: !process.stdout.isTTY,
 	showLevel: true,
 	colors: {
 		trace: 'magenta',

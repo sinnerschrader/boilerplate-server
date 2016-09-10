@@ -21,10 +21,10 @@ function engineBlueprint() {
 			const env = application.configuration.environment;
 
 			if (application.router) {
-				application.log.debug('[application]', `Kicking off router ...`);
+				application.log.debug(`Kicking off router ...`);
 				fuel.use(application.router.routes());
 				fuel.use(application.router.allowedMethods());
-				application.log.debug('[application]', `Kicked off router ...`);
+				application.log.debug(`Kicked off router ...`);
 			}
 
 			if (application.runtime.env === 'development') {
@@ -77,7 +77,7 @@ function engineBlueprint() {
 			const fragments = path.split('/');
 			const hostFragments = application.runtime.prefix.split('/');
 
-			application.log.debug(`[application:subapplication] Mounting ${mountable.name} on ${path}`);
+			application.log.debug(`Mounting ${mountable.name} on ${path}`);
 
 			if (path === '/') {
 				mountable.router.stack.routes.forEach(route => {
