@@ -63,7 +63,7 @@
     "koa-etag": "^2.0.0",
     "koa-router": "^4.3.2",
     "koa-send": "^3.2.0",
-    "lodash": "^3.7.0",
+    "lodash": "^4.15.0",
     "minimist": "^1.1.1",
     "path-exists": "^2.1.0",
     "portscanner": "^1.0.0",
