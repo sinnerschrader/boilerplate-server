@@ -108,16 +108,8 @@ export default {
 		let user = {};
 		for (const userPath of existingConfigPaths) {
 			this.log.debug(`Loading configuration from '${userPath}'`);
-
-			try {
-				const userPathConfig = load(userPath, this.configuration.filter, application.runtime.env);
-				user = merge(user, userPathConfig);
-			} catch (err) {
-				this.log.error(`Error while reading configuration from ${userPath}.`);
-				this.log.error(err);
-				err.message = 'Failed loading configuration from ${userPath}';
-				throw err;
-			}
+			const userPathConfig = load(userPath, this.configuration.filter, application.runtime.env);
+			user = merge(user, userPathConfig);
 		}
 
 		merge(application.configuration, core, user, application.runtime.api, (a, b) => {
