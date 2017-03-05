@@ -1,4 +1,6 @@
 # boilerplate-server
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/sinnerschrader/boilerplate-server.svg)](https://greenkeeper.io/)
 A lean JS server framework designed to get you kicking and hacking on the edge of things real fast.
 
 # Design principles
